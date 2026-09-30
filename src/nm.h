@@ -83,6 +83,28 @@ Poly p_pow(Poly a, unsigned e);
 Poly p_scale(Poly a, Q s);
 char *p_to_str(Poly a);
 
+/* ---- series: c[0] + c[1] x + ... + c[n-1] x^(n-1) + O(x^n) ---- */
+typedef struct { int n; Q *c; } Ser;
+
+Ser s_const(Q a, int n);
+Ser s_var(int n);
+Ser s_from_poly(Poly p, int n);
+Ser s_add(Ser a, Ser b);
+Ser s_sub(Ser a, Ser b);
+Ser s_mul(Ser a, Ser b);
+Ser s_div(Ser a, Ser b);
+Ser s_scale(Ser a, Q k);
+Ser s_pow_int(Ser a, int64_t e);
+Ser s_pow_q(Ser a, Q alpha);                  /* a(0) != 0; exact when a(0)^alpha is rational */
+Ser s_deriv(Ser a);
+Ser s_integ(Ser a);
+Ser s_compose(Ser f, Ser g);                  /* f(g(x)), g(0) = 0 */
+Ser s_trunc(Ser a, int n);
+Ser s_persist(Ser a);
+char *s_to_str(Ser a, const char *var, int last);   /* terms up to degree `last`, then O(...) */
+char *term_str(Q c, const char *var, int k, int first);
+int q_root_exact(Q a, int64_t n, Q *out);     /* a^(1/n) if rational */
+
 /* ---- roots: an equation and a verified bracket ---- */
 typedef struct Root {
     int deg;

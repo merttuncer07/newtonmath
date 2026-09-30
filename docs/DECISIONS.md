@@ -203,3 +203,89 @@ Small choices made while coding (reported to Mert):
 - an unbound letter is an unknown (a polynomial);
 - a sign-change bracket widens up to ±500 units in the last working place;
 - the real cube root of a negative number.
+
+# Slice 2: letters and series. Research
+- NATP00296 (opening): series with x^(1/2), x^(3/2), x^(−1) from the start, "ob analogiam rei". The ascending
+  order can be inverted: "Potest etiam ordo terminorum inverti ... xx+aa, et radix est x + aa/2x − a^4/8x^3".
+  The series object has rational exponents and can be taken in x or in 1/x.
+- NATP00296: "circa finem operis eos omnes terminos negligo quorum dimensiones transcenderent ... ultimi termini ad
+  quem cupio quotientem ... produci". Truncation is named by the last degree kept.
+- NATP00296 and NATP00180 (Epistola posterior): the parallelogram. For y^6 − 5xy^5 + (x^3/a)y^4 − 7a^2x^2y^2 +
+  6a^3x^3 + b^2x^4 = 0, the ruler rests on x^3, x^2y^2, y^6. From y^6 − 7a^2x^2y^2 + 6a^3x^3 he gets four starts
+  ±sqrt(ax), ±sqrt(2ax), after the reduction v^6 − 7v^2 + 6 = 0 with y = v·sqrt(ax). "quorum quemlibet pro
+  primo termino Quotientis accipere [liceat]": the user chooses the branch. "y denotat radicem extrahendam et x
+  alteram indefinitam quantitatem ex cujus potestatibus series constituenda est": roles are named.
+- NATP00204: the literal resolution y^3 + aay + axy − 2a^3 − x^3 = 0 → y = a − x/4 + xx/64a + ...; checked by
+  substitution: "Idem patebit substituendo quotientem pro y in æquationem propositam".
+- NATP00180: "Denominatores fractionum ... reducantur ad quam paucissimas et minimè compositas". Coefficients
+  with simple denominators.
+- NATP00182: the binomial rule with named terms A, B, C, D, each from the previous (B = (m/n)·A·Q). The term
+  ratio is known, so the tail can be bounded.
+- NATP00204, end: the tail bound (x < 1/2 ⇒ each term exceeds the rest), and "numeros coefficientes ... plerumque
+  decrescent": the bound needs the coefficients' behaviour.
+- NATP00180: logs of 0.8, 0.9, 1.1, 1.2 from the area series, then log 2 and log 10 by exact relations.
+- De analysi rules I-II: area (integral) term by term.
+- M14: reversion of a series (the sine from the arcsine).
+
+## Slice 2: the modern world consulted (Mert: Newton must also consult the modern world)
+- Series objects:
+  - PARI t_SER: integer exponents, precision O(x^n).
+  - Sage PuiseuxSeriesRing: finite precision, rational exponents.
+  - Sage LazyPowerSeriesRing: terms computed on demand. This is Newton's "quousque placuerit" and our D7
+    continuation.
+  - Maple algcurves[puiseux] and Mathematica also give Puiseux series.
+- Branches: Maple's puiseux returns all branches; Newton lets the user choose one.
+- Coefficients with letters: FLINT fmpz_mpoly_q keeps full multivariate rational functions canonical by gcd.
+  An open FLINT discussion (issue 1774) proposes factored denominators to avoid a gcd at every operation. This is
+  close to Newton's "denominators as few and least compound as possible".
+- Tail bounds:
+  - SymPy hypsum and Arb use the known term ratio (hypergeometric series).
+  - Mezzarobba (NumGfun; Ann. Henri Lebesgue 2019) gives majorant-series truncation bounds for D-finite series,
+    the general case.
+
+## Slice 2: what Newton would do with the modern capabilities
+- NATP00296, Problem 2, Example 1: the fluxional equation n/m = 1 − 3x + y + xx + xy (y' = 1 − 3x + y + x^2 + xy,
+  y(0) = 0), solved in a table term by term: y = x − xx + x^3/3 − x^4/6 + x^5/30 + ... "Et eâdem operatione
+  sæpiùs repetitâ Quotientem ad arbitrium producere possis": on demand, as far as wanted.
+- The modern D-finite theory (linear ODEs with polynomial coefficients, recurrences, Mezzarobba's bounds) is his
+  Problem 2 made general and rigorous. His binomial rule (A, B, C, D) is a P-recursive recurrence.
+- Synthesis, one consonant frame:
+  - a number is known by its equation (slice 1: a root is its polynomial plus a bracket);
+  - a function is known by its fluxional equation plus its start.
+  From that one object come terms on demand (lazy), tail bounds, values at points, the check by substitution, and
+  closure under +, ×, d/dx, integral. Algebraic functions (Puiseux branches) are D-finite too.
+- Nonlinear equations stay with Newton's resolution by series, with an honest verdict (no general tail bound).
+
+## Slice 2 redesigned by Newton's behaviour (Mert: no over-engineering, no guardrail layers; do it right from the
+## start; be bold; copy his behaviour, don't get lost in modern ideas)
+His behaviour, from the texts:
+- He reduced all of analysis to one object and a few operations: infinite series, handled "in speciebus ac in
+  decimalibus numeris". A decimal is a series in powers of 1/10, a function a series in powers of x.
+  Same operations, same work.
+- He named the whole method in one sentence: given an equation with fluents, find the fluxions, and conversely.
+- He then used one engine for everything hard: resolution. Start from a known value, substitute, keep the
+  residual equation, and gain places as far as wanted. The check is the residual itself, not a separate layer.
+- He did the simplest case exactly and immediately stated the general rule (the binomial at once for every m/n).
+Design:
+- One engine, resolution, over two domains: decimal places and series degrees.
+- Verbs: + − × ÷, ^ (fractional powers are root extraction), `root of <equation>` for algebraic and fluxional
+  equations alike, d/dx and integral.
+- Named functions (log, exp, sin, ...) are not written in C. They are defined in newtonmath by their equations.
+- Output: the value, how far it is carried, and what it satisfies.
+Deferred until a problem needs them: letters with factored denominators, Puiseux branches (the parallelogram),
+general tail-bound theory.
+
+## Slice 2 built
+- One resolution engine, used for numbers (Newton's iteration on places) and for series (term by term with the
+  moment o, o·o rejected).
+- `root of` serves algebraic and fluxional equations. d/dx and integral are exact on polynomials and term by term
+  on series.
+- Fractional powers use the rule that generalises the binomial, checked by raising back.
+- Named functions live in lib/prelude.nm, written in newtonmath.
+- Found by the engine: Newton's Methodus Problem 2 table gives +x^6/45; substitution gives −x^6/45. By hand,
+  6c6 = c5 + c4 = 1/30 − 1/6, so c6 = −1/45.
+Small choices made while coding:
+- default order x^8;
+- `to x^N` keeps degrees up to N;
+- a series letter is the one free letter, x if none;
+- a defined series is stored as its definition and re-derived at the order asked.

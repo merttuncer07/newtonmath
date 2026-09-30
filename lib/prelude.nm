@@ -1,0 +1,7 @@
+# The usual functions, each defined by the equation it satisfies and its start.
+let exp = root of y' = y, y(0) = 1
+let sin = root of y'' = -y, y(0) = 0, y'(0) = 1
+let cos = root of y'' = -y, y(0) = 1, y'(0) = 0
+let log1p = integral(1/(1 + x))            # log(1 + x), the area under the hyperbola
+let atan = integral(1/(1 + x^2))
+let asin = integral((1 - x^2)^(-1/2))

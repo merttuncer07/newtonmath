@@ -121,16 +121,8 @@ char *p_to_str(Poly p) {
     *o = 0;
     int first = 1;
     for (int i = p.deg; i >= 0; i--) {
-        Q c = p.c[i];
-        if (q_sign(c) == 0) continue;
-        int neg = q_sign(c) < 0;
-        Q a = neg ? q_neg(c) : c;
-        if (first) o += sprintf(o, neg ? "-" : "");
-        else o += sprintf(o, neg ? " - " : " + ");
-        int unit = q_is_int(a) && z_is_one(a.num);
-        if (i == 0 || !unit) o += sprintf(o, q_is_int(a) ? "%s" : "(%s)", q_to_str(a));
-        if (i > 0) o += sprintf(o, "%s%s", (i == 0 || !unit) ? "*" : "", p.var);
-        if (i > 1) o += sprintf(o, "^%d", i);
+        if (q_sign(p.c[i]) == 0) continue;
+        o += sprintf(o, "%s", term_str(p.c[i], p.var, i, first));
         first = 0;
     }
     return s;

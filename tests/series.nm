@@ -1,0 +1,42 @@
+# Slice 2: series. Each expected line is in tests/series.out.
+# Newton, Methodus Problem 2, Example 1 (his table prints +x^6/45; substituting back shows -x^6/45)
+root of y' = 1 - 3x + y + x^2 + x*y, y(0) = 0 to x^6
+# Epistola posterior: (1 - xx)^(1/2) and (1 - xx)^(1/3), checked by raising back
+sqrt(1 - x^2) to x^8
+(1 - x^2)^(1/3) to x^6
+sqrt(1 - x^2)^2 to x^8
+((1 - x^2)^(1/3))^3 to x^8
+# Methodus: 1/(1 + xx) by division, and aa/(b + x)
+1/(1 + x^2) to x^8
+4/(2 + x) to x^5
+# the same root, found as the root of an equation
+root of y^2 = 1 - x^2, y(0) = 1 to x^8
+root of y^2 = 1 - x^2, y(0) = -1 to x^4
+# De analysi: a root of a cubic, term by term (y^3 + y - 2 - x = 0 near y = 1)
+root of y^3 + y = 2 + x, y(0) = 1 to x^5
+# fluxional equations
+root of y' = y, y(0) = 1 to x^6
+root of y'' = -y, y(0) = 0, y'(0) = 1 to x^9
+root of (1 + x) y' = 1, y(0) = 0 to x^5
+# the two problems: fluxion and fluent
+d/dx (x^3 - 2x)
+integral(x^2 - 1, x)
+integral(1/(1 + x)) to x^6
+d/dx (1/(1 - x)) to x^4
+# a library written in the language itself
+use prelude
+sin(x)^2 + cos(x)^2 to x^10
+exp(x) * exp(-x) to x^8
+log1p(exp(x) - 1) to x^8
+sin(asin(x)) to x^9
+atan(x) to x^9
+exp(x^2) to x^8
+let g = sqrt(1 + x)
+g(x) to x^4
+g to x^6
+# what the resolution refuses, and why
+root of y^2 = 1 - x^2, y(0) = 2
+root of y^2 = x^2, y(0) = 0
+root of y'' = -y, y(0) = 0
+1/x
+sqrt(2 + x)

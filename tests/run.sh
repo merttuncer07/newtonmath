@@ -27,5 +27,9 @@ if command -v bc >/dev/null 2>&1; then
     done
   done
 fi
+# series: the whole file against its reviewed output (every line was checked against Newton's texts or by hand)
+n=$((n+1))
+if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL: tests/series.nm"; fail=$((fail+1)); fi
+
 echo "run.sh: $n checks, $fail failed"
 [ $fail -eq 0 ]

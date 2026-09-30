@@ -1,14 +1,19 @@
-/* The language: reading a statement, working it out, and writing the result with its verdict.
+/* The language: reading a statement, working it out, and writing the result.
  *
- *   statement := "let" NAME "=" expr [to]  |  expr [to]
- *   to        := "to" INTEGER "places"
+ *   statement := "use" NAME | "let" NAME "=" expr [to] | expr [to]
+ *   to        := "to" INTEGER "places" | "to" LETTER "^" INTEGER
  *   expr      := term { ("+" | "-") term }
- *   term      := unary { ("*" | "/") unary | unary }          (writing side by side multiplies: 2y, 3(x+1))
+ *   term      := unary { ("*" | "/") unary | unary }          (side by side multiplies: 2y, 3(x+1))
  *   unary     := "-" unary | power
  *   power     := primary [ "^" unary ]
- *   primary   := NUMBER | NAME | "(" expr ")" | "sqrt" "(" expr ")" | "root" "of" expr "=" expr "near" expr
+ *   primary   := NUMBER | NAME{'} | NAME "(" expr ")" | "(" expr ")" | "sqrt" "(" expr ")"
+ *              | "d/d"LETTER primary | "integral" "(" expr ["," LETTER] ")"
+ *              | "root" "of" expr "=" expr ( "near" expr | { "," NAME{'} "(" expr ")" "=" expr } )
  *
- * Plain ASCII is the canonical form; the reader also accepts √ × · − ² ³. */
+ * One engine does the hard work: resolution. A number is resolved by Newton's iteration on its places (approx.c);
+ * a series is resolved term by term, the next term found from the lowest terms left over, as in the Methodus.
+ * The same `root of` serves an algebraic equation and a fluxional one. Plain ASCII is canonical; √ × · − ² ³ are
+ * read as aliases. */
 #include "nm.h"
 
 #include <ctype.h>
@@ -21,14 +26,15 @@ extern jmp_buf nm_on_error;
 extern char nm_error_msg[512];
 
 #define DEFAULT_PLACES 20
+#define DEFAULT_ORDER 8
 #define GUARD_DIGITS 30
 
 /* ---------------- tokens ---------------- */
 
 enum { T_END, T_NUM, T_NAME, T_OP, T_KEY };
-typedef struct { int kind; const char *s; size_t len; char op; } Tok;
+typedef struct { int kind; const char *s; size_t len; char op; int primes; } Tok;
 
-static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", NULL};
+static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", NULL};
 
 static Tok *toks;
 static int ntok, pos;
@@ -40,7 +46,7 @@ static int is_key(const char *s, size_t len) {
 }
 
 static void push(int kind, const char *s, size_t len, char op) {
-    Tok t = {kind, s, len, op};
+    Tok t = {kind, s, len, op, 0};
     toks[ntok++] = t;
 }
 
@@ -63,10 +69,10 @@ static void lex(const char *src) {
             size_t j = i;
             while (j < n && (isalnum((unsigned char)src[j]) || src[j] == '_')) j++;
             push(is_key(src + i, j - i) ? T_KEY : T_NAME, src + i, j - i, 0);
+            while (j < n && src[j] == '\'') { toks[ntok - 1].primes++; j++; }   /* y', y'' */
             i = j; continue;
         }
-        if (strchr("+-*/^()=", c)) { push(T_OP, src + i, 1, (char)c); i++; continue; }
-        /* keyboard-free aliases (UTF-8) */
+        if (strchr("+-*/^()=,", c)) { push(T_OP, src + i, 1, (char)c); i++; continue; }
         if (!strncmp(src + i, "\xE2\x88\x9A", 3)) { push(T_KEY, "sqrt", 4, 0); i += 3; continue; }      /* √ */
         if (!strncmp(src + i, "\xC3\x97", 2) || !strncmp(src + i, "\xC2\xB7", 2)) {                     /* × · */
             push(T_OP, "*", 1, '*'); i += 2; continue;
@@ -79,10 +85,11 @@ static void lex(const char *src) {
         }
         nm_fail("unexpected character '%c'", c);
     }
-    push(T_END, "", 0, 0);
+    push(T_END, src + n, 0, 0);
 }
 
 static Tok *peek(void) { return &toks[pos]; }
+static Tok *peek_at(int k) { return pos + k < ntok ? &toks[pos + k] : &toks[ntok - 1]; }
 static int at_op(char op) { return peek()->kind == T_OP && peek()->op == op; }
 static int at_key(const char *k) {
     return peek()->kind == T_KEY && strlen(k) == peek()->len && !strncmp(peek()->s, k, peek()->len);
@@ -98,19 +105,49 @@ static void expect_key(const char *k) {
 
 /* ---------------- syntax tree ---------------- */
 
-enum { N_NUM, N_NAME, N_NEG, N_BIN, N_SQRT, N_ROOT };
-typedef struct Node { int kind; char op; const char *s; size_t len; struct Node *a, *b, *c; } Node;
+enum { N_NUM, N_NAME, N_NEG, N_BIN, N_SQRT, N_ROOT, N_APPLY, N_DERIV, N_INTEG };
+
+typedef struct Cond { const char *s; size_t len; int primes; struct Node *at, *val; } Cond;
+
+typedef struct Node {
+    int kind; char op;
+    const char *s; size_t len; int primes;      /* a name, or the letter of d/dx and integral */
+    struct Node *a, *b, *c;
+    Cond *conds; int nconds;
+} Node;
 
 static Node *mk(int kind) { Node *n = arena_alloc(sizeof *n); memset(n, 0, sizeof *n); n->kind = kind; return n; }
 static Node *bin(char op, Node *a, Node *b) { Node *n = mk(N_BIN); n->op = op; n->a = a; n->b = b; return n; }
 
 static Node *expr(void);
 static Node *unary(void);
+static Node *power(void);
 
 static Node *primary(void) {
     Tok *t = peek();
     if (t->kind == T_NUM) { Node *n = mk(N_NUM); n->s = t->s; n->len = t->len; pos++; return n; }
-    if (t->kind == T_NAME) { Node *n = mk(N_NAME); n->s = t->s; n->len = t->len; pos++; return n; }
+    if (t->kind == T_NAME) {
+        Tok *t1 = peek_at(1), *t2 = peek_at(2);
+        if (t->len == 1 && t->s[0] == 'd' && t1->kind == T_OP && t1->op == '/' && t2->kind == T_NAME
+            && t2->len >= 2 && t2->s[0] == 'd') {                      /* d/dx */
+            pos += 3;
+            Node *n = mk(N_DERIV);
+            n->s = t2->s + 1; n->len = t2->len - 1;
+            if (at_op('(')) { pos++; n->a = expr(); expect_op(')'); }
+            else n->a = power();
+            return n;
+        }
+        pos++;
+        if (at_op('(')) {                                              /* f(x), or y (x + 1) */
+            pos++;
+            Node *n = mk(N_APPLY);
+            n->s = t->s; n->len = t->len; n->primes = t->primes;
+            n->a = expr(); expect_op(')');
+            return n;
+        }
+        Node *n = mk(N_NAME); n->s = t->s; n->len = t->len; n->primes = t->primes;
+        return n;
+    }
     if (at_op('(')) { pos++; Node *e = expr(); expect_op(')'); return e; }
     if (at_key("sqrt")) {
         pos++;
@@ -119,10 +156,33 @@ static Node *primary(void) {
         else n->a = primary();                          /* √2 */
         return n;
     }
+    if (at_key("integral")) {
+        pos++; expect_op('(');
+        Node *n = mk(N_INTEG);
+        n->a = expr();
+        if (at_op(',')) {
+            pos++;
+            if (peek()->kind != T_NAME) nm_fail("expected the letter to integrate in");
+            n->s = peek()->s; n->len = peek()->len; pos++;
+        }
+        expect_op(')');
+        return n;
+    }
     if (at_key("root")) {
         pos++; expect_key("of");
         Node *n = mk(N_ROOT);
-        n->a = expr(); expect_op('='); n->b = expr(); expect_key("near"); n->c = expr();
+        n->a = expr(); expect_op('='); n->b = expr();
+        if (at_key("near")) { pos++; n->c = expr(); return n; }
+        n->conds = arena_alloc(16 * sizeof(Cond));
+        while (at_op(',')) {
+            pos++;
+            if (n->nconds == 16) nm_fail("too many starting conditions");
+            Cond *c = &n->conds[n->nconds++];
+            if (peek()->kind != T_NAME) nm_fail("expected a start such as y(0) = 1");
+            c->s = peek()->s; c->len = peek()->len; c->primes = peek()->primes; pos++;
+            expect_op('('); c->at = expr(); expect_op(')'); expect_op('='); c->val = expr();
+        }
+        if (!n->nconds) nm_fail("give a starting value: 'near 2' for a number, or 'y(0) = 1' for a series");
         return n;
     }
     if (t->kind == T_END) nm_fail("the statement ends too early");
@@ -146,7 +206,8 @@ static Node *term(void) {
     Node *a = unary();
     for (;;) {
         if (at_op('*') || at_op('/')) { char op = peek()->op; pos++; a = bin(op, a, unary()); }
-        else if (peek()->kind == T_NAME || peek()->kind == T_NUM || at_op('(') || at_key("sqrt") || at_key("root"))
+        else if (peek()->kind == T_NAME || peek()->kind == T_NUM || at_op('(') || at_key("sqrt") || at_key("root")
+                 || at_key("integral"))
             a = bin('*', a, power());                   /* side by side: 2y, 3(x+1) */
         else return a;
     }
@@ -158,13 +219,34 @@ static Node *expr(void) {
     return a;
 }
 
+/* parse a stored definition without disturbing the statement being read */
+static Node *parse_text(const char *src) {
+    Tok *st = toks; int sn = ntok, sp = pos;
+    lex(src);
+    Node *e = expr();
+    if (peek()->kind != T_END) nm_fail("internal: stored definition did not parse");
+    toks = st; ntok = sn; pos = sp;
+    return e;
+}
+
 /* ---------------- values ---------------- */
 
-enum { V_Q, V_POLY, V_ROOT, V_BALL };
-typedef struct { int kind; Q q; Poly p; Root *root; Ball ball; } Val;
+enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC };
+typedef struct { int kind; Q q; Poly p; Root *root; Ball ball; const char *src, *var; } Val;
 
 typedef struct Binding { char *name; Val v; struct Binding *next; } Binding;
 static Binding *names;
+
+static Binding *lookup(const char *s, size_t len) {
+    for (Binding *b = names; b; b = b->next)
+        if (strlen(b->name) == len && !strncmp(b->name, s, len)) return b;
+    return NULL;
+}
+
+static int same(const char *a, size_t la, const char *b, size_t lb) { return la == lb && !strncmp(a, b, la); }
+
+static char *dup_arena(const char *s, size_t len) { char *r = arena_alloc(len + 1); memcpy(r, s, len); r[len] = 0; return r; }
+static char *dup_perm(const char *s, size_t len) { char *r = perm_alloc(len + 1); memcpy(r, s, len); r[len] = 0; return r; }
 
 static Val vq(Q q) { Val v; memset(&v, 0, sizeof v); v.kind = V_Q; v.q = q; return v; }
 static Val vpoly(Poly p) {
@@ -174,6 +256,7 @@ static Val vpoly(Poly p) {
 static Val vball(Ball b) { Val v; memset(&v, 0, sizeof v); v.kind = V_BALL; v.ball = b; return v; }
 
 static int64_t work_prec;                               /* significant digits for balls in this statement */
+static jmp_buf need_series;                             /* the exact pass meets something only a series can hold */
 
 static Poly as_poly(Val v) { return v.kind == V_POLY ? v.p : p_const(v.q); }
 
@@ -188,6 +271,7 @@ static Ball as_ball(Val v) {
 }
 
 static int is_exact(Val v) { return v.kind == V_Q || v.kind == V_POLY; }
+static Q qi(int64_t v) { return q_from_z(z_from_i64(v)); }
 
 static Q parse_number(const char *s, size_t len) {
     const char *dot = memchr(s, '.', len);
@@ -195,7 +279,7 @@ static Q parse_number(const char *s, size_t len) {
     size_t ip = (size_t)(dot - s), fp = len - ip - 1;
     char *all = arena_alloc(len + 2);
     memcpy(all, s, ip); memcpy(all + ip, dot + 1, fp);
-    if (ip + fp == 0) { all[0] = '0'; fp = 0; ip = 1; }
+    if (ip + fp == 0) { all[0] = '0'; ip = 1; }
     return q_make(z_from_dec(all, ip + fp), z_pow10((int64_t)fp));   /* 0.1 is exactly 1/10 */
 }
 
@@ -204,24 +288,21 @@ static Val nth_root(Q c, int64_t n) {
     if (n < 2 || n > 1000) nm_fail("root index out of range");
     int neg = q_sign(c) < 0;
     if (neg && n % 2 == 0) nm_fail("an even root of a negative number is not real (complex numbers come later)");
+    Q exact;
+    if (q_root_exact(c, n, &exact)) return vq(exact);
     Z A = z_abs(c.num), B = c.den;
-    Z ra = z_iroot(A, (unsigned)n), rb = z_iroot(B, (unsigned)n);
-    if (z_cmp(z_pow(ra, (unsigned)n), A) == 0 && z_cmp(z_pow(rb, (unsigned)n), B) == 0) {
-        Q r = q_make(ra, rb);
-        return vq(neg ? q_neg(r) : r);
-    }
-    /* starting value from the integer root of the scaled number, as in root extraction by hand */
-    int64_t D0 = 6;
+    int64_t D0 = 6;                                     /* start from the integer root, as by hand */
     Z scaled = z_iroot(z_div_round(z_mul_pow10(A, D0 * n), B), (unsigned)n);
     Q guess = q_make(neg ? z_neg(scaled) : scaled, z_pow10(D0));
-    Poly p = p_var("y");
-    p = p_pow(p, (unsigned)n);
+    Poly p = p_pow(p_var("y"), (unsigned)n);
     p = p_sub(p_scale(p, q_from_z(B)), p_const(q_from_z(neg ? z_neg(A) : A)));
     Val v; memset(&v, 0, sizeof v);
     v.kind = V_ROOT;
     v.root = root_new(p, guess, D0);
     return v;
 }
+
+/* ---------------- the exact pass: numbers, rationals, polynomials ---------------- */
 
 static Val eval(Node *n);
 
@@ -236,7 +317,7 @@ static Val power_val(Val base, Val ex) {
         return nth_root(q_pow(base.q, num), den);
     }
     if (base.kind == V_POLY) {
-        if (den != 1 || num < 0) nm_fail("a letter can only be raised to a whole non-negative power");
+        if (den != 1 || num < 0) longjmp(need_series, 1);
         return vpoly(p_pow(base.p, (unsigned)num));
     }
     if (den != 1) nm_fail("fractional powers of approximate numbers are not in this version");
@@ -260,8 +341,8 @@ static Val arith(char op, Val a, Val b) {
         case '-': return vpoly(p_sub(x, y));
         case '*': return vpoly(p_mul(x, y));
         case '/':
-            if (b.kind != V_Q) nm_fail("dividing by a letter is not in this version");
-            return vpoly(p_scale(x, q_div(q_from_z(z_from_i64(1)), b.q)));
+            if (b.kind != V_Q) longjmp(need_series, 1);
+            return vpoly(p_scale(x, q_div(qi(1), b.q)));
         }
     }
     Ball x = as_ball(a), y = as_ball(b);
@@ -275,23 +356,54 @@ static Val arith(char op, Val a, Val b) {
     return a;
 }
 
+static Val name_val(const char *s, size_t len, int primes) {
+    if (primes) nm_fail("%.*s' marks a derivative; it belongs inside an equation with a start", (int)len, s);
+    Binding *b = lookup(s, len);
+    if (b) {
+        if (b->v.kind == V_REC) longjmp(need_series, 1);
+        return b->v;
+    }
+    return vpoly(p_var(dup_arena(s, len)));            /* an unknown letter */
+}
+
 static Val eval(Node *n) {
     switch (n->kind) {
     case N_NUM: return vq(parse_number(n->s, n->len));
-    case N_NAME: {
-        for (Binding *b = names; b; b = b->next)
-            if (strlen(b->name) == n->len && !strncmp(b->name, n->s, n->len)) return b->v;
-        char *name = arena_alloc(n->len + 1);
-        memcpy(name, n->s, n->len); name[n->len] = 0;
-        return vpoly(p_var(name));                      /* an unknown letter */
-    }
-    case N_NEG: {
-        Val v = eval(n->a);
-        return arith('-', vq(q_from_z(z_zero())), v);
-    }
+    case N_NAME: return name_val(n->s, n->len, n->primes);
+    case N_NEG: return arith('-', vq(qi(0)), eval(n->a));
     case N_BIN: return arith(n->op, eval(n->a), eval(n->b));
     case N_SQRT: return power_val(eval(n->a), vq(q_make(z_from_i64(1), z_from_i64(2))));
+    case N_APPLY: {
+        Binding *b = lookup(n->s, n->len);
+        if (b && b->v.kind == V_REC) longjmp(need_series, 1);
+        return arith('*', name_val(n->s, n->len, n->primes), eval(n->a));
+    }
+    case N_DERIV: case N_INTEG: {
+        Val v = eval(n->a);
+        if (!is_exact(v)) { if (n->kind == N_DERIV) return vq(qi(0)); longjmp(need_series, 1); }
+        Poly p = as_poly(v);
+        if (n->kind == N_INTEG && !n->len && !p.var) longjmp(need_series, 1);
+        const char *var = n->len ? dup_arena(n->s, n->len) : p.var;
+        if (p.var && strcmp(p.var, var)) {
+            if (n->kind == N_DERIV) return vq(qi(0));
+            longjmp(need_series, 1);
+        }
+        Poly r; r.var = var;
+        if (n->kind == N_DERIV) {
+            r.deg = p.deg - 1;
+            r.c = arena_alloc((size_t)(p.deg > 0 ? p.deg : 1) * sizeof(Q));
+            for (int i = 1; i <= p.deg; i++) r.c[i - 1] = q_mul(p.c[i], qi(i));
+        } else {                                       /* Newton's first rule: a x^m gives a x^(m+1)/(m+1) */
+            r.deg = p.deg + 1;
+            r.c = arena_alloc((size_t)(p.deg + 2) * sizeof(Q));
+            r.c[0] = qi(0);
+            for (int i = 0; i <= p.deg; i++) r.c[i + 1] = q_div(p.c[i], qi(i + 1));
+        }
+        if (r.deg < 0) return vq(qi(0));
+        return vpoly(r);
+    }
     case N_ROOT: {
+        if (!n->c) longjmp(need_series, 1);
         Val l = eval(n->a), r = eval(n->b), g = eval(n->c);
         if (!is_exact(l) || !is_exact(r)) nm_fail("the equation must have exact coefficients");
         if (g.kind != V_Q) nm_fail("the starting value after 'near' must be an exact number");
@@ -304,7 +416,262 @@ static Val eval(Node *n) {
     }
     }
     nm_fail("internal: unknown node");
-    return vq(q_from_z(z_zero()));
+    return vq(qi(0));
+}
+
+/* ---------------- the series pass ---------------- */
+
+/* A quantity with its moment: a + b·o, where o·o is rejected (Methodus, Problem 1). The moment carries the
+ * derivative with respect to the unknown term, which is what resolution needs. */
+typedef struct { Ser a, b; int hasb; } Dual;
+
+typedef struct {
+    const char *var;            /* the letter of the series */
+    int n;                      /* coefficients wanted */
+    const char *unk; size_t unklen;
+    Dual *yd; int r;            /* the unknown and its derivatives y, y', ..., y^(r) */
+} SCtx;
+
+static Dual dconst(Ser a) { Dual d; d.a = a; d.b = a; d.hasb = 0; return d; }
+
+static Dual dadd(Dual x, Dual y, int sign) {
+    Dual d;
+    d.a = sign > 0 ? s_add(x.a, y.a) : s_sub(x.a, y.a);
+    d.hasb = x.hasb || y.hasb;
+    if (d.hasb) {
+        Ser xb = x.hasb ? x.b : s_const(qi(0), x.a.n), yb = y.hasb ? y.b : s_const(qi(0), y.a.n);
+        d.b = sign > 0 ? s_add(xb, yb) : s_sub(xb, yb);
+    }
+    return d;
+}
+
+static Dual dmul(Dual x, Dual y) {
+    Dual d;
+    d.a = s_mul(x.a, y.a);
+    d.hasb = x.hasb || y.hasb;
+    if (d.hasb) {
+        Ser t = s_const(qi(0), d.a.n);
+        if (x.hasb) t = s_add(t, s_mul(x.b, y.a));
+        if (y.hasb) t = s_add(t, s_mul(x.a, y.b));
+        d.b = t;
+    }
+    return d;
+}
+
+static Dual ddiv(Dual x, Dual y) {
+    Dual d;
+    d.a = s_div(x.a, y.a);
+    d.hasb = x.hasb || y.hasb;
+    if (d.hasb) {                                           /* (b - (x/y) b') / y */
+        Ser t = x.hasb ? x.b : s_const(qi(0), x.a.n);
+        if (y.hasb) t = s_sub(t, s_mul(d.a, y.b));
+        d.b = s_div(t, y.a);
+    }
+    return d;
+}
+
+static Dual dpow(Dual x, Q alpha) {
+    Dual d;
+    d.a = s_pow_q(x.a, alpha);
+    d.hasb = x.hasb;
+    if (x.hasb) {
+        Ser dfa;                                            /* x^(alpha - 1) */
+        if (q_is_int(alpha) && q_sign(alpha) > 0) dfa = s_pow_q(x.a, q_sub(alpha, qi(1)));
+        else dfa = s_div(d.a, x.a);
+        d.b = s_mul(s_scale(dfa, alpha), x.b);
+    }
+    return d;
+}
+
+static Dual sev(Node *n, SCtx *cx);
+static Ser resolve(Node *root, const char *var, int n);
+
+static Q const_of(Dual d, const char *what) {
+    for (int i = 1; i < d.a.n; i++)
+        if (q_sign(d.a.c[i])) nm_fail("%s must be a number, not a series", what);
+    if (d.hasb) nm_fail("%s must not involve the unknown", what);
+    return d.a.n ? d.a.c[0] : qi(0);
+}
+
+static Ser recipe_series(Binding *b, const char *var, int n) {
+    if (strcmp(b->v.var, var)) nm_fail("%s is a series in %s; write %s(%s) to substitute", b->name, b->v.var, b->name, var);
+    SCtx cx; memset(&cx, 0, sizeof cx);
+    cx.var = b->v.var; cx.n = n;
+    return sev(parse_text(b->v.src), &cx).a;
+}
+
+static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
+    if (cx->unk && same(s, len, cx->unk, cx->unklen)) {
+        if (primes > cx->r) nm_fail("internal: derivative order");
+        return cx->yd[primes];
+    }
+    if (primes) nm_fail("%.*s' marks a derivative of an unknown with no start", (int)len, s);
+    if (same(s, len, cx->var, strlen(cx->var))) return dconst(s_var(cx->n));
+    Binding *b = lookup(s, len);
+    if (!b) nm_fail("the letter %.*s has no value (one letter per series in this version)", (int)len, s);
+    switch (b->v.kind) {
+    case V_Q: return dconst(s_const(b->v.q, cx->n));
+    case V_POLY:
+        if (strcmp(b->v.p.var, cx->var)) nm_fail("%s is a polynomial in %s, not in %s", b->name, b->v.p.var, cx->var);
+        return dconst(s_from_poly(b->v.p, cx->n));
+    case V_REC: return dconst(recipe_series(b, cx->var, cx->n));
+    default: nm_fail("%s is an irrational number; irrational coefficients come later", b->name);
+    }
+    return dconst(s_const(qi(0), cx->n));
+}
+
+static Dual sev(Node *n, SCtx *cx) {
+    switch (n->kind) {
+    case N_NUM: return dconst(s_const(parse_number(n->s, n->len), cx->n));
+    case N_NAME: return sname(n->s, n->len, n->primes, cx);
+    case N_NEG: return dadd(dconst(s_const(qi(0), cx->n)), sev(n->a, cx), -1);
+    case N_BIN: {
+        Dual x = sev(n->a, cx);
+        if (n->op == '^') return dpow(x, const_of(sev(n->b, cx), "an exponent"));
+        Dual y = sev(n->b, cx);
+        switch (n->op) {
+        case '+': return dadd(x, y, 1);
+        case '-': return dadd(x, y, -1);
+        case '*': return dmul(x, y);
+        case '/': return ddiv(x, y);
+        }
+        break;
+    }
+    case N_SQRT: return dpow(sev(n->a, cx), q_make(z_from_i64(1), z_from_i64(2)));
+    case N_APPLY: {
+        Binding *b = lookup(n->s, n->len);
+        Dual g = sev(n->a, cx);
+        if (!b || b->v.kind != V_REC) return dmul(sname(n->s, n->len, n->primes, cx), g);
+        Ser f = recipe_series(b, b->v.var, g.a.n);                /* f(g), and its moment f'(g) g' */
+        Dual d;
+        d.a = s_compose(f, g.a);
+        d.hasb = g.hasb;
+        if (g.hasb) d.b = s_mul(s_compose(s_deriv(f), s_trunc(g.a, f.n - 1)), g.b);
+        return d;
+    }
+    case N_DERIV: case N_INTEG: {
+        if (n->len && !same(n->s, n->len, cx->var, strlen(cx->var))) {
+            if (n->kind == N_DERIV) return dconst(s_const(qi(0), cx->n));
+            nm_fail("integral in %.*s inside a series in %s", (int)n->len, n->s, cx->var);
+        }
+        Dual x = sev(n->a, cx), d;
+        d.hasb = x.hasb;
+        if (n->kind == N_DERIV) { d.a = s_deriv(x.a); d.b = x.hasb ? s_deriv(x.b) : d.a; }
+        else {
+            d.a = s_trunc(s_integ(x.a), cx->n);
+            d.b = x.hasb ? s_trunc(s_integ(x.b), cx->n) : d.a;
+        }
+        return d;
+    }
+    case N_ROOT:
+        if (n->c) nm_fail("a number found with 'near' cannot be a series coefficient unless it is rational");
+        return dconst(resolve(n, cx->var, cx->n));
+    }
+    nm_fail("internal: unknown node");
+    return dconst(s_const(qi(0), 0));
+}
+
+static int max_primes(Node *n, const char *u, size_t ul) {
+    if (!n) return 0;
+    int m = 0;
+    if ((n->kind == N_NAME || n->kind == N_APPLY) && same(n->s, n->len, u, ul)) m = n->primes;
+    int a = max_primes(n->a, u, ul), b = max_primes(n->b, u, ul), c = max_primes(n->c, u, ul);
+    if (a > m) m = a;
+    if (b > m) m = b;
+    if (c > m) m = c;
+    return m;
+}
+
+/* Resolution of an equation for a series y, term by term from its start (Methodus, Problem 2; De analysi).
+ * Put y = (terms found) + o x^d; the lowest term of the equation that o reaches fixes the new coefficient.
+ * At the end the whole series is substituted back, and the equation must vanish to the order claimed. */
+static Ser resolve(Node *root, const char *var, int n) {
+    Cond *cs = root->conds;
+    const char *u = cs[0].s; size_t ul = cs[0].len;
+    for (int i = 1; i < root->nconds; i++)
+        if (!same(cs[i].s, cs[i].len, u, ul)) nm_fail("all starts must be for the same unknown");
+    int r = max_primes(root->a, u, ul);
+    int r2 = max_primes(root->b, u, ul);
+    if (r2 > r) r = r2;
+    if (n > 2000) nm_fail("order too large");
+    /* the start: y(0), y'(0), ..., y^(r-1)(0); for an equation without derivatives, y(0) chooses the branch */
+    int need = r ? r : 1;
+    Q *c = arena_alloc((size_t)(n + r + 1) * sizeof(Q));
+    for (int i = 0; i < n + r + 1; i++) c[i] = qi(0);
+    int *given = arena_alloc((size_t)need * sizeof(int));
+    memset(given, 0, (size_t)need * sizeof(int));
+    SCtx k0; memset(&k0, 0, sizeof k0); k0.var = var; k0.n = 1;
+    for (int i = 0; i < root->nconds; i++) {
+        if (q_sign(const_of(sev(cs[i].at, &k0), "the point of a start")) != 0)
+            nm_fail("starts must be given at 0 in this version");
+        int j = cs[i].primes;
+        if (j >= need) nm_fail("the equation has order %d; %.*s with %d marks is not a start for it", r, (int)ul, u, j);
+        Q v = const_of(sev(cs[i].val, &k0), "a starting value");
+        Q fact = qi(1);
+        for (int f = 2; f <= j; f++) fact = q_mul(fact, qi(f));
+        c[j] = q_div(v, fact);
+        given[j] = 1;
+    }
+    for (int j = 0; j < need; j++)
+        if (!given[j]) nm_fail("missing start: %.*s%.*s(0)", (int)ul, u, j, "''''''''''''''''");
+    Node *eqn = bin('-', root->a, root->b);
+    SCtx cx; memset(&cx, 0, sizeof cx);
+    cx.var = var; cx.unk = u; cx.unklen = ul; cx.r = r;
+    cx.yd = arena_alloc((size_t)(r + 1) * sizeof(Dual));
+    for (int d = need; d < n; d++) {
+        int k = d - r;                                  /* the equation's term that decides y's term of degree d */
+        int m = k + 1 + r;
+        Ser Y; Y.n = m; Y.c = arena_alloc((size_t)m * sizeof(Q));
+        for (int i = 0; i < m; i++) Y.c[i] = i < d ? c[i] : qi(0);
+        Ser O = s_const(qi(0), m);
+        O.c[d] = qi(1);
+        for (int j = 0; j <= r; j++) {
+            cx.yd[j].a = s_trunc(Y, k + 1); cx.yd[j].b = s_trunc(O, k + 1); cx.yd[j].hasb = 1;
+            Y = s_deriv(Y); O = s_deriv(O);
+        }
+        cx.n = k + 1;
+        Dual e = sev(eqn, &cx);
+        Q F = e.a.n > k ? e.a.c[k] : qi(0);
+        Q G = (e.hasb && e.b.n > k) ? e.b.c[k] : qi(0);
+        if (q_sign(G) == 0)
+            nm_fail("the start is a multiple root: the next term is not fixed by the lowest terms (Newton's parallelogram comes later)");
+        c[d] = q_neg(q_div(F, G));
+    }
+    /* substitute back */
+    Ser Y; Y.n = n; Y.c = c;
+    int check = n - r;
+    for (int j = 0; j <= r; j++) { cx.yd[j] = dconst(s_trunc(Y, check)); Y = s_deriv(Y); }
+    cx.n = check;
+    Dual e = sev(eqn, &cx);
+    for (int i = 0; i < e.a.n && i < check; i++)
+        if (q_sign(e.a.c[i])) {
+            if (i == 0 && r == 0) nm_fail("%.*s(0) = %s does not satisfy the equation at %s = 0", (int)ul, u, q_to_str(c[0]), var);
+            nm_fail("substituting the series back leaves a remainder at %s^%d: the equation cannot be resolved term by term here", var, i);
+        }
+    Ser out; out.n = n; out.c = c;
+    return out;
+}
+
+/* the letter of a series statement: the one unknown letter that is not the unknown of an equation */
+static void letters(Node *n, const char **found, size_t *flen, const char *skip, size_t skiplen) {
+    if (!n) return;
+    const char *s = NULL; size_t len = 0;
+    if (n->kind == N_NAME || n->kind == N_APPLY) {
+        Binding *b = lookup(n->s, n->len);
+        if (b && b->v.kind == V_REC && n->kind == N_NAME) { s = b->v.var; len = strlen(s); }
+        else if (b && b->v.kind == V_POLY) { s = b->v.p.var; len = strlen(s); }
+        else if (!b && !(skip && same(n->s, n->len, skip, skiplen))) { s = n->s; len = n->len; }
+    }
+    if ((n->kind == N_DERIV || n->kind == N_INTEG) && n->len) { s = n->s; len = n->len; }
+    if (s) {
+        if (*found && !same(*found, *flen, s, len))
+            nm_fail("two letters, %.*s and %.*s: a series has one letter in this version", (int)*flen, *found, (int)len, s);
+        *found = s; *flen = len;
+    }
+    if (n->kind == N_ROOT && n->nconds) { skip = n->conds[0].s; skiplen = n->conds[0].len; }
+    letters(n->a, found, flen, skip, skiplen);
+    letters(n->b, found, flen, skip, skiplen);
+    letters(n->c, found, flen, skip, skiplen);
 }
 
 /* ---------------- writing results ---------------- */
@@ -330,13 +697,11 @@ static char *show(Val v, int64_t places, int asked) {
     case V_ROOT: {
         Root *r = v.root;
         root_refine(r, places);
-        if (!r->certified) {
-            body = fixed_str(z_div_round(r->X, z_pow10(r->D - places)), places);
-            snprintf(out, 4096, "[not certified: %s shows no sign change here; a double root?]", root_equation_str(r));
-            break;
-        }
         body = fixed_str(z_div_round(r->X, z_pow10(r->D - places)), places);
-        snprintf(out, 4096, "[certified: sign change of %s, %lld places]", root_equation_str(r), (long long)places);
+        if (!r->certified)
+            snprintf(out, 4096, "[not certified: %s shows no sign change here; a double root?]", root_equation_str(r));
+        else
+            snprintf(out, 4096, "[certified: sign change of %s, %lld places]", root_equation_str(r), (long long)places);
         break;
     }
     case V_BALL: {
@@ -365,16 +730,57 @@ static Val persist_val(Val v) {
         Poly p = v.p;
         Q *c = perm_alloc((size_t)(p.deg + 1) * sizeof(Q));
         for (int i = 0; i <= p.deg; i++) c[i] = q_persist(p.c[i]);
-        size_t l = strlen(p.var);
-        char *name = perm_alloc(l + 1);
-        memcpy(name, p.var, l + 1);
-        v.p.c = c; v.p.var = name;
+        v.p.c = c; v.p.var = dup_perm(p.var, strlen(p.var));
         break;
     }
     case V_BALL: v.ball.m = z_persist(v.ball.m); v.ball.r = z_persist(v.ball.r); break;
-    case V_ROOT: break;                                  /* roots already live in permanent memory */
+    default: break;                                     /* roots and recipes already live in permanent memory */
     }
     return v;
+}
+
+static void bind(const char *name, size_t len, Val v) {
+    Binding *b = perm_alloc(sizeof *b);
+    b->name = dup_perm(name, len);
+    b->v = persist_val(v);
+    b->next = names; names = b;
+}
+
+#ifndef NM_LIBDIR
+#define NM_LIBDIR "lib"
+#endif
+
+char *nm_run(const char *line, int *failed);
+
+static char *use_library(const char *name, size_t len) {
+    const char *dir = getenv("NEWTONMATH_LIB");
+    char path[1024];
+    snprintf(path, sizeof path, "%s/%.*s.nm", dir ? dir : NM_LIBDIR, (int)len, name);
+    FILE *f = fopen(path, "r");
+    if (!f) nm_fail("cannot open %s", path);
+    jmp_buf saved;
+    memcpy(saved, nm_on_error, sizeof saved);
+    char *buf = NULL; size_t cap = 0;
+    int defs = 0, lineno = 0;
+    char *err = NULL;
+    while (getline(&buf, &cap, f) >= 0) {
+        lineno++;
+        int bad;
+        char *out = nm_run(buf, &bad);
+        if (bad) {
+            err = arena_alloc(strlen(out) + strlen(path) + 32);
+            sprintf(err, "%s line %d: %s", path, lineno, out);
+            break;
+        }
+        if (out) defs++;
+    }
+    free(buf);
+    fclose(f);
+    memcpy(nm_on_error, saved, sizeof saved);
+    if (err) nm_fail("%s", err);
+    char *o = arena_alloc(len + 64);
+    sprintf(o, "using %.*s (%d statements)", (int)len, name, defs);
+    return o;
 }
 
 /* Run one statement; returns the line to print (arena memory), or NULL for an empty line. */
@@ -388,37 +794,67 @@ char *nm_run(const char *line, int *failed) {
     }
     lex(line);
     if (peek()->kind == T_END) return NULL;
-    const char *let_name = NULL; size_t let_len = 0;
+    if (at_key("use")) {
+        pos++;
+        if (peek()->kind != T_NAME) nm_fail("expected a library name after 'use'");
+        Tok t = *peek();
+        char *name = dup_perm(t.s, t.len);             /* the library's own lines replace this one */
+        return use_library(name, t.len);
+    }
+    const char *volatile let_name = NULL; volatile size_t let_len = 0;
     if (at_key("let")) {
         pos++;
         if (peek()->kind != T_NAME) nm_fail("expected a name after 'let'");
         let_name = peek()->s; let_len = peek()->len; pos++;
         expect_op('=');
     }
+    const char *src_start = peek()->s;
     Node *e = expr();
-    int64_t places = DEFAULT_PLACES;
-    int asked = 0;
+    const char *src_end = peek()->s;
+    int64_t places = DEFAULT_PLACES, order = DEFAULT_ORDER;
+    volatile int asked = 0;
     if (at_key("to")) {
         pos++;
-        if (peek()->kind != T_NUM || memchr(peek()->s, '.', peek()->len)) nm_fail("expected a whole number after 'to'");
-        Z k = z_from_dec(peek()->s, peek()->len);
-        if (!z_fits_i64(k, &places) || places > 100000) nm_fail("too many places");
-        pos++;
-        expect_key("places");
-        asked = 1;
+        if (peek()->kind == T_NAME) {                                  /* to x^8 */
+            pos++; expect_op('^');
+            if (peek()->kind != T_NUM || memchr(peek()->s, '.', peek()->len)) nm_fail("expected a whole number after '^'");
+            Z k = z_from_dec(peek()->s, peek()->len);
+            if (!z_fits_i64(k, &order) || order > 2000) nm_fail("order too large");
+            pos++;
+        } else {
+            if (peek()->kind != T_NUM || memchr(peek()->s, '.', peek()->len)) nm_fail("expected a whole number after 'to'");
+            Z k = z_from_dec(peek()->s, peek()->len);
+            if (!z_fits_i64(k, &places) || places > 100000) nm_fail("too many places");
+            pos++;
+            expect_key("places");
+            asked = 1;
+        }
     }
     if (peek()->kind != T_END) nm_fail("unexpected '%.*s'", (int)peek()->len, peek()->s);
     work_prec = places + GUARD_DIGITS;
-    Val v = eval(e);
-    char *text = show(v, places, asked);
+    char *text;
+    Val v;
+    if (!setjmp(need_series)) {
+        v = eval(e);
+        text = show(v, places, asked);
+    } else {
+        const char *var = NULL; size_t vlen = 0;
+        letters(e, &var, &vlen, NULL, 0);
+        if (!var) { var = "x"; vlen = 1; }
+        char *vname = dup_perm(var, vlen);
+        SCtx cx; memset(&cx, 0, sizeof cx);
+        cx.var = vname; cx.n = (int)order + 1;
+        Dual d = sev(e, &cx);
+        text = s_to_str(d.a, vname, (int)order);
+        memset(&v, 0, sizeof v);
+        v.kind = V_REC;
+        v.src = dup_perm(src_start, (size_t)(src_end - src_start));
+        v.var = vname;
+    }
     if (let_name) {
-        Binding *b = perm_alloc(sizeof *b);
-        b->name = perm_alloc(let_len + 1);
-        memcpy(b->name, let_name, let_len); b->name[let_len] = 0;
-        b->v = persist_val(v);
-        b->next = names; names = b;
+        bind(let_name, let_len, v);
         char *o = arena_alloc(strlen(text) + let_len + 4);
-        sprintf(o, "%s = %s", b->name, text);
+        sprintf(o, "%.*s = %s", (int)let_len, let_name, text);
         return o;
     }
     return text;

@@ -9,16 +9,16 @@
 3(1 + 1/2) ||| 9/2  [exact]
 1/3 to 10 places ||| 0.3333333333  [exact value 1/3, rounded to 10 places]
 1/8 to 3 places ||| 0.125  [exact]
-(y + 1)^3 ||| y^3 + 3*y^2 + 3*y + 1  [exact]
+(y + 1)^3 ||| y^3 + 3y^2 + 3y + 1  [exact]
 # --- Newton's notebook: extraction of the square root of 2916 (NATP00128)
 sqrt(2916) ||| 54  [exact]
 8^(1/3) ||| 2  [exact]
 (-8)^(1/3) ||| -2  [exact]
 (4/9)^(1/2) ||| 2/3  [exact]
 # --- Newton's De analysi: y^3 - 2y - 5 = 0 near 2 (he printed 2,09455147; the 8th place is 8)
-root of y^3 - 2y - 5 = 0 near 2 to 8 places ||| 2.09455148  [certified: sign change of y^3 - 2*y - 5, 8 places]
-root of y^3 - 2y - 5 = 0 near 2 to 50 places ||| 2.09455148154232659148238654057930296385730610562824  [certified: sign change of y^3 - 2*y - 5, 50 places]
-root of y^3 = 2y + 5 near 2 to 8 places ||| 2.09455148  [certified: sign change of y^3 - 2*y - 5, 8 places]
+root of y^3 - 2y - 5 = 0 near 2 to 8 places ||| 2.09455148  [certified: sign change of y^3 - 2y - 5, 8 places]
+root of y^3 - 2y - 5 = 0 near 2 to 50 places ||| 2.09455148154232659148238654057930296385730610562824  [certified: sign change of y^3 - 2y - 5, 50 places]
+root of y^3 = 2y + 5 near 2 to 8 places ||| 2.09455148  [certified: sign change of y^3 - 2y - 5, 8 places]
 # --- roots
 sqrt(2) to 30 places ||| 1.414213562373095048801688724210  [certified: sign change of y^2 - 2, 30 places]
 2^(1/3) to 25 places ||| 1.2599210498948731647672106  [certified: sign change of y^3 - 2, 25 places]
