@@ -1,0 +1,30 @@
+# Slice 4: letters and Newton's parallelogram. Expected output in tests/newton.out.
+# letters as given quantities
+(a + x)^2
+a^2/x
+# Methodus: sqrt(aa + xx) and aa/(b + x)
+sqrt(a^2 + x^2) to x^6
+a^2/(b + x) to x^3
+# De analysi: the literal resolution; Newton's own result is a - x/4 + xx/64a + 131x^3/512aa + 509x^4/16384a^3
+root of y^3 + a^2 y + a x y - 2a^3 - x^3 = 0, y(0) = a to x^4
+root of y^3 + a^2 y + a x y - 2a^3 - x^3 = 0 for y
+root of y^3 + a^2 y + a x y - 2a^3 - x^3 = 0 for y starting y = a to x^4
+# Methodus: y^5 - byy + 9bxx - x^3 = 0, "obtineo +3x pro initiali termino"
+root of y^5 - b y^2 + 9b x^2 - x^3 = 0 for y
+root of y^5 - b y^2 + 9b x^2 - x^3 = 0 for y starting y = 3x to x^3
+# Methodus: xxy^5 - 3c^4xyy - c^5xx + c^7 = 0; Newton writes the start as the fifth root of c^7/xx, but the
+# terms on the ruler, xxy^5 + c^7, give y^5 = -c^7/xx
+root of x^2 y^5 - 3c^4 x y^2 - c^5 x^2 + c^7 = 0 for y
+root of x^2 y^5 - 3c^4 x y^2 - c^5 x^2 + c^7 = 0 for y starting y = c^(7/5) x^(-2/5) to x^1
+root of x^2 y^5 - 3c^4 x y^2 - c^5 x^2 + c^7 = 0 for y starting y = -c^(7/5) x^(-2/5) to x^1
+# Methodus / Epistola posterior: the four starts +-sqrt(ax), +-sqrt(2ax)
+root of y^6 - 5x y^5 + x^3/a y^4 - 7a^2 x^2 y^2 + 6a^3 x^3 + b^2 x^4 = 0 for y
+root of y^6 - 5x y^5 + x^3/a y^4 - 7a^2 x^2 y^2 + 6a^3 x^3 + b^2 x^4 = 0 for y starting y = a^(1/2) x^(1/2) to x^2
+# fractional powers and a double start
+root of y^2 = x for y to x^3
+root of y^2 = x^2 + x^3 for y
+root of y^2 = x^2 + x^3 for y starting y = x to x^4
+root of y^2 = x^2 + x^3 for y starting y = -x to x^3
+# a multiple start: the parallelogram is applied again
+root of (y - x)^2 = x^3 for y starting y = x to x^3
+root of (y - x)^2 = x^3 for y starting y = x + x^(3/2) to x^3

@@ -34,7 +34,7 @@ extern char nm_error_msg[512];
 enum { T_END, T_NUM, T_NAME, T_OP, T_KEY };
 typedef struct { int kind; const char *s; size_t len; char op; int primes; const char *at; } Tok;   /* at: where in the line */
 
-static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", NULL};
+static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", "for", "starting", NULL};
 
 static Tok *toks;
 static int ntok, pos;
@@ -114,7 +114,13 @@ typedef struct Node {
     const char *s; size_t len; int primes;      /* a name, or the letter of d/dx and integral */
     struct Node *a, *b, *c;
     Cond *conds; int nconds;
+    int para; const char *us; size_t ul; struct Node *start;   /* root of ... for y [starting y = ...] */
 } Node;
+
+static int same_text(const char *a, size_t la, const char *b, size_t lb) { return la == lb && !strncmp(a, b, la); }
+
+/* Newton's letters: "initialibus literis a, b, c" the given quantities, "finalibus literis v, x, y, z" the flowing */
+static int flowing_letter(const char *s, size_t len) { return len == 1 && strchr("tuvwxz", s[0]); }
 
 static Node *mk(int kind) { Node *n = arena_alloc(sizeof *n); memset(n, 0, sizeof *n); n->kind = kind; return n; }
 static Node *bin(char op, Node *a, Node *b) { Node *n = mk(N_BIN); n->op = op; n->a = a; n->b = b; return n; }
@@ -173,6 +179,23 @@ static Node *primary(void) {
         Node *n = mk(N_ROOT);
         n->a = expr(); expect_op('='); n->b = expr();
         if (at_key("near")) { pos++; n->c = expr(); return n; }
+        if (at_key("for") || at_key("starting")) {                 /* Newton's parallelogram */
+            n->para = 1;
+            if (at_key("for")) {
+                pos++;
+                if (peek()->kind != T_NAME) nm_fail("expected the unknown after 'for'");
+                n->us = peek()->s; n->ul = peek()->len; pos++;
+            }
+            if (at_key("starting")) {
+                pos++;
+                if (peek()->kind != T_NAME) nm_fail("expected 'starting y = ...'");
+                if (n->us && !same_text(peek()->s, peek()->len, n->us, n->ul)) nm_fail("the start must be for %.*s", (int)n->ul, n->us);
+                n->us = peek()->s; n->ul = peek()->len; pos++;
+                expect_op('=');
+                n->start = expr();
+            }
+            return n;
+        }
         n->conds = arena_alloc(16 * sizeof(Cond));
         while (at_op(',')) {
             pos++;
@@ -223,7 +246,7 @@ static Node *expr(void) {
 static Node *parse_text(const char *src) {
     Tok *st = toks; int sn = ntok, sp = pos;
     lex(src);
-    Node *e = expr();
+    Node *volatile e = expr();
     if (peek()->kind != T_END) nm_fail("internal: stored definition did not parse");
     toks = st; ntok = sn; pos = sp;
     return e;
@@ -232,7 +255,7 @@ static Node *parse_text(const char *src) {
 /* ---------------- values ---------------- */
 
 enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC };   /* recipes: a series, an approximate number */
-typedef struct { int kind; Q q; Poly p; Root *root; Ball ball; const char *src, *var; } Val;
+typedef struct { int kind; Q q; C c; Root *root; Ball ball; const char *src, *var; } Val;   /* V_POLY holds c */
 
 typedef struct Binding { char *name; Val v; struct Binding *next; } Binding;
 static Binding *names;
@@ -245,20 +268,20 @@ static Binding *lookup(const char *s, size_t len) {
 
 static int same(const char *a, size_t la, const char *b, size_t lb) { return la == lb && !strncmp(a, b, la); }
 
-static char *dup_arena(const char *s, size_t len) { char *r = arena_alloc(len + 1); memcpy(r, s, len); r[len] = 0; return r; }
 static char *dup_perm(const char *s, size_t len) { char *r = perm_alloc(len + 1); memcpy(r, s, len); r[len] = 0; return r; }
 
 static Val vq(Q q) { Val v; memset(&v, 0, sizeof v); v.kind = V_Q; v.q = q; return v; }
-static Val vpoly(Poly p) {
-    if (p.deg <= 0) return vq(p.deg < 0 ? q_from_z(z_zero()) : p.c[0]);
-    Val v; memset(&v, 0, sizeof v); v.kind = V_POLY; v.p = p; return v;
+static Val vc(C c) {
+    Q k;
+    if (c_const_value(c, &k)) return vq(k);
+    Val v; memset(&v, 0, sizeof v); v.kind = V_POLY; v.c = c; return v;
 }
 static Val vball(Ball b) { Val v; memset(&v, 0, sizeof v); v.kind = V_BALL; v.ball = b; return v; }
 
 static int64_t work_prec;                               /* significant digits for balls in this statement */
 static jmp_buf need_series;                             /* the exact pass meets something only a series can hold */
 
-static Poly as_poly(Val v) { return v.kind == V_POLY ? v.p : p_const(v.q); }
+static C as_c(Val v) { return v.kind == V_POLY ? v.c : c_const(v.q); }
 
 static Ball as_ball(Val v) {
     switch (v.kind) {
@@ -302,6 +325,38 @@ static Val nth_root(Q c, int64_t n) {
     return v;
 }
 
+/* a quantity in one letter with whole powers, as a polynomial (var: the letter required, or NULL for any) */
+static Poly c_to_poly(C c, const char *var) {
+    int li = -1;
+    for (int l = 0; l < letter_count(); l++)
+        if (c_uses(c, l)) {
+            if (li >= 0 || (var && strcmp(letter_name(l), var))) {
+                if (var) nm_fail("the equation's coefficients must be polynomials in %s alone", var);
+                nm_fail("an equation for a number must have one unknown letter");
+            }
+            li = l;
+        }
+    int deg = 0;
+    for (int t = 0; t < c.nt; t++) {
+        int64_t e = 0;
+        if (li >= 0 && (!q_is_int(c.t[t].e[li]) || !z_fits_i64(c.t[t].e[li].num, &e) || e < 0 || e > 100000))
+            nm_fail("the equation must have whole powers of %s", letter_name(li));
+        if (e > deg) deg = (int)e;
+    }
+    Poly p;
+    p.var = li >= 0 ? letter_name(li) : (var ? var : NULL);
+    p.deg = c.nt ? deg : -1;
+    p.c = arena_alloc((size_t)(deg + 1) * sizeof(Q));
+    for (int i = 0; i <= deg; i++) p.c[i] = qi(0);
+    for (int t = 0; t < c.nt; t++) {
+        int64_t e = 0;
+        if (li >= 0) z_fits_i64(c.t[t].e[li].num, &e);
+        p.c[e] = q_add(p.c[e], c.t[t].k);
+    }
+    while (p.deg >= 0 && q_sign(p.c[p.deg]) == 0) p.deg--;
+    return p;
+}
+
 /* ---------------- the exact pass: numbers, rationals, polynomials ---------------- */
 
 static Val eval(Node *n);
@@ -321,8 +376,10 @@ static Val power_val(Val base, Val ex) {
         return nth_root(q_pow(base.q, num), den);
     }
     if (base.kind == V_POLY) {
-        if (den != 1 || num < 0) longjmp(need_series, 1);
-        return vpoly(p_pow(base.p, (unsigned)num));
+        if (den == 1 && (num >= 0 || c_is_monomial(base.c))) return vc(c_pow_int(base.c, num));
+        C out;
+        if (den != 1 && c_pow_q(base.c, e, &out)) return vc(out);
+        longjmp(need_series, 1);
     }
     if (den != 1) nm_fail("fractional powers of approximate numbers are not in this version");
     return vball(b_pow(as_ball(base), num, work_prec));
@@ -339,14 +396,14 @@ static Val arith(char op, Val a, Val b) {
         }
     }
     if (is_exact(a) && is_exact(b)) {
-        Poly x = as_poly(a), y = as_poly(b);
+        C x = as_c(a), y = as_c(b);
         switch (op) {
-        case '+': return vpoly(p_add(x, y));
-        case '-': return vpoly(p_sub(x, y));
-        case '*': return vpoly(p_mul(x, y));
+        case '+': return vc(c_add(x, y));
+        case '-': return vc(c_sub(x, y));
+        case '*': return vc(c_mul(x, y));
         case '/':
-            if (b.kind != V_Q) longjmp(need_series, 1);
-            return vpoly(p_scale(x, q_div(qi(1), b.q)));
+            if (!c_is_monomial(y) && !c_is_zero(y)) longjmp(need_series, 1);
+            return vc(c_div(x, y));                      /* by a single term, exactly: a a / x = a^2 x^-1 */
         }
     }
     Ball x = as_ball(a), y = as_ball(b);
@@ -372,7 +429,7 @@ static Val name_val(const char *s, size_t len, int primes) {
         if (b->v.kind == V_NUMREC) return eval(parse_text(b->v.src));   /* carried again to the places now asked */
         return b->v;
     }
-    return vpoly(p_var(dup_arena(s, len)));            /* an unknown letter */
+    return vc(c_letter(letter_index(s, len)));       /* a letter */
 }
 
 static Val eval(Node *n) {
@@ -390,11 +447,18 @@ static Val eval(Node *n) {
             if (arg.kind != V_Q) nm_fail("the value of %s needs an exact number as its argument in this version", b->name);
             return series_value(b, arg.q);
         }
-        if (b && b->v.kind == V_POLY) {                     /* a polynomial at a number */
+        if (b && b->v.kind == V_POLY) {                     /* a polynomial in one letter, at a number */
             Val arg = eval(n->a);
-            if (arg.kind == V_Q) {
-                Q acc = q_from_z(z_zero());
-                for (int i = b->v.p.deg; i >= 0; i--) acc = q_add(q_mul(acc, arg.q), b->v.p.c[i]);
+            int li = -1, nl = 0;
+            for (int l = 0; l < letter_count(); l++) if (c_uses(b->v.c, l)) { li = l; nl++; }
+            if (arg.kind == V_Q && nl == 1) {
+                Q acc = qi(0);
+                for (int t = 0; t < b->v.c.nt; t++) {
+                    CT term = b->v.c.t[t];
+                    int64_t e;
+                    if (!q_is_int(term.e[li]) || !z_fits_i64(term.e[li].num, &e)) nm_fail("a fractional power at a number is not in this version");
+                    acc = q_add(acc, q_mul(term.k, q_pow(arg.q, e)));
+                }
                 return vq(acc);
             }
         }
@@ -403,33 +467,37 @@ static Val eval(Node *n) {
     case N_DERIV: case N_INTEG: {
         Val v = eval(n->a);
         if (!is_exact(v)) { if (n->kind == N_DERIV) return vq(qi(0)); longjmp(need_series, 1); }
-        Poly p = as_poly(v);
-        if (n->kind == N_INTEG && !n->len && !p.var) longjmp(need_series, 1);
-        const char *var = n->len ? dup_arena(n->s, n->len) : p.var;
-        if (p.var && strcmp(p.var, var)) {
-            if (n->kind == N_DERIV) return vq(qi(0));
-            longjmp(need_series, 1);
+        C p = as_c(v);
+        int li = -1;
+        if (n->len) li = letter_index(n->s, n->len);
+        else {
+            int nl = 0;
+            for (int l = 0; l < letter_count(); l++) if (c_uses(p, l)) { li = l; nl++; }
+            if (nl != 1) longjmp(need_series, 1);             /* the letter is decided by the series pass */
         }
-        Poly r; r.var = var;
-        if (n->kind == N_DERIV) {
-            r.deg = p.deg - 1;
-            r.c = arena_alloc((size_t)(p.deg > 0 ? p.deg : 1) * sizeof(Q));
-            for (int i = 1; i <= p.deg; i++) r.c[i - 1] = q_mul(p.c[i], qi(i));
-        } else {                                       /* Newton's first rule: a x^m gives a x^(m+1)/(m+1) */
-            r.deg = p.deg + 1;
-            r.c = arena_alloc((size_t)(p.deg + 2) * sizeof(Q));
-            r.c[0] = qi(0);
-            for (int i = 0; i <= p.deg; i++) r.c[i + 1] = q_div(p.c[i], qi(i + 1));
+        C r = c_zero();
+        for (int t = 0; t < p.nt; t++) {
+            CT term = p.t[t];
+            Q e = term.e[li];
+            if (n->kind == N_DERIV) {
+                if (q_sign(e) == 0) continue;
+                term.k = q_mul(term.k, e); term.e[li] = q_sub(e, qi(1));
+            } else {                                       /* Newton's first rule: a x^m gives a x^(m+1)/(m+1) */
+                if (q_cmp(e, qi(-1)) == 0) nm_fail("the fluent of 1/%s is a logarithm: write it as a root of an equation", letter_name(li));
+                term.e[li] = q_add(e, qi(1)); term.k = q_div(term.k, term.e[li]);
+            }
+            C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = term;
+            r = c_add(r, one);
         }
-        if (r.deg < 0) return vq(qi(0));
-        return vpoly(r);
+        return vc(r);
     }
     case N_ROOT: {
+        if (n->para) nm_fail("a root found with the parallelogram stands on its own line in this version");
         if (!n->c) longjmp(need_series, 1);
         Val l = eval(n->a), r = eval(n->b), g = eval(n->c);
         if (!is_exact(l) || !is_exact(r)) nm_fail("the equation must have exact coefficients");
         if (g.kind != V_Q) nm_fail("the starting value after 'near' must be an exact number");
-        Poly p = p_sub(as_poly(l), as_poly(r));
+        Poly p = c_to_poly(c_sub(as_c(l), as_c(r)), NULL);
         int64_t d0 = z_digits(g.q.den) + 2;
         Val v; memset(&v, 0, sizeof v);
         v.kind = V_ROOT;
@@ -461,7 +529,7 @@ static Dual dadd(Dual x, Dual y, int sign) {
     d.a = sign > 0 ? s_add(x.a, y.a) : s_sub(x.a, y.a);
     d.hasb = x.hasb || y.hasb;
     if (d.hasb) {
-        Ser xb = x.hasb ? x.b : s_const(qi(0), x.a.n), yb = y.hasb ? y.b : s_const(qi(0), y.a.n);
+        Ser xb = x.hasb ? x.b : s_const(c_zero(), x.a.n), yb = y.hasb ? y.b : s_const(c_zero(), y.a.n);
         d.b = sign > 0 ? s_add(xb, yb) : s_sub(xb, yb);
     }
     return d;
@@ -472,7 +540,7 @@ static Dual dmul(Dual x, Dual y) {
     d.a = s_mul(x.a, y.a);
     d.hasb = x.hasb || y.hasb;
     if (d.hasb) {
-        Ser t = s_const(qi(0), d.a.n);
+        Ser t = s_const(c_zero(), d.a.n);
         if (x.hasb) t = s_add(t, s_mul(x.b, y.a));
         if (y.hasb) t = s_add(t, s_mul(x.a, y.b));
         d.b = t;
@@ -485,7 +553,7 @@ static Dual ddiv(Dual x, Dual y) {
     d.a = s_div(x.a, y.a);
     d.hasb = x.hasb || y.hasb;
     if (d.hasb) {                                           /* (b - (x/y) b') / y */
-        Ser t = x.hasb ? x.b : s_const(qi(0), x.a.n);
+        Ser t = x.hasb ? x.b : s_const(c_zero(), x.a.n);
         if (y.hasb) t = s_sub(t, s_mul(d.a, y.b));
         d.b = s_div(t, y.a);
     }
@@ -500,7 +568,7 @@ static Dual dpow(Dual x, Q alpha) {
         Ser dfa;                                            /* x^(alpha - 1) */
         if (q_is_int(alpha) && q_sign(alpha) > 0) dfa = s_pow_q(x.a, q_sub(alpha, qi(1)));
         else dfa = s_div(d.a, x.a);
-        d.b = s_mul(s_scale(dfa, alpha), x.b);
+        d.b = s_mul(s_scale(dfa, c_const(alpha)), x.b);
     }
     return d;
 }
@@ -508,11 +576,34 @@ static Dual dpow(Dual x, Q alpha) {
 static Dual sev(Node *n, SCtx *cx);
 static Ser resolve(Node *root, const char *var, int n);
 
-static Q const_of(Dual d, const char *what) {
+static C const_c_of(Dual d, const char *what) {
     for (int i = 1; i < d.a.n; i++)
-        if (q_sign(d.a.c[i])) nm_fail("%s must be a number, not a series", what);
+        if (!c_is_zero(d.a.c[i])) nm_fail("%s must not depend on the series letter", what);
     if (d.hasb) nm_fail("%s must not involve the unknown", what);
-    return d.a.n ? d.a.c[0] : qi(0);
+    return d.a.n ? d.a.c[0] : c_zero();
+}
+
+static Q const_of(Dual d, const char *what) {
+    Q k;
+    if (!c_const_value(const_c_of(d, what), &k)) nm_fail("%s must be a number", what);
+    return k;
+}
+
+/* a quantity in letters as a series in the letter var (whole non-negative powers) */
+static Ser s_from_c(C c, const char *var, int n) {
+    int vi = letter_index(var, strlen(var));
+    Ser s = s_const(c_zero(), n);
+    for (int t = 0; t < c.nt; t++) {
+        CT term = c.t[t];
+        int64_t e;
+        if (!q_is_int(term.e[vi]) || !z_fits_i64(term.e[vi].num, &e) || e < 0)
+            nm_fail("a negative or fractional power of %s: use the parallelogram (root of ... for y)", var);
+        if (e >= n) continue;
+        term.e[vi] = qi(0);
+        C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = term;
+        s.c[e] = c_add(s.c[e], one);
+    }
+    return s;
 }
 
 static Ser recipe_series(Binding *b, const char *var, int n) {
@@ -530,23 +621,21 @@ static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
     if (primes) nm_fail("%.*s' marks a derivative of an unknown with no start", (int)len, s);
     if (same(s, len, cx->var, strlen(cx->var))) return dconst(s_var(cx->n));
     Binding *b = lookup(s, len);
-    if (!b) nm_fail("the letter %.*s has no value (one letter per series in this version)", (int)len, s);
+    if (!b) return dconst(s_const(c_letter(letter_index(s, len)), cx->n));    /* a given letter: a, b, ... */
     switch (b->v.kind) {
-    case V_Q: return dconst(s_const(b->v.q, cx->n));
-    case V_POLY:
-        if (strcmp(b->v.p.var, cx->var)) nm_fail("%s is a polynomial in %s, not in %s", b->name, b->v.p.var, cx->var);
-        return dconst(s_from_poly(b->v.p, cx->n));
+    case V_Q: return dconst(s_const(c_const(b->v.q), cx->n));
+    case V_POLY: return dconst(s_from_c(b->v.c, cx->var, cx->n));
     case V_REC: return dconst(recipe_series(b, cx->var, cx->n));
     default: nm_fail("%s is an irrational number; irrational coefficients come later", b->name);
     }
-    return dconst(s_const(qi(0), cx->n));
+    return dconst(s_const(c_zero(), cx->n));
 }
 
 static Dual sev(Node *n, SCtx *cx) {
     switch (n->kind) {
-    case N_NUM: return dconst(s_const(parse_number(n->s, n->len), cx->n));
+    case N_NUM: return dconst(s_const(c_const(parse_number(n->s, n->len)), cx->n));
     case N_NAME: return sname(n->s, n->len, n->primes, cx);
-    case N_NEG: return dadd(dconst(s_const(qi(0), cx->n)), sev(n->a, cx), -1);
+    case N_NEG: return dadd(dconst(s_const(c_zero(), cx->n)), sev(n->a, cx), -1);
     case N_BIN: {
         Dual x = sev(n->a, cx);
         if (n->op == '^') return dpow(x, const_of(sev(n->b, cx), "an exponent"));
@@ -573,7 +662,7 @@ static Dual sev(Node *n, SCtx *cx) {
     }
     case N_DERIV: case N_INTEG: {
         if (n->len && !same(n->s, n->len, cx->var, strlen(cx->var))) {
-            if (n->kind == N_DERIV) return dconst(s_const(qi(0), cx->n));
+            if (n->kind == N_DERIV) return dconst(s_const(c_zero(), cx->n));
             nm_fail("integral in %.*s inside a series in %s", (int)n->len, n->s, cx->var);
         }
         Dual x = sev(n->a, cx), d;
@@ -586,11 +675,12 @@ static Dual sev(Node *n, SCtx *cx) {
         return d;
     }
     case N_ROOT:
+        if (n->para) nm_fail("a root found with the parallelogram stands on its own line in this version");
         if (n->c) nm_fail("a number found with 'near' cannot be a series coefficient unless it is rational");
         return dconst(resolve(n, cx->var, cx->n));
     }
     nm_fail("internal: unknown node");
-    return dconst(s_const(qi(0), 0));
+    return dconst(s_const(c_zero(), 0));
 }
 
 static int max_primes(Node *n, const char *u, size_t ul) {
@@ -618,8 +708,8 @@ static Ser resolve(Node *root, const char *var, int n) {
     if (n > 2000) nm_fail("order too large");
     /* the start: y(0), y'(0), ..., y^(r-1)(0); for an equation without derivatives, y(0) chooses the branch */
     int need = r ? r : 1;
-    Q *c = arena_alloc((size_t)(n + r + 1) * sizeof(Q));
-    for (int i = 0; i < n + r + 1; i++) c[i] = qi(0);
+    C *c = arena_alloc((size_t)(n + r + 1) * sizeof(C));
+    for (int i = 0; i < n + r + 1; i++) c[i] = c_zero();
     int *given = arena_alloc((size_t)need * sizeof(int));
     memset(given, 0, (size_t)need * sizeof(int));
     SCtx k0; memset(&k0, 0, sizeof k0); k0.var = var; k0.n = 1;
@@ -628,10 +718,10 @@ static Ser resolve(Node *root, const char *var, int n) {
             nm_fail("starts must be given at 0 in this version");
         int j = cs[i].primes;
         if (j >= need) nm_fail("the equation has order %d; %.*s with %d marks is not a start for it", r, (int)ul, u, j);
-        Q v = const_of(sev(cs[i].val, &k0), "a starting value");
+        C v = const_c_of(sev(cs[i].val, &k0), "a starting value");
         Q fact = qi(1);
         for (int f = 2; f <= j; f++) fact = q_mul(fact, qi(f));
-        c[j] = q_div(v, fact);
+        c[j] = c_scale(v, q_div(qi(1), fact));
         given[j] = 1;
     }
     for (int j = 0; j < need; j++)
@@ -643,21 +733,21 @@ static Ser resolve(Node *root, const char *var, int n) {
     for (int d = need; d < n; d++) {
         int k = d - r;                                  /* the equation's term that decides y's term of degree d */
         int m = k + 1 + r;
-        Ser Y; Y.n = m; Y.c = arena_alloc((size_t)m * sizeof(Q));
-        for (int i = 0; i < m; i++) Y.c[i] = i < d ? c[i] : qi(0);
-        Ser O = s_const(qi(0), m);
-        O.c[d] = qi(1);
+        Ser Y; Y.n = m; Y.c = arena_alloc((size_t)m * sizeof(C));
+        for (int i = 0; i < m; i++) Y.c[i] = i < d ? c[i] : c_zero();
+        Ser O = s_const(c_zero(), m);
+        O.c[d] = c_const(qi(1));
         for (int j = 0; j <= r; j++) {
             cx.yd[j].a = s_trunc(Y, k + 1); cx.yd[j].b = s_trunc(O, k + 1); cx.yd[j].hasb = 1;
             Y = s_deriv(Y); O = s_deriv(O);
         }
         cx.n = k + 1;
         Dual e = sev(eqn, &cx);
-        Q F = e.a.n > k ? e.a.c[k] : qi(0);
-        Q G = (e.hasb && e.b.n > k) ? e.b.c[k] : qi(0);
-        if (q_sign(G) == 0)
-            nm_fail("the start is a multiple root: the next term is not fixed by the lowest terms (Newton's parallelogram comes later)");
-        c[d] = q_neg(q_div(F, G));
+        C F = e.a.n > k ? e.a.c[k] : c_zero();
+        C G = (e.hasb && e.b.n > k) ? e.b.c[k] : c_zero();
+        if (c_is_zero(G))
+            nm_fail("the start is a multiple root: the next term is not fixed by the lowest terms (use the parallelogram: root of ... for %.*s)", (int)ul, u);
+        c[d] = c_neg(c_div(F, G));
     }
     /* substitute back */
     Ser Y; Y.n = n; Y.c = c;
@@ -666,34 +756,38 @@ static Ser resolve(Node *root, const char *var, int n) {
     cx.n = check;
     Dual e = sev(eqn, &cx);
     for (int i = 0; i < e.a.n && i < check; i++)
-        if (q_sign(e.a.c[i])) {
-            if (i == 0 && r == 0) nm_fail("%.*s(0) = %s does not satisfy the equation at %s = 0", (int)ul, u, q_to_str(c[0]), var);
+        if (!c_is_zero(e.a.c[i])) {
+            if (i == 0 && r == 0) nm_fail("%.*s(0) = %s does not satisfy the equation at %s = 0", (int)ul, u, c_to_str(c[0]), var);
             nm_fail("substituting the series back leaves a remainder at %s^%d: the equation cannot be resolved term by term here", var, i);
         }
     Ser out; out.n = n; out.c = c;
     return out;
 }
 
-/* the letter of a series statement: the one unknown letter that is not the unknown of an equation */
-static void letters(Node *n, const char **found, size_t *flen, const char *skip, size_t skiplen) {
+/* the free letters of a statement (not the unknown of an equation); the series letter is one of them */
+typedef struct { const char *s[NM_MAXL + 4]; size_t len[NM_MAXL + 4]; int n; } Letters;
+
+static void add_letter(Letters *L, const char *s, size_t len) {
+    for (int i = 0; i < L->n; i++) if (same(L->s[i], L->len[i], s, len)) return;
+    if (L->n < NM_MAXL + 4) { L->s[L->n] = s; L->len[L->n] = len; L->n++; }
+}
+
+static void letters(Node *n, Letters *L, const char *skip, size_t skiplen) {
     if (!n) return;
-    const char *s = NULL; size_t len = 0;
     if (n->kind == N_NAME || n->kind == N_APPLY) {
         Binding *b = lookup(n->s, n->len);
-        if (b && b->v.kind == V_REC && n->kind == N_NAME) { s = b->v.var; len = strlen(s); }
-        else if (b && b->v.kind == V_POLY) { s = b->v.p.var; len = strlen(s); }
-        else if (!b && !(skip && same(n->s, n->len, skip, skiplen))) { s = n->s; len = n->len; }
+        if (b && b->v.kind == V_REC && n->kind == N_NAME) add_letter(L, b->v.var, strlen(b->v.var));
+        else if (b && b->v.kind == V_POLY) {
+            for (int l = 0; l < letter_count(); l++) if (c_uses(b->v.c, l)) add_letter(L, letter_name(l), strlen(letter_name(l)));
+        } else if (!b && !(skip && same(n->s, n->len, skip, skiplen))) add_letter(L, n->s, n->len);
     }
-    if ((n->kind == N_DERIV || n->kind == N_INTEG) && n->len) { s = n->s; len = n->len; }
-    if (s) {
-        if (*found && !same(*found, *flen, s, len))
-            nm_fail("two letters, %.*s and %.*s: a series has one letter in this version", (int)*flen, *found, (int)len, s);
-        *found = s; *flen = len;
-    }
+    if ((n->kind == N_DERIV || n->kind == N_INTEG) && n->len) add_letter(L, n->s, n->len);
     if (n->kind == N_ROOT && n->nconds) { skip = n->conds[0].s; skiplen = n->conds[0].len; }
-    letters(n->a, found, flen, skip, skiplen);
-    letters(n->b, found, flen, skip, skiplen);
-    letters(n->c, found, flen, skip, skiplen);
+    if (n->kind == N_ROOT && n->para) { skip = n->us; skiplen = n->ul; }
+    letters(n->a, L, skip, skiplen);
+    letters(n->b, L, skip, skiplen);
+    letters(n->c, L, skip, skiplen);
+    letters(n->start, L, skip, skiplen);
 }
 
 /* ---------------- the value of a series at a number ---------------- */
@@ -706,7 +800,7 @@ typedef struct { int s, T; Poly D; Poly *N; Poly h; } Rule;
 
 static Poly poly_of(Val v, const char *var) {
     if (v.kind == V_Q) return p_const(v.q);
-    if (v.kind == V_POLY && !strcmp(v.p.var, var)) return v.p;
+    if (v.kind == V_POLY) { Poly p = c_to_poly(v.c, var); p.var = var; return p; }
     nm_fail("the equation's coefficients must be polynomials in %s", var);
     return p_const(qi(0));
 }
@@ -840,7 +934,8 @@ static Val series_value(Binding *b, Q a) {
     Ser seed = resolve(root, b->v.var, nseed);
     int cap = nseed + 64;
     Q *c = arena_alloc((size_t)cap * sizeof(Q));
-    for (int i = 0; i < nseed; i++) c[i] = seed.c[i];
+    for (int i = 0; i < nseed; i++)
+        if (!c_const_value(seed.c[i], &c[i])) nm_fail("a value needs numbers; %s has letters in its terms", b->name);
     int ncoef = (int)start;
     for (int n = (int)start; n < nseed; n++) {
         Q acc = qi(0);
@@ -925,7 +1020,7 @@ static char *show(Val v, int64_t places, int asked) {
         }
         break;
     case V_POLY:
-        body = p_to_str(v.p);
+        body = c_to_str(v.c);
         snprintf(out, 4096, "[exact]");
         break;
     case V_ROOT: {
@@ -960,13 +1055,7 @@ static char *show(Val v, int64_t places, int asked) {
 static Val persist_val(Val v) {
     switch (v.kind) {
     case V_Q: v.q = q_persist(v.q); break;
-    case V_POLY: {
-        Poly p = v.p;
-        Q *c = perm_alloc((size_t)(p.deg + 1) * sizeof(Q));
-        for (int i = 0; i <= p.deg; i++) c[i] = q_persist(p.c[i]);
-        v.p.c = c; v.p.var = dup_perm(p.var, strlen(p.var));
-        break;
-    }
+    case V_POLY: v.c = c_persist(v.c); break;
     case V_BALL: v.ball.m = z_persist(v.ball.m); v.ball.r = z_persist(v.ball.r); break;
     default: break;                                     /* roots and recipes already live in permanent memory */
     }
@@ -978,6 +1067,41 @@ static void bind(const char *name, size_t len, Val v) {
     b->name = dup_perm(name, len);
     b->v = persist_val(v);
     b->next = names; names = b;
+}
+
+/* root of F = 0 for y [starting y = S] to x^N */
+static char *para_root(Node *e, const char *to_var, size_t to_len, int64_t order) {
+    if (!e->us) nm_fail("name the unknown: root of ... for y");
+    if (max_primes(e->a, e->us, e->ul) || max_primes(e->b, e->us, e->ul))
+        nm_fail("the parallelogram is for equations without derivatives; give a start y(0) = ... for a fluxional one");
+    Val l, r;
+    jmp_buf saved;
+    memcpy(saved, need_series, sizeof saved);
+    if (setjmp(need_series)) {
+        memcpy(need_series, saved, sizeof saved);
+        nm_fail("the parallelogram needs a polynomial equation (multiply out the denominators)");
+    }
+    l = eval(e->a); r = eval(e->b);
+    C F = c_sub(as_c(l), as_c(r));
+    C S = c_zero();
+    int have = 0;
+    if (e->start) { S = as_c(eval(e->start)); have = 1; }
+    memcpy(need_series, saved, sizeof saved);
+    int yi = letter_index(e->us, e->ul);
+    int xi = -1;
+    if (to_var) xi = letter_index(to_var, to_len);
+    else {
+        int n = 0, nf = 0, xf = -1;
+        for (int li = 0; li < letter_count(); li++)
+            if (li != yi && letter_name(li)[0] != '#' && c_uses(F, li)) {
+                xi = li; n++;
+                if (flowing_letter(letter_name(li), strlen(letter_name(li)))) { xf = li; nf++; }
+            }
+        if (n > 1 && nf == 1) xi = xf;                 /* Newton: a, b, c are given; x, z flow */
+        else if (n != 1) nm_fail("name the letter of the series with 'to x^8'");
+    }
+    if (c_uses(S, yi)) nm_fail("the start must not contain %.*s", (int)e->ul, e->us);
+    return parallelogram(F, xi, yi, &S, have, order);
 }
 
 #ifndef NM_LIBDIR
@@ -1043,13 +1167,15 @@ char *nm_run(const char *line, int *failed) {
         expect_op('=');
     }
     const char *src_start = peek()->at;
-    Node *e = expr();
+    Node *volatile e = expr();
     const char *src_end = peek()->at;
     int64_t places = DEFAULT_PLACES, order = DEFAULT_ORDER;
     volatile int asked = 0;
+    const char *volatile to_var = NULL; volatile size_t to_len = 0;
     if (at_key("to")) {
         pos++;
-        if (peek()->kind == T_NAME) {                                  /* to x^8 */
+        if (peek()->kind == T_NAME) {                                  /* to x^8: x is the series letter */
+            to_var = peek()->s; to_len = peek()->len;
             pos++; expect_op('^');
             if (peek()->kind != T_NUM || memchr(peek()->s, '.', peek()->len)) nm_fail("expected a whole number after '^'");
             Z k = z_from_dec(peek()->s, peek()->len);
@@ -1068,6 +1194,10 @@ char *nm_run(const char *line, int *failed) {
     work_prec = places + GUARD_DIGITS;
     char *text;
     Val v;
+    if (e->kind == N_ROOT && e->para) {                /* Newton's parallelogram */
+        if (let_name) nm_fail("a root found with the parallelogram cannot be named yet");
+        return para_root(e, to_var, to_len, order);
+    }
     if (!setjmp(need_series)) {
         v = eval(e);
         text = show(v, places, asked);
@@ -1077,9 +1207,18 @@ char *nm_run(const char *line, int *failed) {
             v.src = dup_perm(src_start, (size_t)(src_end - src_start));
         }
     } else {
-        const char *var = NULL; size_t vlen = 0;
-        letters(e, &var, &vlen, NULL, 0);
-        if (!var) { var = "x"; vlen = 1; }
+        const char *var = to_var; size_t vlen = to_len;
+        if (!var) {
+            Letters L; L.n = 0;
+            letters(e, &L, NULL, 0);
+            int nf = 0, xf = -1;
+            for (int i = 0; i < L.n; i++) if (flowing_letter(L.s[i], L.len[i])) { nf++; xf = i; }
+            if (L.n > 1 && nf == 1) { var = L.s[xf]; vlen = L.len[xf]; }   /* Newton: a, b, c are given; x, z flow */
+            else if (L.n > 1) nm_fail("several letters (%.*s, %.*s ...): name the series letter with 'to %.*s^8'",
+                                      (int)L.len[0], L.s[0], (int)L.len[1], L.s[1], (int)L.len[1], L.s[1]);
+            else if (L.n == 1) { var = L.s[0]; vlen = L.len[0]; }
+            else { var = "x"; vlen = 1; }
+        }
         char *vname = dup_perm(var, vlen);
         SCtx cx; memset(&cx, 0, sizeof cx);
         cx.var = vname; cx.n = (int)order + 1;

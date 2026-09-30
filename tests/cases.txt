@@ -31,4 +31,4 @@ sqrt(2) * sqrt(2) - 2 to 20 places ||| 0.00000000000000000000  [bounded: 20 plac
 # --- errors are verdicts, not crashes
 1/0 ||| error: division by zero
 sqrt(-1) ||| error: an even root of a negative number is not real (complex numbers come later)
-root of x^2 + y = 0 near 1 ||| error: two different unknowns, x and y: only one letter per equation in this version
+root of x^2 + y = 0 near 1 ||| error: an equation for a number must have one unknown letter

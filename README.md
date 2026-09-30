@@ -47,9 +47,23 @@ small arguments and join them by exact relations:
 
 Near the edge of convergence, for example log1p(1), the language says the terms shrink too slowly there.
 
+## Letters and the parallelogram (slice 4)
+
+Letters are given quantities, following Newton's convention: a, b, c are given and x, z flow. Exponents may be
+fractions or negative (a^(1/2), x^(-2/5)). Division is by a single term. `to x^8` names the series letter when
+it is not clear.
+
+    sqrt(a^2 + x^2) to x^6                     a + x^2/(2a) - x^4/(8a^3) + x^6/(16a^5) + O(x^7)
+    root of y^3 + a^2 y + a x y - 2a^3 - x^3 = 0 for y
+        2 starts; choose one with 'starting y = ...':  y = a  and two that are not rational numbers
+    root of y^3 + a^2 y + a x y - 2a^3 - x^3 = 0 for y starting y = a to x^4
+        a - x/4 + x^2/(64a) + 131x^3/(512a^2) + 509x^4/(16384a^3) + O(x^5)     (De analysi)
+
+The parallelogram finds the first term of every root. A start that is a multiple root is refined by applying it
+again. The finished root is substituted back into the equation.
+
 Not yet:
-- more than one letter in a series;
-- Newton's parallelogram for multiple roots;
-- fractional powers of x;
-- irrational coefficients;
+- irrational numbers in coefficients (the starts ±sqrt(2ax) are listed but not followed);
+- division by a sum of letters;
+- arithmetic on fractional-power results;
 - values at approximate arguments.

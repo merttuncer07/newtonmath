@@ -55,5 +55,9 @@ fi
 n=$((n+1))
 if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL: tests/series.nm"; fail=$((fail+1)); fi
 
+# letters and the parallelogram: Newton's own examples (see the comments in the file)
+n=$((n+1))
+if ! ./newtonmath tests/newton.nm | diff -u tests/newton.out - ; then echo "FAIL: tests/newton.nm"; fail=$((fail+1)); fi
+
 echo "run.sh: $n checks, $fail failed"
 [ $fail -eq 0 ]

@@ -122,7 +122,10 @@ char *p_to_str(Poly p) {
     int first = 1;
     for (int i = p.deg; i >= 0; i--) {
         if (q_sign(p.c[i]) == 0) continue;
-        o += sprintf(o, "%s", term_str(p.c[i], p.var, i, first));
+        CT t;
+        t.k = p.c[i];
+        for (int l = 0; l < NM_MAXL; l++) t.e[l] = q_from_z(z_zero());
+        o += sprintf(o, "%s", ct_str(t, p.var, q_from_z(z_from_i64(i)), first));
         first = 0;
     }
     return s;

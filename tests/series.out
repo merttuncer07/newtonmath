@@ -26,10 +26,10 @@ g = 1 + x/2 - x^2/8 + x^3/16 - 5x^4/128 + 7x^5/256 - 21x^6/1024 + 33x^7/2048 - 4
 1 + x/2 - x^2/8 + x^3/16 - 5x^4/128 + O(x^5)
 1 + x/2 - x^2/8 + x^3/16 - 5x^4/128 + 7x^5/256 - 21x^6/1024 + O(x^7)
 error: y(0) = 2 does not satisfy the equation at x = 0
-error: the start is a multiple root: the next term is not fixed by the lowest terms (Newton's parallelogram comes later)
+error: the start is a multiple root: the next term is not fixed by the lowest terms (use the parallelogram: root of ... for y)
 error: missing start: y'(0)
-error: division by a series that vanishes at 0 (negative powers are not in this version)
-error: the series starts with 2, whose power 1/2 is not rational (irrational coefficients come later)
+1/x  [exact]
+error: the series starts with 2, whose power 1/2 is not exact here (irrational numbers come later)
 error: at 1 the terms of log1p shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2
 error: the value of exp needs an exact number as its argument in this version
 s2 = 1 + x/2 - x^2/8 + x^3/16 - 5x^4/128 + 7x^5/256 - 21x^6/1024 + 33x^7/2048 - 429x^8/32768 + O(x^9)

@@ -85,26 +85,54 @@ Poly p_pow(Poly a, unsigned e);
 Poly p_scale(Poly a, Q s);
 char *p_to_str(Poly a);
 
-/* ---- series: c[0] + c[1] x + ... + c[n-1] x^(n-1) + O(x^n) ---- */
-typedef struct { int n; Q *c; } Ser;
+/* ---- quantities in letters: sums of k * a^e1 * b^e2 ..., rational k and rational exponents ---- */
+#define NM_MAXL 12
+typedef struct { Q k; Q e[NM_MAXL]; } CT;
+typedef struct { int nt; CT *t; } C;
 
-Ser s_const(Q a, int n);
+int letter_index(const char *name, size_t len);
+const char *letter_name(int i);
+int letter_count(void);
+C c_zero(void);
+C c_const(Q k);
+C c_letter(int idx);
+int c_is_zero(C a);
+int c_const_value(C a, Q *out);
+int c_uses(C a, int idx);
+int c_is_monomial(C a);
+C c_add(C a, C b);
+C c_sub(C a, C b);
+C c_neg(C a);
+C c_scale(C a, Q k);
+C c_mul(C a, C b);
+C c_div(C a, C b);                            /* by a single term only */
+C c_pow_int(C a, int64_t e);
+int c_pow_q(C a, Q alpha, C *out);            /* 0 if not exact */
+int c_equal(C a, C b);
+C c_persist(C a);
+C c_coeff_of(C a, int idx, Q e);              /* the part with letter idx to the power e, that letter removed */
+char *c_to_str(C a);
+char *ct_str(CT t, const char *extra_name, Q extra_e, int first);
+char *c_term_str(C a, const char *var, Q e, int first);
+
+/* ---- series: c[0] + c[1] x + ... + c[n-1] x^(n-1) + O(x^n), coefficients in letters ---- */
+typedef struct { int n; C *c; } Ser;
+
+Ser s_const(C a, int n);
 Ser s_var(int n);
-Ser s_from_poly(Poly p, int n);
 Ser s_add(Ser a, Ser b);
 Ser s_sub(Ser a, Ser b);
 Ser s_mul(Ser a, Ser b);
 Ser s_div(Ser a, Ser b);
-Ser s_scale(Ser a, Q k);
+Ser s_scale(Ser a, C k);
 Ser s_pow_int(Ser a, int64_t e);
-Ser s_pow_q(Ser a, Q alpha);                  /* a(0) != 0; exact when a(0)^alpha is rational */
+Ser s_pow_q(Ser a, Q alpha);                  /* a(0) a single term with an exact power */
 Ser s_deriv(Ser a);
 Ser s_integ(Ser a);
 Ser s_compose(Ser f, Ser g);                  /* f(g(x)), g(0) = 0 */
 Ser s_trunc(Ser a, int n);
 Ser s_persist(Ser a);
 char *s_to_str(Ser a, const char *var, int last);   /* terms up to degree `last`, then O(...) */
-char *term_str(Q c, const char *var, int k, int first);
 int q_root_exact(Q a, int64_t n, Q *out);     /* a^(1/n) if rational */
 
 /* ---- roots: an equation and a verified bracket ---- */
@@ -117,6 +145,8 @@ typedef struct Root {
     int64_t w;              /* verified: a root lies strictly between (X - w)/10^D and (X + w)/10^D; 0 if exact */
     int certified;          /* 1 once a sign change confirmed the bracket at this D */
 } Root;
+
+char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order);
 
 Root *root_new(Poly p, Q guess, int64_t start_places);
 void root_refine(Root *r, int64_t places);    /* continue Newton's resolution to at least `places` decimals */

@@ -333,3 +333,21 @@ Timing:
 - log 2 by Newton's relations: 100 places in 10 ms, 1000 places in 1.8 s.
 - e: 1000 places in 0.14 s.
 Tests: log 2, log 10, e, sin, cos, atan, pi (twice) and exp(−3/2), each to 30 and 200 places against bc -l.
+
+## Slice 4 built
+- Quantities in letters: sums of k·a^e1·b^e2 with rational k and rational exponents. Division by a single term
+  only. Polynomials in the exact pass are now such quantities (several letters, Laurent: a^2/x is exact).
+- The series letter follows Newton's convention when several letters appear: initial letters are given, final
+  letters (t, u, v, w, x, z) flow; otherwise `to x^N` names it.
+- The parallelogram (src/newton.c):
+  - the lower edges of the marks (j, i) give the starts y = c x^g;
+  - the ruler's equation is reduced to numbers by Newton's scaling (y = v·M) and solved for rational v;
+  - other roots are listed with their equation, marked as later;
+  - with no start, the starts are listed;
+  - a simple start continues term by term, with z(0) = 0 and each coefficient −F_d / F_z(0,0);
+  - a multiple start applies the parallelogram again;
+  - the finished root is substituted back into F in u = x^(1/D).
+Found in Newton's text: for x^2y^5 − 3c^4xy^2 − c^5x^2 + c^7 = 0 he writes the start as the fifth root of
+c^7/xx. The terms on the ruler, x^2y^5 + c^7, give y^5 = −c^7/x^2, so the real start is −c^(7/5)x^(−2/5).
+Matches Newton: the literal resolution (all five printed terms); the start 3x; the four starts of the y^6
+example (±sqrt(ax) followed, ±sqrt(2ax) listed as irrational).
