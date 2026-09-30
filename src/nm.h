@@ -85,6 +85,8 @@ Poly p_pow(Poly a, unsigned e);
 Poly p_scale(Poly a, Q s);
 char *p_to_str(Poly a);
 
+struct Root;
+
 /* ---- quantities in letters: sums of k * a^e1 * b^e2 ..., rational k and rational exponents ---- */
 #define NM_MAXL 12
 typedef struct { Q k; Q e[NM_MAXL]; } CT;
@@ -105,7 +107,17 @@ C c_sub(C a, C b);
 C c_neg(C a);
 C c_scale(C a, Q k);
 C c_mul(C a, C b);
-C c_div(C a, C b);                            /* by a single term only */
+C c_div(C a, C b);
+C c_inv(C a);                                 /* a single term, or a quantity in surds (Euclid on the equation) */
+int c_has_plain(C a);
+C c_radical_q(Q c, int64_t n);                /* c^(1/n): exact, or a number times a surd */
+C c_radical_c(C A, int64_t n);                /* A^(1/n) for numbers and surds: a surd over surds */
+C c_imag_unit(void);
+C c_surd_from_root(const char *name, struct Root *r);
+int letter_is_surd(int i);
+int letter_is_imag(int i);
+struct Root *surd_root(int i);
+int surd_radical(int i, C *A, int *n, int *neg);
 C c_pow_int(C a, int64_t e);
 int c_pow_q(C a, Q alpha, C *out);            /* 0 if not exact */
 int c_equal(C a, C b);

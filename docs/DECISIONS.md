@@ -369,3 +369,26 @@ Small choices made while coding:
 - rules may call themselves up to 4000 deep; sequences have no such limit;
 - the stack limit is raised to 256 MB at start;
 - a sequence's terms must be exact.
+
+# Slice 6: surds and i
+Newton (Methodus, Problem 1, Ex. 3): "Siquando in æquatione propositâ insint fractiones complexæ aut surdæ
+quantitates, pro singulis pono totidem literas ... operor ut ante. Dein supprimo et extermino literas
+ascriptitias." In the parallelogram he writes y = v sqrt(ax) with v^6 − 7v^2 + 6 = 0. In the notebook, sqrt(−b)
+is "impossible"; here it is i.
+Built:
+- a surd is a letter with its equation and a chosen root:
+  - a certified bracket, for roots of rational numbers and named roots;
+  - a radical of a positive quantity, for surds over surds;
+  - i.
+- Products are reduced by the equations.
+- Inverses: a single term directly; otherwise Euclid between the quantity and the latest surd's equation, with
+  coefficients in the earlier surds. If the equation factors, the factor the root satisfies is kept.
+- Radicals of integers take out small n-th powers: sqrt(8) = 2sqrt(2).
+- Values: balls from the brackets. A surd over a surd takes the roots of both ends of its radicand's ball.
+  Complex quantities print as a + bi.
+- The value engine accepts approximate arguments (an upper bound of |a| for the tail).
+- The parallelogram accepts a start with surds: it is substituted into the ruler's equation.
+Small choices made while coding:
+- a bare `i` is the square root of −1 (a sum index or rule parameter named i still works);
+- a lone surd prints as itself, `sqrt(2) [exact]`, and gives its places when asked;
+- sqrt(2)·sqrt(3) stays a product of two surds (not sqrt(6)).

@@ -1,0 +1,37 @@
+# Slice 6: surds (letters with their equations) and i. Expected output in tests/irrational.out.
+sqrt(2)
+sqrt(8)
+sqrt(12)/sqrt(3)
+(1 + sqrt(2))^2
+sqrt(2) * sqrt(2) - 2
+# clearing the surd from a denominator
+1/(1 + sqrt(2))
+(3 + 2sqrt(2))/(1 + sqrt(2))
+1/(1 + 2^(1/3))
+(2^(1/3))^3
+# a surd over a surd
+sqrt(1 + sqrt(2))
+sqrt(1 + sqrt(2))^2
+sqrt(1 + sqrt(2)) to 30 places
+# values to places
+(1 + sqrt(2))^2 to 30 places
+1/(1 + sqrt(2)) to 30 places
+# a named root is a surd too
+let r = root of y^3 - 2y - 5 = 0 near 2
+r^3 - 2r - 5
+1/r
+1/r to 30 places
+# a named root whose equation factors: it is rational
+let s = root of y^2 - 4 = 0 near 1
+s
+# i, Newton's impossible root
+sqrt(-1)
+i^2
+(1 + i)^2
+1/(1 + i)
+(3 + 4i)/(1 - 2i) to 10 places
+sqrt(-2) to 20 places
+# surds in series
+sqrt(2 + x) to x^3
+1/(sqrt(2) + x) to x^3
+root of y^2 = 2 + x, y(0) = sqrt(2) to x^3

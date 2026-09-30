@@ -215,7 +215,7 @@ static char *start_str(Start s, const char *x, const char *y, Q offset, Q scale)
     char *body = s.exact ? c_term_str(s.c, x, e, 1) : NULL;
     char *out = arena_alloc(2048 + (body ? strlen(body) : 0) + (s.note ? strlen(s.note) : 0));
     if (s.exact) sprintf(out, "%s = %s%s", y, body, s.mult > 1 ? (s.mult == 2 ? "  (a double root: give the next term too)" : "  (a multiple root: give the next terms too)") : "");
-    else sprintf(out, "%s = v%s with %s = 0  (not rational numbers; later)", y, c_term_str(s.c, x, e, 1), s.note);
+    else sprintf(out, "%s = v%s with %s = 0  (give such a start yourself, e.g. with sqrt)", y, c_term_str(s.c, x, e, 1), s.note);
     return out;
 }
 
@@ -248,6 +248,25 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
             for (int a = 0; a < S.nt; a++) if (f || q_cmp(S.t[a].e[T], emin) < 0) { emin = S.t[a].e[T]; f = 0; }
             C lead = c_coeff_of(S, T, emin);
             for (int a = 0; a < ns; a++) if (st[a].exact && q_cmp(st[a].gamma, emin) == 0 && c_equal(st[a].c, lead)) pick = a;
+            for (int a = 0; a < ne && pick < 0 && ns < 63; a++) {
+                if (q_cmp(edges[a].gamma, emin) != 0) continue;
+                /* a start with surds: substitute it into the ruler's equation */
+                C E = c_zero(), dE = c_zero();
+                Q level = q0(); int got = 0;
+                for (int b = 0; b < np; b++) if (p[b].j == edges[a].j1) {
+                    Q v = q_add(p[b].i, q_mul(edges[a].gamma, qi(p[b].j)));
+                    if (!got || q_cmp(v, level) < 0) { level = v; got = 1; }
+                }
+                for (int b = 0; b < np; b++)
+                    if (q_cmp(q_add(p[b].i, q_mul(edges[a].gamma, qi(p[b].j))), level) == 0) {
+                        E = c_add(E, c_mul(p[b].k, c_pow_int(lead, p[b].j)));
+                        if (p[b].j) dE = c_add(dE, c_scale(c_mul(p[b].k, c_pow_int(lead, p[b].j - 1)), qi(p[b].j)));
+                    }
+                if (c_is_zero(E)) {
+                    st[ns].gamma = emin; st[ns].c = lead; st[ns].mult = c_is_zero(dE) ? 2 : 1; st[ns].exact = 1; st[ns].note = NULL;
+                    pick = ns++;
+                }
+            }
             if (pick < 0) {
                 char *u = arena_alloc(64 + strlen(c_to_str(lead)));
                 sprintf(u, "%s", c_term_str(lead, x, q_add(G, q_div(emin, Qs)), 1));

@@ -48,6 +48,12 @@ atan(1/5)|a(1/5)
 6 asin(1/2)|4*a(1)
 16 atan(1/5) - 4 atan(1/239)|4*a(1)
 exp(-3/2)|e(-3/2)
+exp(sqrt(2))|e(sqrt(2))
+sin(sqrt(3)/2)|s(sqrt(3)/2)
+log1p(sqrt(2) - 1)|l(sqrt(2))
+atan(sqrt(3) - 1)|a(sqrt(3)-1)
+sqrt(1 + sqrt(2))|sqrt(1+sqrt(2))
+(3 + sqrt(5))/(1 + sqrt(2))|(3+sqrt(5))/(1+sqrt(2))
 CASES
 fi
 
@@ -58,6 +64,10 @@ if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL
 # letters and the parallelogram: Newton's own examples (see the comments in the file)
 n=$((n+1))
 if ! ./newtonmath tests/newton.nm | diff -u tests/newton.out - ; then echo "FAIL: tests/newton.nm"; fail=$((fail+1)); fi
+
+# surds and i
+n=$((n+1))
+if ! ./newtonmath tests/irrational.nm | diff -u tests/irrational.out - ; then echo "FAIL: tests/irrational.nm"; fail=$((fail+1)); fi
 
 # rules, sequences, sums and cases
 n=$((n+1))

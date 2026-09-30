@@ -76,8 +76,26 @@ A sequence keeps its table and is built forward, so fib[2000] needs no deep recu
 cases compares exact numbers. Rules work on numbers, letters and series. This is the way toward writing the
 language's own methods in the language (see docs/DECISIONS.md).
 
+## Surds and i (slice 6)
+
+Following Newton ("pro singulis pono totidem literas"), an irrational number is a letter with its own equation:
+sqrt(2) satisfies r^2 = 2. Arithmetic stays exact; powers are reduced by the equation; surds are cleared from
+denominators:
+
+    (1 + sqrt(2))^2              2sqrt(2) + 3  [exact]
+    1/(1 + 2^(1/3))              (2^(1/3))^2/3 - 2^(1/3)/3 + 1/3  [exact]
+    let r = root of y^3 - 2y - 5 = 0 near 2
+    1/r                          r^2/5 - 2/5  [exact]
+    (3 + 4i)/(1 - 2i)            -1 + 2i  (i is the square root of -1)
+    sqrt(2 + x) to x^3           sqrt(2) + sqrt(2)x/4 - sqrt(2)x^2/32 + sqrt(2)x^3/128 + O(x^4)
+    exp(sqrt(2)) to 30 places    4.113250378782927517173581815140  (use prelude)
+
+A named root whose equation factors is reduced to the factor its root satisfies. The parallelogram follows
+starts with surds: starting y = sqrt(2) a^(1/2) x^(1/2).
+
 Not yet:
-- irrational numbers in coefficients (the starts ±sqrt(2ax) are listed but not followed);
+- division by quantities with several different surds nested in each other's equations;
+- functions at complex numbers;
 - division by a sum of letters;
 - arithmetic on fractional-power results;
 - values at approximate arguments.

@@ -381,8 +381,11 @@ static jmp_buf need_series;                             /* the exact pass meets 
 
 static C as_c(Val v) { return v.kind == V_POLY ? v.c : c_const(v.q); }
 
+static Ball ball_of_c(C a, int64_t prec);
+
 static Ball as_ball(Val v) {
     switch (v.kind) {
+    case V_POLY: return ball_of_c(v.c, work_prec);
     case V_Q: return b_from_q(v.q, work_prec);
     case V_ROOT: return b_from_root(v.root, work_prec);
     case V_BALL: return v.ball;
@@ -392,6 +395,69 @@ static Ball as_ball(Val v) {
 }
 
 static int is_exact(Val v) { return v.kind == V_Q || v.kind == V_POLY; }
+
+/* the n-th root of every number between lo > 0 and hi, as one ball: roots of both ends by Newton's resolution */
+static Ball ball_root_between(Q lo, Q hi, int64_t n, int64_t prec) {
+    Root *ends[2];
+    Q qs[2] = {lo, hi};
+    for (int k = 0; k < 2; k++) {
+        Poly p; p.deg = (int)n; p.var = "y";
+        p.c = arena_alloc((size_t)(n + 1) * sizeof(Q));
+        for (int i = 0; i <= n; i++) p.c[i] = q_from_z(z_zero());
+        p.c[n] = q_from_z(z_from_i64(1)); p.c[0] = q_neg(qs[k]);
+        Z g = z_iroot(z_div_round(z_mul_pow10(qs[k].num, 6 * n), qs[k].den), (unsigned)n);
+        ends[k] = root_new(p, q_make(g, z_pow10(6)), 6);
+        root_refine(ends[k], prec + 5);
+        if (!ends[k]->certified) nm_fail("internal: a root of a radicand could not be certified");
+    }
+    int64_t D = ends[0]->D > ends[1]->D ? ends[0]->D : ends[1]->D;
+    Z L = z_sub(z_mul_pow10(ends[0]->X, D - ends[0]->D), z_mul_pow10(z_from_i64(ends[0]->w), D - ends[0]->D));
+    Z U = z_add(z_mul_pow10(ends[1]->X, D - ends[1]->D), z_mul_pow10(z_from_i64(ends[1]->w), D - ends[1]->D));
+    Ball b;
+    b.m = z_div_round(z_add(L, U), z_from_i64(2));
+    b.r = z_add(z_div_round(z_sub(U, L), z_from_i64(2)), z_from_i64(1));
+    b.e = -D;
+    return b;
+}
+
+static Ball ball_of_surd(int l, int64_t prec) {
+    if (letter_is_imag(l)) nm_fail("a complex number has no single real value here (functions at complex numbers come later)");
+    Root *r = surd_root(l);
+    if (r) return b_from_root(r, prec);
+    C A; int n, neg;
+    if (!surd_radical(l, &A, &n, &neg)) nm_fail("internal: a surd with no way to its value");
+    Ball a = ball_of_c(A, prec + 10);
+    Z lo = z_sub(a.m, a.r), hi = z_add(a.m, a.r);
+    if (lo.s <= 0) nm_fail("the sign of %s could not be fixed at this precision", c_to_str(A));
+    Q den = a.e >= 0 ? q_from_z(z_pow10(a.e)) : q_make(z_from_i64(1), z_pow10(-a.e));
+    return ball_root_between(q_mul(q_from_z(lo), den), q_mul(q_from_z(hi), den), n, prec);
+}
+
+static Ball ball_of_c(C a, int64_t prec) {
+    if (c_has_plain(a)) nm_fail("an unknown letter cannot be mixed with approximate numbers");
+    Ball acc = b_from_q(q_from_z(z_zero()), prec);
+    for (int t = 0; t < a.nt; t++) {
+        Ball term = b_from_q(a.t[t].k, prec);
+        for (int l = 0; l < letter_count(); l++) {
+            int64_t e;
+            if (!q_sign(a.t[t].e[l])) continue;
+            if (!z_fits_i64(a.t[t].e[l].num, &e) || !q_is_int(a.t[t].e[l])) nm_fail("internal: a fractional power of a surd");
+            term = b_mul(term, b_pow(ball_of_surd(l, prec), e, prec), prec);
+        }
+        acc = b_add(acc, term, prec);
+    }
+    return acc;
+}
+
+/* a quantity with i, as its real and imaginary parts */
+static int split_imag(C a, C *re, C *im) {
+    int li = -1;
+    for (int l = 0; l < letter_count(); l++) if (letter_is_imag(l) && c_uses(a, l)) li = l;
+    if (li < 0) return 0;
+    *re = c_coeff_of(a, li, q_from_z(z_zero()));
+    *im = c_coeff_of(a, li, q_from_z(z_from_i64(1)));
+    return 1;
+}
 static Q qi(int64_t v) { return q_from_z(z_from_i64(v)); }
 
 static Q parse_number(const char *s, size_t len) {
@@ -404,23 +470,11 @@ static Q parse_number(const char *s, size_t len) {
     return q_make(z_from_dec(all, ip + fp), z_pow10((int64_t)fp));   /* 0.1 is exactly 1/10 */
 }
 
-/* c^(1/n) for a rational c: exact when c is a perfect n-th power, otherwise a root of B*y^n - A */
+/* c^(1/n) for a rational c: exact, or a number times a surd (a letter with its equation) */
+static Val vc(C c);
 static Val nth_root(Q c, int64_t n) {
     if (n < 2 || n > 1000) nm_fail("root index out of range");
-    int neg = q_sign(c) < 0;
-    if (neg && n % 2 == 0) nm_fail("an even root of a negative number is not real (complex numbers come later)");
-    Q exact;
-    if (q_root_exact(c, n, &exact)) return vq(exact);
-    Z A = z_abs(c.num), B = c.den;
-    int64_t D0 = 6;                                     /* start from the integer root, as by hand */
-    Z scaled = z_iroot(z_div_round(z_mul_pow10(A, D0 * n), B), (unsigned)n);
-    Q guess = q_make(neg ? z_neg(scaled) : scaled, z_pow10(D0));
-    Poly p = p_pow(p_var("y"), (unsigned)n);
-    p = p_sub(p_scale(p, q_from_z(B)), p_const(q_from_z(neg ? z_neg(A) : A)));
-    Val v; memset(&v, 0, sizeof v);
-    v.kind = V_ROOT;
-    v.root = root_new(p, guess, D0);
-    return v;
+    return vc(c_radical_q(c, n));
 }
 
 /* a quantity in one letter with whole powers, as a polynomial (var: the letter required, or NULL for any) */
@@ -458,7 +512,7 @@ static Poly c_to_poly(C c, const char *var) {
 /* ---------------- the exact pass: numbers, rationals, polynomials ---------------- */
 
 static Val eval(Node *n);
-static Val series_value(Binding *b, Q a);
+static Val series_value(Binding *b, Val arg);
 
 /* while reading an equation's coefficients, the unknown and its derivatives stand for given numbers */
 static struct { int active; const char *u; size_t ul; Q vals[8]; } ovr;
@@ -500,7 +554,7 @@ static Val arith(char op, Val a, Val b) {
         case '-': return vc(c_sub(x, y));
         case '*': return vc(c_mul(x, y));
         case '/':
-            if (!c_is_monomial(y) && !c_is_zero(y)) longjmp(need_series, 1);
+            if (!c_is_monomial(y) && c_has_plain(y)) longjmp(need_series, 1);
             return vc(c_div(x, y));                      /* by a single term, exactly: a a / x = a^2 x^-1 */
         }
     }
@@ -537,6 +591,7 @@ static Val name_val(const char *s, size_t len, int primes) {
         if (b->v.kind == V_NUMREC) return eval(parse_text(b->v.src));   /* carried again to the places now asked */
         return b->v;
     }
+    if (len == 1 && s[0] == 'i') return vc(c_imag_unit());   /* i: the square root of -1 */
     return vc(c_letter(letter_index(s, len)));       /* a letter */
 }
 
@@ -600,9 +655,9 @@ static Val eval(Node *n) {
         if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
         if (b && b->v.kind == V_REC) {
             Val arg = eval(n->a);
-            if (arg.kind == V_POLY) longjmp(need_series, 1);
-            if (arg.kind != V_Q) nm_fail("the value of %s needs an exact number as its argument in this version", b->name);
-            return series_value(b, arg.q);
+            if (arg.kind == V_POLY && c_has_plain(arg.c)) longjmp(need_series, 1);
+            if (arg.kind == V_POLY && c_has_plain(arg.c)) longjmp(need_series, 1);
+            return series_value(b, arg);
         }
         if (b && b->v.kind == V_POLY) {                     /* a polynomial in one letter, at a number */
             Val arg = eval(n->a);
@@ -781,6 +836,7 @@ static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
     }
     if (same(s, len, cx->var, strlen(cx->var))) return dconst(s_var(cx->n));
     Binding *b = lookup(s, len);
+    if (!b && len == 1 && s[0] == 'i') return dconst(s_const(c_imag_unit(), cx->n));
     if (!b) return dconst(s_const(c_letter(letter_index(s, len)), cx->n));    /* a given letter: a, b, ... */
     switch (b->v.kind) {
     case V_Q: return dconst(s_const(c_const(b->v.q), cx->n));
@@ -997,7 +1053,8 @@ static void letters(Node *n, Letters *L, const char *skip, size_t skiplen) {
         if (b && b->v.kind == V_REC && n->kind == N_NAME) add_letter(L, b->v.var, strlen(b->v.var));
         else if (b && b->v.kind == V_POLY) {
             for (int l = 0; l < letter_count(); l++) if (c_uses(b->v.c, l)) add_letter(L, letter_name(l), strlen(letter_name(l)));
-        } else if (!b && !(skip && same(n->s, n->len, skip, skiplen))) add_letter(L, n->s, n->len);
+        } else if (!b && !(skip && same(n->s, n->len, skip, skiplen)) && !(n->len == 1 && n->s[0] == 'i'))
+            add_letter(L, n->s, n->len);
     }
     if ((n->kind == N_DERIV || n->kind == N_INTEG) && n->len) add_letter(L, n->s, n->len);
     if (n->kind == N_ROOT && n->nconds) { skip = n->conds[0].s; skiplen = n->conds[0].len; }
@@ -1115,7 +1172,8 @@ static Ball ball_widen(Ball b, Q err) {               /* add |err| to the radius
     return b;
 }
 
-static Val series_value(Binding *b, Q a) {
+static Val series_value(Binding *b, Val arg) {
+    Q a = arg.kind == V_Q ? arg.q : q_from_z(z_zero());
     Node *root = parse_text(b->v.src);
     if (root->kind != N_ROOT || !root->nconds)
         nm_fail("the value of %s needs its definition as an equation with a start (root of ..., y(0) = ...)", b->name);
@@ -1125,6 +1183,12 @@ static Val series_value(Binding *b, Q a) {
     Rule R = term_rule(root, b->v.var, r);
     if (R.D.deg < 0) nm_fail("the equation fixes no term of %s", b->name);
     Q rr = qabs(a);
+    Ball Aball;
+    if (arg.kind != V_Q) {                               /* an approximate argument: the tail with an upper bound of |a| */
+        Aball = as_ball(arg);
+        Z top = z_add(z_abs(Aball.m), Aball.r);
+        rr = Aball.e >= 0 ? q_from_z(z_mul_pow10(top, Aball.e)) : q_make(top, z_pow10(-Aball.e));
+    }
     /* how fast the terms shrink in the end: sum over t of lim |N_t / D| r^t must be below 1 */
     Q ginf = qi(0);
     for (int t = 1; t <= R.T; t++) {
@@ -1133,7 +1197,7 @@ static Val series_value(Binding *b, Q a) {
     }
     if (q_cmp_one(ginf) >= 0)
         nm_fail("at %s the terms of %s shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2",
-                q_to_str(a), b->name);
+                arg.kind == V_Q ? q_to_str(a) : "this argument", b->name);
     /* from where on the rule holds: beyond the integer roots of D and the inhomogeneous terms */
     Q cb = qi(0);
     for (int i = 0; i < R.D.deg; i++) {
@@ -1164,12 +1228,12 @@ static Val series_value(Binding *b, Q a) {
         if (q_cmp(cn, c[n]) != 0) nm_fail("internal check failed: the term rule of %s disagrees with its resolution (vitiose)", b->name);
     }
     ncoef = nseed;
-    if (q_sign(a) == 0) return vq(c[0]);
+    if (arg.kind == V_Q && q_sign(a) == 0) return vq(c[0]);
     /* sum term by term in places (the coefficients exact, the powers of a carried as balls); stop when the rest
      * is certainly below the places asked */
     int64_t want = work_prec - GUARD_DIGITS + 10;
     Q eps = q_make(z_from_i64(1), z_pow10(want));
-    Ball S = b_from_q(qi(0), work_prec), A = b_from_q(a, work_prec), P = b_from_q(qi(1), work_prec);
+    Ball S = b_from_q(qi(0), work_prec), A = arg.kind == V_Q ? b_from_q(a, work_prec) : Aball, P = b_from_q(qi(1), work_prec);
     Ball *term = arena_alloc((size_t)cap * sizeof(Ball));
     for (int k = 0;; k++) {
         if (k >= ncoef) {
@@ -1282,6 +1346,7 @@ static Val seq_term(Binding *b, int64_t k) {
 
 /* ---------------- writing results ---------------- */
 
+static char *show(Val v, int64_t places, int asked);
 static char *show(Val v, int64_t places, int asked) {
     char *out = arena_alloc(4096), *body;
     switch (v.kind) {
@@ -1297,10 +1362,30 @@ static char *show(Val v, int64_t places, int asked) {
             else snprintf(out, 4096, "[exact value %s, rounded to %lld places]", q_to_str(v.q), (long long)places);
         }
         break;
-    case V_POLY:
-        body = c_to_str(v.c);
-        snprintf(out, 4096, "[exact]");
-        break;
+    case V_POLY: {
+        C re, im;
+        int lone = v.c.nt == 1 && q_is_int(v.c.t[0].k) && z_is_one(v.c.t[0].k.num);
+        int li = -1, nl = 0;
+        for (int l = 0; l < letter_count(); l++) if (c_uses(v.c, l)) { li = l; nl++; }
+        if (asked && lone && nl == 1 && letter_is_surd(li) && surd_root(li) && q_cmp_one(v.c.t[0].e[li]) == 0) {
+            Val rv; memset(&rv, 0, sizeof rv); rv.kind = V_ROOT; rv.root = surd_root(li);
+            return show(rv, places, asked);                /* a named root: its certified places */
+        }
+        if (!asked || c_has_plain(v.c)) { body = c_to_str(v.c); snprintf(out, 4096, "[exact]"); break; }
+        if (split_imag(v.c, &re, &im)) {                   /* a + b i */
+            Ball br = ball_of_c(re, work_prec), bi = ball_of_c(im, work_prec);
+            int64_t kr = b_guaranteed_places(br, places), ki = b_guaranteed_places(bi, places);
+            int64_t k = kr < ki ? kr : ki;
+            if (k < 0) nm_fail("not even the units place is guaranteed");
+            char *sr = fixed_str(b_round_to_places(br, k), k), *si = fixed_str(b_round_to_places(bi, k), k);
+            body = arena_alloc(strlen(sr) + strlen(si) + 8);
+            if (si[0] == '-') sprintf(body, "%s - %si", sr, si + 1); else sprintf(body, "%s + %si", sr, si);
+            if (k == places) snprintf(out, 4096, "[bounded: %lld places guaranteed]", (long long)k);
+            else snprintf(out, 4096, "[bounded: only %lld of %lld places guaranteed]", (long long)k, (long long)places);
+            break;
+        }
+        return show(vball(ball_of_c(v.c, work_prec)), places, asked);
+    }
     case V_ROOT: {
         Root *r = v.root;
         root_refine(r, places);
@@ -1571,6 +1656,11 @@ char *nm_run(const char *line, int *failed) {
         v.kind = V_REC;
         v.src = dup_perm(src_start, (size_t)(src_end - src_start));
         v.var = vname;
+    }
+    if (let_name && v.kind == V_ROOT) {                   /* a named root: a letter with its equation */
+        C r = c_surd_from_root(dup_perm(let_name, let_len), v.root);
+        Q k;
+        if (c_const_value(r, &k)) v = vq(k); else { memset(&v, 0, sizeof v); v.kind = V_POLY; v.c = r; }
     }
     if (let_name) {
         bind(let_name, let_len, v);

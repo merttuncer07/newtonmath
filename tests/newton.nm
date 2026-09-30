@@ -28,3 +28,5 @@ root of y^2 = x^2 + x^3 for y starting y = -x to x^3
 # a multiple start: the parallelogram is applied again
 root of (y - x)^2 = x^3 for y starting y = x to x^3
 root of (y - x)^2 = x^3 for y starting y = x + x^(3/2) to x^3
+# with surds: Newton's fourth start, sqrt(2ax)
+root of y^6 - 5x y^5 + x^3/a y^4 - 7a^2 x^2 y^2 + 6a^3 x^3 + b^2 x^4 = 0 for y starting y = sqrt(2) a^(1/2) x^(1/2) to x^2

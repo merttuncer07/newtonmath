@@ -29,8 +29,8 @@ error: y(0) = 2 does not satisfy the equation at x = 0
 error: the start is a multiple root: the next term is not fixed by the lowest terms (use the parallelogram: root of ... for y)
 error: missing start: y'(0)
 1/x  [exact]
-error: the series starts with 2, whose power 1/2 is not exact here (irrational numbers come later)
+sqrt(2) + sqrt(2)x/4 - sqrt(2)x^2/32 + sqrt(2)x^3/128 - 5sqrt(2)x^4/2048 + 7sqrt(2)x^5/8192 - 21sqrt(2)x^6/65536 + 33sqrt(2)x^7/262144 - 429sqrt(2)x^8/8388608 + O(x^9)
 error: at 1 the terms of log1p shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2
-error: the value of exp needs an exact number as its argument in this version
+4.11325037878292751717  [bounded: 20 places guaranteed]
 s2 = 1 + x/2 - x^2/8 + x^3/16 - 5x^4/128 + 7x^5/256 - 21x^6/1024 + 33x^7/2048 - 429x^8/32768 + O(x^9)
 error: the value of s2 needs its definition as an equation with a start (root of ..., y(0) = ...)
