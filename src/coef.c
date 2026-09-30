@@ -520,16 +520,24 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     for (int l = 0; l < nletters; l++) order[l] = l;
     for (int a = 1; a < nletters; a++)
         for (int b = a; b > 0; b--) {
-            int sb = alg[order[b]].d > 0, sa = alg[order[b - 1]].d > 0;
-            int before = (sb && !sa) || (sb == sa && strcmp(letter_names[order[b - 1]], letter_names[order[b]]) > 0);
+            int sb = (alg[order[b]].d > 0) + (alg[order[b]].d > 0 && !alg[order[b]].imag);   /* 2: surds, 1: i, 0: letters */
+            int sa = (alg[order[b - 1]].d > 0) + (alg[order[b - 1]].d > 0 && !alg[order[b - 1]].imag);
+            int before = sb > sa || (sb == sa && strcmp(letter_names[order[b - 1]], letter_names[order[b]]) > 0);
             if (!before) break;
             int t2 = order[b]; order[b] = order[b - 1]; order[b - 1] = t2;
         }
     for (int oi = 0; oi < nletters; oi++) {
         int l = order[oi];
+        if (alg[l].imag) continue;
         int s = q_sign(t.e[l]);
         if (s > 0) { pn += sprintf(pn, "%s", letter_power(l, t.e[l])); nfac++; }
         if (s < 0) { pd += sprintf(pd, "%s", letter_power(l, q_neg(t.e[l]))); dfac++; }
+    }
+    for (int oi = 0; oi < nletters; oi++) {          /* i last: sqrt(3)i, 2a*i */
+        int l = order[oi];
+        if (!alg[l].imag || q_sign(t.e[l]) == 0) continue;
+        if (pn > num && ((pn[-1] >= 'a' && pn[-1] <= 'z') || (pn[-1] >= 'A' && pn[-1] <= 'Z'))) *pn++ = '*';
+        pn += sprintf(pn, "i"); nfac++;
     }
     if (extra_name && q_sign(extra_e) > 0) {
         char *s = arena_alloc(strlen(extra_name) + 64);

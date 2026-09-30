@@ -1,3 +1,4 @@
 newtonmath
 tests/check_z
+tests/unit/*_test
 *.o

@@ -160,6 +160,19 @@ typedef struct Root {
 
 char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order);
 
+/* ---- systems: extermination by resultants (elim.c) ---- */
+#define NM_MAXSOL 256
+typedef struct {
+    int nv, n;              /* unknowns; solutions found */
+    C **val;                /* val[s][j]: the value of the j-th unknown in solution s */
+    int curve;              /* some solutions are not isolated (a curve or more) */
+    int unresolved;         /* roots not separated (complex roots of factors above degree two) */
+    int rejected;           /* candidates brought in by extermination and refused by substitution */
+} Solutions;
+C det_nodiv(C *m, int n);
+C elim_resultant(C A, C B, int v);
+Solutions elim_solve(C *eqs, int ne, int *vars, int nv);
+
 Root *root_new(Poly p, Q guess, int64_t start_places);
 void root_refine(Root *r, int64_t places);    /* continue Newton's resolution to at least `places` decimals */
 char *root_equation_str(Root *r);
