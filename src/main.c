@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/resource.h>
 #include <unistd.h>
 
 char *nm_run(const char *line, int *failed);
@@ -27,6 +28,12 @@ static int run_stream(FILE *in, int interactive) {
 }
 
 int main(int argc, char **argv) {
+    /* rules may call themselves a few thousand deep: give the stack room (the limit is checked as it grows) */
+    struct rlimit rl;
+    if (getrlimit(RLIMIT_STACK, &rl) == 0 && rl.rlim_cur != RLIM_INFINITY && rl.rlim_cur < (256u << 20)) {
+        rl.rlim_cur = (rl.rlim_max == RLIM_INFINITY || rl.rlim_max >= (256u << 20)) ? (256u << 20) : rl.rlim_max;
+        setrlimit(RLIMIT_STACK, &rl);
+    }
     if (argc == 3 && !strcmp(argv[1], "-e")) {
         int failed;
         char *out = nm_run(argv[2], &failed);

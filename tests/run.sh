@@ -59,5 +59,18 @@ if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL
 n=$((n+1))
 if ! ./newtonmath tests/newton.nm | diff -u tests/newton.out - ; then echo "FAIL: tests/newton.nm"; fail=$((fail+1)); fi
 
+# rules, sequences, sums and cases
+n=$((n+1))
+if ! ./newtonmath tests/rules.nm | diff -u tests/rules.out - ; then echo "FAIL: tests/rules.nm"; fail=$((fail+1)); fi
+# a deep rule and a long table, against bc
+if command -v bc >/dev/null 2>&1; then
+  mine=$(printf 'let fact(n) = 1 if n = 0, n * fact(n - 1) otherwise\nfact(300)\n' | ./newtonmath | tail -1 | cut -d' ' -f1)
+  theirs=$(printf 'p=1\nfor(i=1;i<=300;i++) p*=i\np\n' | BC_LINE_LENGTH=0 bc)
+  n=$((n+1)); [ "$mine" = "$theirs" ] || { echo "FAIL: fact(300) differs from bc"; fail=$((fail+1)); }
+  mine=$(printf 'let F[0] = 0, F[1] = 1, F[k] = F[k - 1] + F[k - 2]\nF[2000]\n' | ./newtonmath | tail -1 | cut -d' ' -f1)
+  theirs=$(printf 'a=0\nb=1\nfor(i=0;i<2000;i++){t=a+b;a=b;b=t}\na\n' | BC_LINE_LENGTH=0 bc)
+  n=$((n+1)); [ "$mine" = "$theirs" ] || { echo "FAIL: F[2000] differs from bc"; fail=$((fail+1)); }
+fi
+
 echo "run.sh: $n checks, $fail failed"
 [ $fail -eq 0 ]

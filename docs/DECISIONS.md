@@ -351,3 +351,21 @@ Found in Newton's text: for x^2y^5 − 3c^4xy^2 − c^5x^2 + c^7 = 0 he writes t
 c^7/xx. The terms on the ruler, x^2y^5 + c^7, give y^5 = −c^7/x^2, so the real start is −c^(7/5)x^(−2/5).
 Matches Newton: the literal resolution (all five printed terms); the start 3x; the four starts of the y^6
 example (±sqrt(ax) followed, ±sqrt(2ax) listed as irrational).
+
+# Slice 5: toward the language's own compiler, by the mathematical road
+Decision (Mert): (a). The language stays for mathematics. It gains Newton's way of writing repetition, so that
+its methods can move from C into the language one by one. A small kernel (numbers, reader, printer) stays in C
+until a compiler for it comes last. Newton: the foundation is the smallest set of operations (M06); repetition
+is a rule ("eâdem operatione sæpiùs repetitâ"; each term from the one before, A, B, C, D); tables are built
+forward (M26); only the bottleneck part of the tool is made by hand.
+Built:
+- `let f(x, y) = ...` rules, with lexical frames;
+- `let A[0] = ..., A[k] = ...` sequences, with tables built forward and invalidated by any new definition;
+- `v1 if c1, ..., v otherwise` cases;
+- `sum(... for k = a to b)`.
+Proof of the road: Newton's binomial rule, his resolution of y^3 − 2y − 5 and his Problem 2 table are written in
+the language, and each agrees with the engine built into C.
+Small choices made while coding:
+- rules may call themselves up to 4000 deep; sequences have no such limit;
+- the stack limit is raised to 256 MB at start;
+- a sequence's terms must be exact.

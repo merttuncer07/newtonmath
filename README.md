@@ -62,6 +62,20 @@ it is not clear.
 The parallelogram finds the first term of every root. A start that is a multiple root is refined by applying it
 again. The finished root is substituted back into the equation.
 
+## Rules, sequences and sums (slice 5)
+
+Newton wrote repetition as a rule: each term from the one before, and tables built forward. The language has
+rules, sequences defined by their earlier terms, definition by cases, and sums:
+
+    let fact(n) = 1 if n = 0, n * fact(n - 1) otherwise
+    let fib[0] = 0, fib[1] = 1, fib[k] = fib[k - 1] + fib[k - 2]
+    let binom[0] = 1, binom[k] = (m - k + 1)/k * binom[k - 1]       Newton's binomial rule
+    sum(binom[k] x^k for k = 0 to 8) - sqrt(1 + x) to x^8             O(x^9): agrees with the engine
+
+A sequence keeps its table and is built forward, so fib[2000] needs no deep recursion. A definition by
+cases compares exact numbers. Rules work on numbers, letters and series. This is the way toward writing the
+language's own methods in the language (see docs/DECISIONS.md).
+
 Not yet:
 - irrational numbers in coefficients (the starts ±sqrt(2ax) are listed but not followed);
 - division by a sum of letters;

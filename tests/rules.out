@@ -1,0 +1,29 @@
+f(x) = x^2 + 1  [rule]
+10  [exact]
+a^2 + 2a + 2  [exact]
+g(x, y) = x^2 + y^2  [rule]
+25  [exact]
+fact(n) = 1 if n = 0, n * fact(n - 1) otherwise  [rule]
+2432902008176640000  [exact]
+fib[0] = 0, fib[1] = 1, fib[k] = fib[k - 1] + fib[k - 2]  [rule]
+354224848179261915075  [exact]
+binom[0] = 1, binom[k] = (m - k + 1)/k * binom[k - 1]  [rule]
+m^3/6 - m^2/2 + m/3  [exact]
+m = 1/2  [exact]
+-429x^8/32768 + 33x^7/2048 - 21x^6/1024 + 7x^5/256 - 5x^4/128 + x^3/16 - x^2/8 + x/2 + 1  [exact]
+O(x^9)
+m = 1/3  [exact]
+O(x^7)
+N[0] = 2, N[k] = N[k - 1] - (N[k - 1]^3 - 2N[k - 1] - 5)/(3N[k - 1]^2 - 2)  [rule]
+2.094551481542326591482386540579  [exact fraction, rounded to 30 places]
+0.000000000000000000000000000000  [bounded: 30 places guaranteed]
+d(j) = 1 if j = 0, -3 if j = 1, 1 if j = 2, 0 otherwise  [rule]
+c[0] = 0, c[1] = 1, c[k] = (d(k - 1) + c[k - 1] + c[k - 2])/k  [rule]
+-x^6/45 + x^5/30 - x^4/6 + x^3/3 - x^2 + x  [exact]
+O(x^7)
+using prelude (6 statements)
+1 + x^2 - x^4/3 + 2x^6/45 + O(x^7)
+bad[k] = bad[k] + 1  [rule]
+error: bad[0] is needed to find itself: a term must come from earlier terms
+error: fact calls itself more than 4000 deep; write it as a sequence, whose table is built forward
+error: f takes 1 argument

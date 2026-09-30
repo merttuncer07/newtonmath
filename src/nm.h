@@ -11,7 +11,7 @@
 #include <stddef.h>
 
 /* ---- errors and memory ---- */
-void nm_fail(const char *fmt, ...);            /* abort the current statement with a message */
+__attribute__((noreturn, format(printf, 1, 2))) void nm_fail(const char *fmt, ...);            /* abort the current statement with a message */
 void *arena_alloc(size_t bytes);               /* temporary memory, freed after each statement */
 void arena_reset(void);
 void *perm_alloc(size_t bytes);                /* memory that outlives the statement */
