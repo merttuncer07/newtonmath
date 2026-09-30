@@ -63,6 +63,8 @@ Q q_div(Q a, Q b);
 Q q_neg(Q a);
 Q q_pow(Q a, int64_t e);
 int q_sign(Q a);
+int q_cmp(Q a, Q b);
+int q_cmp_one(Q a);
 int q_is_int(Q a);
 char *q_to_str(Q a);
 Q q_persist(Q a);

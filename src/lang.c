@@ -32,7 +32,7 @@ extern char nm_error_msg[512];
 /* ---------------- tokens ---------------- */
 
 enum { T_END, T_NUM, T_NAME, T_OP, T_KEY };
-typedef struct { int kind; const char *s; size_t len; char op; int primes; } Tok;
+typedef struct { int kind; const char *s; size_t len; char op; int primes; const char *at; } Tok;   /* at: where in the line */
 
 static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", NULL};
 
@@ -46,7 +46,7 @@ static int is_key(const char *s, size_t len) {
 }
 
 static void push(int kind, const char *s, size_t len, char op) {
-    Tok t = {kind, s, len, op, 0};
+    Tok t = {kind, s, len, op, 0, s};
     toks[ntok++] = t;
 }
 
@@ -73,14 +73,14 @@ static void lex(const char *src) {
             i = j; continue;
         }
         if (strchr("+-*/^()=,", c)) { push(T_OP, src + i, 1, (char)c); i++; continue; }
-        if (!strncmp(src + i, "\xE2\x88\x9A", 3)) { push(T_KEY, "sqrt", 4, 0); i += 3; continue; }      /* √ */
+        if (!strncmp(src + i, "\xE2\x88\x9A", 3)) { push(T_KEY, "sqrt", 4, 0); toks[ntok - 1].at = src + i; i += 3; continue; }      /* √ */
         if (!strncmp(src + i, "\xC3\x97", 2) || !strncmp(src + i, "\xC2\xB7", 2)) {                     /* × · */
-            push(T_OP, "*", 1, '*'); i += 2; continue;
+            push(T_OP, "*", 1, '*'); toks[ntok - 1].at = src + i; i += 2; continue;
         }
-        if (!strncmp(src + i, "\xE2\x88\x92", 3)) { push(T_OP, "-", 1, '-'); i += 3; continue; }         /* − */
+        if (!strncmp(src + i, "\xE2\x88\x92", 3)) { push(T_OP, "-", 1, '-'); toks[ntok - 1].at = src + i; i += 3; continue; }         /* − */
         if (!strncmp(src + i, "\xC2\xB2", 2) || !strncmp(src + i, "\xC2\xB3", 2)) {                     /* ² ³ */
-            push(T_OP, "^", 1, '^');
-            push(T_NUM, src[i + 1] == '\xB2' ? "2" : "3", 1, 0);
+            push(T_OP, "^", 1, '^'); toks[ntok - 1].at = src + i;
+            push(T_NUM, src[i + 1] == '\xB2' ? "2" : "3", 1, 0); toks[ntok - 1].at = src + i + 1;
             i += 2; continue;
         }
         nm_fail("unexpected character '%c'", c);
@@ -231,7 +231,7 @@ static Node *parse_text(const char *src) {
 
 /* ---------------- values ---------------- */
 
-enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC };
+enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC };   /* recipes: a series, an approximate number */
 typedef struct { int kind; Q q; Poly p; Root *root; Ball ball; const char *src, *var; } Val;
 
 typedef struct Binding { char *name; Val v; struct Binding *next; } Binding;
@@ -305,6 +305,10 @@ static Val nth_root(Q c, int64_t n) {
 /* ---------------- the exact pass: numbers, rationals, polynomials ---------------- */
 
 static Val eval(Node *n);
+static Val series_value(Binding *b, Q a);
+
+/* while reading an equation's coefficients, the unknown and its derivatives stand for given numbers */
+static struct { int active; const char *u; size_t ul; Q vals[8]; } ovr;
 
 static Val power_val(Val base, Val ex) {
     if (ex.kind != V_Q) nm_fail("the exponent must be an exact number");
@@ -357,10 +361,15 @@ static Val arith(char op, Val a, Val b) {
 }
 
 static Val name_val(const char *s, size_t len, int primes) {
+    if (ovr.active && same(s, len, ovr.u, ovr.ul)) {
+        if (primes > 7) nm_fail("derivatives above the seventh are not in this version");
+        return vq(ovr.vals[primes]);
+    }
     if (primes) nm_fail("%.*s' marks a derivative; it belongs inside an equation with a start", (int)len, s);
     Binding *b = lookup(s, len);
     if (b) {
         if (b->v.kind == V_REC) longjmp(need_series, 1);
+        if (b->v.kind == V_NUMREC) return eval(parse_text(b->v.src));   /* carried again to the places now asked */
         return b->v;
     }
     return vpoly(p_var(dup_arena(s, len)));            /* an unknown letter */
@@ -375,7 +384,20 @@ static Val eval(Node *n) {
     case N_SQRT: return power_val(eval(n->a), vq(q_make(z_from_i64(1), z_from_i64(2))));
     case N_APPLY: {
         Binding *b = lookup(n->s, n->len);
-        if (b && b->v.kind == V_REC) longjmp(need_series, 1);
+        if (b && b->v.kind == V_REC) {
+            Val arg = eval(n->a);
+            if (arg.kind == V_POLY) longjmp(need_series, 1);
+            if (arg.kind != V_Q) nm_fail("the value of %s needs an exact number as its argument in this version", b->name);
+            return series_value(b, arg.q);
+        }
+        if (b && b->v.kind == V_POLY) {                     /* a polynomial at a number */
+            Val arg = eval(n->a);
+            if (arg.kind == V_Q) {
+                Q acc = q_from_z(z_zero());
+                for (int i = b->v.p.deg; i >= 0; i--) acc = q_add(q_mul(acc, arg.q), b->v.p.c[i]);
+                return vq(acc);
+            }
+        }
         return arith('*', name_val(n->s, n->len, n->primes), eval(n->a));
     }
     case N_DERIV: case N_INTEG: {
@@ -674,6 +696,218 @@ static void letters(Node *n, const char **found, size_t *flen, const char *skip,
     letters(n->c, found, flen, skip, skiplen);
 }
 
+/* ---------------- the value of a series at a number ---------------- */
+
+/* The term rule. If the equation is  sum_j p_j(x) y^(j) + h(x) = 0  with polynomials p_j and h, then putting
+ * y = sum c_k x^k gives, for n large enough,
+ *     D(n) c_n = sum_{t>=1} N_t(n) c_{n-t} - h_{n-s},
+ * each term from the ones before, as Newton's A, B, C, D. */
+typedef struct { int s, T; Poly D; Poly *N; Poly h; } Rule;
+
+static Poly poly_of(Val v, const char *var) {
+    if (v.kind == V_Q) return p_const(v.q);
+    if (v.kind == V_POLY && !strcmp(v.p.var, var)) return v.p;
+    nm_fail("the equation's coefficients must be polynomials in %s", var);
+    return p_const(qi(0));
+}
+
+static Poly falling(Poly n, int64_t shift, int j) {   /* (n - shift)(n - shift - 1) ... j factors */
+    Poly r = p_const(qi(1));
+    for (int u = 0; u < j; u++) r = p_mul(r, p_sub(n, p_const(qi(shift + u))));
+    return r;
+}
+
+static Q p_at(Poly p, Q x) {
+    Q acc = qi(0);
+    for (int i = p.deg; i >= 0; i--) acc = q_add(q_mul(acc, x), p.c[i]);
+    return acc;
+}
+
+static int p_equal(Poly a, Poly b) { return p_sub(a, b).deg < 0; }
+
+static Rule term_rule(Node *root, const char *var, int r) {
+    Node *E = bin('-', root->a, root->b);
+    jmp_buf saved;
+    memcpy(saved, need_series, sizeof saved);
+    if (setjmp(need_series)) {
+        memcpy(need_series, saved, sizeof saved);
+        ovr.active = 0;
+        nm_fail("a value needs the equation with polynomial coefficients (multiply out the denominators)");
+    }
+    ovr.active = 1; ovr.u = root->conds[0].s; ovr.ul = root->conds[0].len;
+    for (int j = 0; j < 8; j++) ovr.vals[j] = qi(0);
+    Poly h = poly_of(eval(E), var);
+    Poly *p = arena_alloc((size_t)(r + 1) * sizeof(Poly));
+    for (int j = 0; j <= r; j++) {                           /* read off each coefficient, and check linearity */
+        ovr.vals[j] = qi(1);
+        p[j] = p_sub(poly_of(eval(E), var), h);
+        ovr.vals[j] = qi(2);
+        Poly twice = p_sub(poly_of(eval(E), var), h);
+        ovr.vals[j] = qi(0);
+        if (!p_equal(twice, p_scale(p[j], qi(2)))) goto nonlinear;
+        for (int i = 0; i < j; i++) {
+            ovr.vals[i] = qi(1); ovr.vals[j] = qi(1);
+            Poly both = p_sub(poly_of(eval(E), var), h);
+            ovr.vals[i] = qi(0); ovr.vals[j] = qi(0);
+            if (!p_equal(both, p_add(p[i], p[j]))) goto nonlinear;
+        }
+    }
+    ovr.active = 0;
+    memcpy(need_series, saved, sizeof saved);
+    Rule R; memset(&R, 0, sizeof R);
+    R.s = -1000000;
+    int lowshift = 1000000;
+    for (int j = 0; j <= r; j++)
+        for (int i = 0; i <= p[j].deg; i++)
+            if (q_sign(p[j].c[i])) { if (j - i > R.s) R.s = j - i; if (j - i < lowshift) lowshift = j - i; }
+    if (R.s == -1000000) nm_fail("the equation does not involve the unknown");
+    R.T = R.s - lowshift;
+    Poly nvar = p_var("n");
+    R.D = p_const(qi(0));
+    R.N = arena_alloc((size_t)(R.T + 1) * sizeof(Poly));
+    for (int t = 0; t <= R.T; t++) R.N[t] = p_const(qi(0));
+    for (int j = 0; j <= r; j++)
+        for (int i = 0; i <= p[j].deg; i++) {
+            if (!q_sign(p[j].c[i])) continue;
+            int t = R.s - (j - i);
+            Poly term = p_scale(falling(nvar, t, j), p[j].c[i]);
+            if (t == 0) R.D = p_add(R.D, term);
+            else R.N[t] = p_sub(R.N[t], term);
+        }
+    R.h = h;
+    return R;
+nonlinear:
+    ovr.active = 0;
+    memcpy(need_series, saved, sizeof saved);
+    nm_fail("a value needs an equation that is linear in the unknown and its derivatives");
+    return (Rule){0};
+}
+
+static Q qabs(Q a) { return q_sign(a) < 0 ? q_neg(a) : a; }
+
+/* an upper bound for |P(n)/D(n)| valid for every n >= N, when deg P <= deg D; negative if none yet */
+static Q ratio_bound(Poly P, Poly D, int64_t N) {
+    int d = D.deg;
+    Q nn = qi(N), num = qi(0), den = qabs(D.c[d]);
+    for (int i = 0; i <= P.deg; i++) num = q_add(num, q_div(qabs(P.c[i]), q_pow(nn, d - i)));
+    for (int i = 0; i < d; i++) den = q_sub(den, q_div(qabs(D.c[i]), q_pow(nn, d - i)));
+    if (q_sign(den) <= 0) return qi(-1);
+    return q_div(num, den);
+}
+
+static Ball ball_widen(Ball b, Q err) {               /* add |err| to the radius */
+    Z num = z_abs(err.num), den = err.den, q, rem;
+    if (b.e < 0) num = z_mul_pow10(num, -b.e); else den = z_mul(den, z_pow10(b.e));
+    z_divmod(num, den, &q, &rem);
+    b.r = z_add(z_add(b.r, q), z_from_i64(rem.s ? 1 : 0));
+    return b;
+}
+
+static Val series_value(Binding *b, Q a) {
+    Node *root = parse_text(b->v.src);
+    if (root->kind != N_ROOT || !root->nconds)
+        nm_fail("the value of %s needs its definition as an equation with a start (root of ..., y(0) = ...)", b->name);
+    const char *u = root->conds[0].s; size_t ul = root->conds[0].len;
+    int r = max_primes(root->a, u, ul), r2 = max_primes(root->b, u, ul);
+    if (r2 > r) r = r2;
+    Rule R = term_rule(root, b->v.var, r);
+    if (R.D.deg < 0) nm_fail("the equation fixes no term of %s", b->name);
+    Q rr = qabs(a);
+    /* how fast the terms shrink in the end: sum over t of lim |N_t / D| r^t must be below 1 */
+    Q ginf = qi(0);
+    for (int t = 1; t <= R.T; t++) {
+        if (R.N[t].deg > R.D.deg) nm_fail("the terms of %s grow too fast: the series has no value away from 0", b->name);
+        if (R.N[t].deg == R.D.deg) ginf = q_add(ginf, q_mul(qabs(q_div(R.N[t].c[R.D.deg], R.D.c[R.D.deg])), q_pow(rr, t)));
+    }
+    if (q_cmp_one(ginf) >= 0)
+        nm_fail("at %s the terms of %s shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2",
+                q_to_str(a), b->name);
+    /* from where on the rule holds: beyond the integer roots of D and the inhomogeneous terms */
+    Q cb = qi(0);
+    for (int i = 0; i < R.D.deg; i++) {
+        Q v = qabs(q_div(R.D.c[i], R.D.c[R.D.deg]));
+        if (q_cmp(v, cb) > 0) cb = v;
+    }
+    Z cbq, cbr;
+    z_divmod(cb.num, cb.den, &cbq, &cbr);
+    int64_t start;
+    if (!z_fits_i64(cbq, &start) || start > 100000) nm_fail("the rule for %s starts too late", b->name);
+    start += 2;
+    if (start < R.s + R.h.deg + 1) start = R.s + R.h.deg + 1;
+    if (start < R.T) start = R.T;
+    /* seeds from the resolution; the rule must reproduce the next few, as a check */
+    int nseed = (int)start + 4;
+    Ser seed = resolve(root, b->v.var, nseed);
+    int cap = nseed + 64;
+    Q *c = arena_alloc((size_t)cap * sizeof(Q));
+    for (int i = 0; i < nseed; i++) c[i] = seed.c[i];
+    int ncoef = (int)start;
+    for (int n = (int)start; n < nseed; n++) {
+        Q acc = qi(0);
+        for (int t = 1; t <= R.T && t <= n; t++) acc = q_add(acc, q_mul(p_at(R.N[t], qi(n)), c[n - t]));
+        int m = n - R.s;
+        if (m >= 0 && m <= R.h.deg) acc = q_sub(acc, R.h.c[m]);
+        Q cn = q_div(acc, p_at(R.D, qi(n)));
+        if (q_cmp(cn, c[n]) != 0) nm_fail("internal check failed: the term rule of %s disagrees with its resolution (vitiose)", b->name);
+    }
+    ncoef = nseed;
+    if (q_sign(a) == 0) return vq(c[0]);
+    /* sum term by term in places (the coefficients exact, the powers of a carried as balls); stop when the rest
+     * is certainly below the places asked */
+    int64_t want = work_prec - GUARD_DIGITS + 10;
+    Q eps = q_make(z_from_i64(1), z_pow10(want));
+    Ball S = b_from_q(qi(0), work_prec), A = b_from_q(a, work_prec), P = b_from_q(qi(1), work_prec);
+    Ball *term = arena_alloc((size_t)cap * sizeof(Ball));
+    for (int k = 0;; k++) {
+        if (k >= ncoef) {
+            if (ncoef == cap) {
+                int ncap = cap * 2;
+                Q *nc = arena_alloc((size_t)ncap * sizeof(Q));
+                Ball *nt = arena_alloc((size_t)ncap * sizeof(Ball));
+                memcpy(nc, c, (size_t)cap * sizeof(Q)); memcpy(nt, term, (size_t)cap * sizeof(Ball));
+                c = nc; term = nt; cap = ncap;
+            }
+            int n = ncoef;
+            Q acc = qi(0);
+            for (int t = 1; t <= R.T; t++) acc = q_add(acc, q_mul(p_at(R.N[t], qi(n)), c[n - t]));
+            int m = n - R.s;
+            if (m >= 0 && m <= R.h.deg) acc = q_sub(acc, R.h.c[m]);
+            c[n] = q_div(acc, p_at(R.D, qi(n)));
+            ncoef++;
+        }
+        term[k] = q_sign(c[k]) ? b_mul(b_from_q(c[k], work_prec), P, work_prec) : b_from_q(qi(0), work_prec);
+        S = b_add(S, term[k], work_prec);
+        P = b_mul(P, A, work_prec);
+        int64_t N = k + 1;
+        if (N < start || N < R.T) continue;
+        /* the careful bound only once the last terms are small */
+        int small = 1;
+        for (int t = 1; t <= R.T; t++) {
+            Ball b = term[N - t];
+            Z top = z_add(z_abs(b.m), b.r);
+            if (top.s && b.e + z_digits(top) > -want + 2) { small = 0; break; }
+        }
+        if (!small) { if (k > 2000000) nm_fail("too many terms"); continue; }
+        Q gamma = qi(0);
+        int ok = 1;
+        for (int t = 1; t <= R.T; t++) {
+            Q u = ratio_bound(R.N[t], R.D, N);
+            if (q_sign(u) < 0) { ok = 0; break; }
+            gamma = q_add(gamma, q_mul(u, q_pow(rr, t)));
+        }
+        if (!ok || q_cmp_one(gamma) >= 0) continue;
+        Q W = qi(0);
+        for (int t = 1; t <= R.T; t++) {                 /* an upper bound of |term|: (|m| + r) 10^e */
+            Ball b = term[N - t];
+            Z top = z_add(z_abs(b.m), b.r);
+            Q up = b.e >= 0 ? q_from_z(z_mul_pow10(top, b.e)) : q_make(top, z_pow10(-b.e));
+            if (q_cmp(up, W) > 0) W = up;
+        }
+        Q tail = q_div(q_mul(q_mul(qi(R.T), gamma), W), q_sub(qi(1), gamma));
+        if (q_cmp(tail, eps) <= 0) return vball(ball_widen(S, tail));
+    }
+}
+
 /* ---------------- writing results ---------------- */
 
 static char *show(Val v, int64_t places, int asked) {
@@ -808,9 +1042,9 @@ char *nm_run(const char *line, int *failed) {
         let_name = peek()->s; let_len = peek()->len; pos++;
         expect_op('=');
     }
-    const char *src_start = peek()->s;
+    const char *src_start = peek()->at;
     Node *e = expr();
-    const char *src_end = peek()->s;
+    const char *src_end = peek()->at;
     int64_t places = DEFAULT_PLACES, order = DEFAULT_ORDER;
     volatile int asked = 0;
     if (at_key("to")) {
@@ -837,6 +1071,11 @@ char *nm_run(const char *line, int *failed) {
     if (!setjmp(need_series)) {
         v = eval(e);
         text = show(v, places, asked);
+        if (v.kind == V_BALL) {                        /* keep the recipe, so a later request can carry it further */
+            memset(&v, 0, sizeof v);
+            v.kind = V_NUMREC;
+            v.src = dup_perm(src_start, (size_t)(src_end - src_start));
+        }
     } else {
         const char *var = NULL; size_t vlen = 0;
         letters(e, &var, &vlen, NULL, 0);

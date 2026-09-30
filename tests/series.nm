@@ -40,3 +40,8 @@ root of y^2 = x^2, y(0) = 0
 root of y'' = -y, y(0) = 0
 1/x
 sqrt(2 + x)
+# values: where the series cannot give one, it says why
+log1p(1)
+exp(sqrt(2))
+let s2 = sqrt(1 + x)
+s2(1/2)

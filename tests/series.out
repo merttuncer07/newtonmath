@@ -30,3 +30,7 @@ error: the start is a multiple root: the next term is not fixed by the lowest te
 error: missing start: y'(0)
 error: division by a series that vanishes at 0 (negative powers are not in this version)
 error: the series starts with 2, whose power 1/2 is not rational (irrational coefficients come later)
+error: at 1 the terms of log1p shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2
+error: the value of exp needs an exact number as its argument in this version
+s2 = 1 + x/2 - x^2/8 + x^3/16 - 5x^4/128 + 7x^5/256 - 21x^6/1024 + 33x^7/2048 - 429x^8/32768 + O(x^9)
+error: the value of s2 needs its definition as an equation with a start (root of ..., y(0) = ...)

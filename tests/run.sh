@@ -27,6 +27,30 @@ if command -v bc >/dev/null 2>&1; then
     done
   done
 fi
+# values of series at numbers, against bc -l (a second, independent route)
+if command -v bc >/dev/null 2>&1; then
+  while IFS='|' read -r mine_expr bc_expr; do
+    for places in 30 200; do
+      mine=$(printf 'use prelude\n%s to %d places\n' "$mine_expr" $places | ./newtonmath | tail -1)
+      case "$mine" in *"$places places guaranteed"*) ;; *) echo "FAIL: $mine_expr: $mine"; fail=$((fail+1)); continue;; esac
+      mine=$(echo "$mine" | cut -d' ' -f1 | tr -d '.' | sed 's/^0*//')
+      theirs=$(printf 'scale=%d\nv=(%s)*10^%d+0.5\nscale=0\nv/1\n' $((places+10)) "$bc_expr" $places | BC_LINE_LENGTH=0 bc -l)
+      n=$((n+1))
+      [ "$mine" = "$theirs" ] || { echo "FAIL: $mine_expr to $places places differs from bc"; fail=$((fail+1)); }
+    done
+  done <<'CASES'
+exp(1)|e(1)
+2 log1p(1/5) - log1p(-1/5) - log1p(-1/10)|l(2)
+6 log1p(1/5) - 4 log1p(-1/5) - 3 log1p(-1/10)|l(10)
+sin(1/2)|s(1/2)
+cos(1/3)|c(1/3)
+atan(1/5)|a(1/5)
+6 asin(1/2)|4*a(1)
+16 atan(1/5) - 4 atan(1/239)|4*a(1)
+exp(-3/2)|e(-3/2)
+CASES
+fi
+
 # series: the whole file against its reviewed output (every line was checked against Newton's texts or by hand)
 n=$((n+1))
 if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL: tests/series.nm"; fail=$((fail+1)); fi

@@ -289,3 +289,47 @@ Small choices made while coding:
 - `to x^N` keeps degrees up to N;
 - a series letter is the one free letter, x if none;
 - a defined series is stored as its definition and re-derived at the order asked.
+
+# Slice 3: the value of a series at a number. Research (Newton's behaviour)
+- NATP00180, the logarithms:
+  - He computes only at small arguments (±0.1, ±0.2), where each term is about 100 times smaller than the last.
+    He uses the half-sum and half-difference, x + x^3/3 + x^5/5 + ... and x^2/2 + x^4/4 + ..., so that only
+    every other term is needed.
+  - Everything else follows from exact relations: log 2 from 1.2·1.2/(0.8·0.9) = 2, log 10 from 2·2·2/0.8 = 10,
+    and the primes 7, 13, 17, 37 from 0.98, 0.99, 1.01, 1.02.
+  - He prints log 2 = 0.6931471805597 (true 0.69314718055994...) and log 10 = 2.3025850929933
+    (true 2.30258509299404...).
+- NATP00182 / NATP00180: each term from the one before (A, B, C, D). He knows the term rule, so he knows the tail.
+- NATP00204, end: the tail is bounded once the terms shrink geometrically (x < 1/2 ⇒ each term exceeds all the
+  rest together).
+- NATP00180: "Pudet dicere ad quot figurarum loca ...": carry the work only as far as needed.
+Design:
+- The value of f at a rational number comes from f's term rule. The rule is derived mechanically from f's
+  equation when the equation is linear in y, y', y'', ... with polynomial coefficients: Newton's Problem 2 table
+  written as a rule.
+- The terms are summed exactly, and the tail is bounded from the rule: with |coefficient ratio| ≤ β_t for k ≥ K,
+  the tail is at most s·γ·W/(1 − γ), where γ = Σ β_t r^t < 1. The sum stops as soon as the bound is below the
+  places asked. There is one pass and no retries.
+- The choice of argument stays with the user, as with Newton. Near the edge of convergence (γ ≥ 1) the answer
+  is a plain statement that the terms shrink too slowly there.
+- The prelude is rewritten so that every function is defined by such an equation:
+  - exp: y' = y
+  - sin, cos: y'' = −y
+  - log1p: (1+x) y' = 1
+  - atan: (1+x^2) y' = 1
+  - asin: (1−x^2) y'' = x y'
+
+## Slice 3 built
+- The term rule is read off the equation. y and its derivatives are set to 0, 1, 2 to get the polynomial
+  coefficients, with an exact linearity check, and turned into D(n) c_n = sum N_t(n) c_{n-t} − h_{n−s}.
+  The rule must reproduce the resolution's own terms before it is used.
+- Tail bound: |N_t(n)/D(n)| ≤ U_t(N) for n ≥ N, where U_t is non-increasing, built from absolute values of
+  coefficients. The tail is ≤ T·γ·W/(1−γ) with γ = Σ U_t(N) r^t < 1. If lim γ ≥ 1, the answer is that the
+  terms shrink too slowly.
+- The terms are summed as balls (exact coefficients, powers of the argument carried as places), in one pass.
+- A let-bound approximate number is kept as its recipe and carried again to the places later asked.
+- The prelude is now all linear equations: exp, sin, cos, log1p, atan, asin.
+Timing:
+- log 2 by Newton's relations: 100 places in 10 ms, 1000 places in 1.8 s.
+- e: 1000 places in 0.14 s.
+Tests: log 2, log 10, e, sin, cos, atan, pi (twice) and exp(−3/2), each to 30 and 200 places against bc -l.

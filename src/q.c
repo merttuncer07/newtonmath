@@ -127,3 +127,6 @@ char *p_to_str(Poly p) {
     }
     return s;
 }
+
+int q_cmp(Q a, Q b) { return q_sign(q_sub(a, b)); }
+int q_cmp_one(Q a) { return q_cmp(a, q_from_z(z_from_i64(1))); }

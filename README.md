@@ -33,9 +33,23 @@ Every series is substituted back into its equation, or raised back to its power,
 Named functions are not built in. `use prelude` loads lib/prelude.nm, where exp, sin, cos, log1p, atan and asin
 are defined by their equations, in the language itself. A defined series can be substituted: `exp(x^2)`.
 
+## Values (slice 3)
+
+A function defined by a linear fluxional equation with polynomial coefficients has a term rule: each coefficient
+follows from the ones before. The language derives that rule from the equation, sums the terms, and bounds the
+rest from the rule, so the places it prints are guaranteed. Arguments are exact numbers. As Newton did, you choose
+small arguments and join them by exact relations:
+
+    use prelude
+    2 log1p(1/5) - log1p(-1/5) - log1p(-1/10) to 30 places     log 2 (1.2 * 1.2 / (0.8 * 0.9) = 2)
+    16 atan(1/5) - 4 atan(1/239) to 50 places                  pi (Machin)
+    exp(1) to 1000 places
+
+Near the edge of convergence, for example log1p(1), the language says the terms shrink too slowly there.
+
 Not yet:
 - more than one letter in a series;
 - Newton's parallelogram for multiple roots;
 - fractional powers of x;
 - irrational coefficients;
-- values of series at points.
+- values at approximate arguments.

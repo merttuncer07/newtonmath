@@ -1,7 +1,8 @@
-# The usual functions, each defined by the equation it satisfies and its start.
+# The usual functions, each defined by the fluxional equation it satisfies and its start.
+# The equations are linear with polynomial coefficients, so every function has a term rule and a value.
 let exp = root of y' = y, y(0) = 1
 let sin = root of y'' = -y, y(0) = 0, y'(0) = 1
 let cos = root of y'' = -y, y(0) = 1, y'(0) = 0
-let log1p = integral(1/(1 + x))            # log(1 + x), the area under the hyperbola
-let atan = integral(1/(1 + x^2))
-let asin = integral((1 - x^2)^(-1/2))
+let log1p = root of (1 + x) y' = 1, y(0) = 0            # log(1 + x), the area under the hyperbola
+let atan = root of (1 + x^2) y' = 1, y(0) = 0
+let asin = root of (1 - x^2) y'' = x y', y(0) = 0, y'(0) = 1
