@@ -173,6 +173,24 @@ C det_nodiv(C *m, int n);
 C elim_resultant(C A, C B, int v);
 Solutions elim_solve(C *eqs, int ne, int *vars, int nv);
 
+/* ---- matrices (linalg.c) ---- */
+typedef struct { int r, c; C *a; } Mat;       /* row by row */
+Mat mat_new(int r, int c);
+Mat mat_identity(int n);
+Mat mat_add(Mat a, Mat b, int sign);
+Mat mat_scale(Mat a, C k);
+Mat mat_mul(Mat a, Mat b);
+Mat mat_transpose(Mat a);
+Mat mat_pow(Mat a, int64_t e);
+Mat mat_inverse(Mat a);
+Mat mat_nullspace(Mat a);
+Mat mat_solve(Mat a, Mat b, Mat *nullspace);
+int mat_equal(Mat a, Mat b);
+int mat_rank(Mat a);
+C mat_det(Mat a);
+C *mat_charpoly(Mat a);                       /* det(t I - a): coefficients of t^0 .. t^n */
+char *mat_to_str(Mat a);
+
 Root *root_new(Poly p, Q guess, int64_t start_places);
 void root_refine(Root *r, int64_t places);    /* continue Newton's resolution to at least `places` decimals */
 char *root_equation_str(Root *r);

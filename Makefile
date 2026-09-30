@@ -1,6 +1,6 @@
 CC ?= cc
 CFLAGS ?= -O2 -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Wno-unused-parameter -DNM_LIBDIR=\"$(CURDIR)/lib\"
-SRC = src/z.c src/q.c src/coef.c src/series.c src/newton.c src/elim.c src/approx.c src/lang.c
+SRC = src/z.c src/q.c src/coef.c src/series.c src/newton.c src/elim.c src/linalg.c src/approx.c src/lang.c
 
 newtonmath: $(SRC) src/main.c src/nm.h
 	$(CC) $(CFLAGS) -o $@ $(SRC) src/main.c
