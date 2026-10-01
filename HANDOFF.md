@@ -127,7 +127,7 @@ See `README.md` for every slice with examples. See `tests/*.nm` and `tests/*.out
 - Division by quantities whose surds are nested in each other's equations.
 - Arithmetic on fractional-power (Puiseux) results.
 - Moving a series to a complex point.
-- At most 32 different letters and surds per session (`NM_MAXL`).
+- At most 4096 letters, surds and named values per session (`NM_MAXL`), 12 different letters in one term (`CT_MAXV`).
 - Points near the edge of convergence are refused with the reason, e.g. `atan(2i)`.
 - `let h = x^2 + 1` followed by `h(2)` is read as multiplication h·2, because h is a quantity and not a rule. Use
   `let h(x) = x^2 + 1` for a rule.

@@ -51,7 +51,7 @@ static R subst(C p, int v, R T) {                   /* p with the letter v repla
     R r = r_from_c(c_zero());
     for (int i = 0; i < p.nt; i++) {
         C m; m.nt = 1; m.t = arena_alloc(sizeof(CT)); m.t[0] = p.t[i];
-        int64_t e; z_fits_i64(p.t[i].e[v].num, &e); m.t[0].e[v] = qi(0);
+        int64_t e; z_fits_i64(ct_e(&p.t[i], v).num, &e); ct_set(&m.t[0], v, qi(0));
         r = r_add(r, r_mul(r_from_c(m), r_pow_int(T, e)));
     }
     return r;

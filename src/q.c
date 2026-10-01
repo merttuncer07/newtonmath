@@ -124,7 +124,7 @@ char *p_to_str(Poly p) {
         if (q_sign(p.c[i]) == 0) continue;
         CT t;
         t.k = p.c[i];
-        for (int l = 0; l < NM_MAXL; l++) t.e[l] = q_from_z(z_zero());
+        t.n = 0;
         o += sprintf(o, "%s", ct_str(t, p.var, q_from_z(z_from_i64(i)), first));
         first = 0;
     }

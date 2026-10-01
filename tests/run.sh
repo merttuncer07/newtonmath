@@ -208,6 +208,17 @@ integral(1/(x sqrt(x^2 - 2)), x, 2, 3)|(a(sqrt(7)/sqrt(2))-a(1))/sqrt(2)
 CASES
 fi
 
+# sparse letters: one long session (Slices 11 and 12 together, and 240 surds and named constants) stays exact
+n=$((n+1))
+if ! cat tests/rootint.nm tests/euler.nm | ./newtonmath | diff -q - tests/rootint.out tests/euler.out >/dev/null 2>&1; then
+  cat tests/rootint.out tests/euler.out > /tmp/nm_both.$$
+  cat tests/rootint.nm tests/euler.nm | ./newtonmath | diff -q - /tmp/nm_both.$$ >/dev/null || { echo "FAIL: one long session"; fail=$((fail+1)); }
+  rm -f /tmp/nm_both.$$
+fi
+out=$(k=1; while [ $k -le 120 ]; do echo "sqrt($((2*k+1))) + log($((k+1)))"; k=$((k+1)); done; echo '(a+b+c+d+e+f+g+h+j+k+l+m)^2 - (m+l+k+j+h+g+f+e+d+c+b+a)^2')
+out=$(echo "$out" | ./newtonmath | tail -1)
+n=$((n+1)); [ "$out" = '0  [exact]' ] || { echo "FAIL: many letters: $out"; fail=$((fail+1)); }
+
 # rules, sequences, sums and cases
 n=$((n+1))
 if ! ./newtonmath tests/rules.nm | diff -u tests/rules.out - ; then echo "FAIL: tests/rules.nm"; fail=$((fail+1)); fi

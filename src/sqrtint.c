@@ -18,7 +18,7 @@ static C N(int64_t v) { return c_const(qi(v)); }
 static int deg_in(C p, int v) {
     int d = 0;
     for (int t = 0; t < p.nt; t++) {
-        Q e = p.t[t].e[v];
+        Q e = ct_e(&p.t[t], v);
         if (!q_is_int(e) || q_sign(e) < 0) nm_fail("internal: not a polynomial in the root letter");
         int64_t k; z_fits_i64(e.num, &k);
         if (k > d) d = (int)k;
@@ -29,7 +29,7 @@ static int deg_in(C p, int v) {
 static C coeff(C p, int v, int k) {                 /* the coefficient of v^k */
     C r = c_zero();
     for (int t = 0; t < p.nt; t++)
-        if (q_cmp(p.t[t].e[v], qi(k)) == 0) { C m; m.nt = 1; m.t = arena_alloc(sizeof(CT)); m.t[0] = p.t[t]; m.t[0].e[v] = qi(0); r = c_add(r, m); }
+        if (q_cmp(ct_e(&p.t[t], v), qi(k)) == 0) { C m; m.nt = 1; m.t = arena_alloc(sizeof(CT)); m.t[0] = p.t[t]; ct_set(&m.t[0], v, qi(0)); r = c_add(r, m); }
     return r;
 }
 

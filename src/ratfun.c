@@ -14,7 +14,7 @@ static int unit(C a) { Q q; return c_const_value(a, &q) && q_cmp_one(q) == 0; }
 
 static void powers(C a, int polynomial) {
     for (int t = 0; t < a.nt; t++) for (int l = 0; l < letter_count(); l++) {
-        Q e = a.t[t].e[l];
+        Q e = ct_e(&a.t[t], l);
         if (!q_is_int(e)) nm_fail("fractional exponents in a quotient are not supported");
         if (polynomial && q_sign(e) < 0) nm_fail("polynomial gcd needs nonnegative whole exponents");
     }
@@ -43,9 +43,9 @@ C poly_exact_div(C a, C b) {
         while (!c_is_zero(a)) {
             CT term = a.t[c_leading_index(a)];
             term.k = q_div(term.k, lead.k);
-            for (int l = 0; l < NM_MAXL; l++) {
-                term.e[l] = q_sub(term.e[l], lead.e[l]);
-                if (q_sign(term.e[l]) < 0) nm_fail("internal check failed: polynomial division has a remainder (vitiose)");
+            for (int l = 0; l < letter_count(); l++) {
+                ct_set(&term, l, q_sub(ct_e(&term, l), ct_e(&lead, l)));
+                if (q_sign(ct_e(&term, l)) < 0) nm_fail("internal check failed: polynomial division has a remainder (vitiose)");
             }
             C step = {1, &term};
             q = c_add(q, step);
@@ -120,9 +120,9 @@ static void clear_negative(C *num, C *den) {
     C shift = one();
     for (int l = 0; l < letter_count(); l++) {
         Q low = qi(0);
-        for (int t = 0; t < num->nt; t++) if (q_cmp(num->t[t].e[l], low) < 0) low = num->t[t].e[l];
-        for (int t = 0; t < den->nt; t++) if (q_cmp(den->t[t].e[l], low) < 0) low = den->t[t].e[l];
-        shift.t[0].e[l] = q_neg(low);
+        for (int t = 0; t < num->nt; t++) if (q_cmp(ct_e(&num->t[t], l), low) < 0) low = ct_e(&num->t[t], l);
+        for (int t = 0; t < den->nt; t++) if (q_cmp(ct_e(&den->t[t], l), low) < 0) low = ct_e(&den->t[t], l);
+        ct_set(&shift.t[0], l, q_neg(low));
     }
     if (!unit(shift)) { *num = c_mul(*num, shift); *den = c_mul(*den, shift); }
 }
@@ -135,7 +135,7 @@ static R checked(R r, C num, C den) {
 R r_from_c(C a) {
     R r = {a, one()};
     if (!special(a)) for (int t = 0; t < a.nt; t++) for (int l = 0; l < letter_count(); l++)
-        if (q_is_int(a.t[t].e[l]) && q_sign(a.t[t].e[l]) < 0) return r_make(a, r.den);
+        if (q_is_int(ct_e(&a.t[t], l)) && q_sign(ct_e(&a.t[t], l)) < 0) return r_make(a, r.den);
     return r;
 }
 R r_make(C num, C den) {

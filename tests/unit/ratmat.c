@@ -27,8 +27,8 @@ static Q at(C p,Q *v) {
     Q sum=qi(0);
     for(int t=0;t<p.nt;t++) {
         Q m=p.t[t].k;
-        for(int l=0;l<letter_count();l++) if(q_sign(p.t[t].e[l])) {
-            int64_t e=0; z_fits_i64(p.t[t].e[l].num,&e); m=q_mul(m,q_pow(v[l],e));
+        for(int l=0;l<letter_count();l++) if(q_sign(ct_e(&p.t[t], l))) {
+            int64_t e=0; z_fits_i64(ct_e(&p.t[t], l).num,&e); m=q_mul(m,q_pow(v[l],e));
         }
         sum=q_add(sum,m);
     }

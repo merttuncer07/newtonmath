@@ -515,8 +515,8 @@ static Ball ball_of_c(C a, int64_t prec) {
         Ball term = b_from_q(a.t[t].k, prec);
         for (int l = 0; l < letter_count(); l++) {
             int64_t e;
-            if (!q_sign(a.t[t].e[l])) continue;
-            if (!z_fits_i64(a.t[t].e[l].num, &e) || !q_is_int(a.t[t].e[l])) nm_fail("internal: a fractional power of a surd");
+            if (!q_sign(ct_e(&a.t[t], l))) continue;
+            if (!z_fits_i64(ct_e(&a.t[t], l).num, &e) || !q_is_int(ct_e(&a.t[t], l))) nm_fail("internal: a fractional power of a surd");
             term = b_mul(term, b_pow(ball_of_surd(l, prec), e, prec), prec);
         }
         acc = b_add(acc, term, prec);
@@ -566,7 +566,7 @@ static Poly c_to_poly(C c, const char *var) {
     int deg = 0;
     for (int t = 0; t < c.nt; t++) {
         int64_t e = 0;
-        if (li >= 0 && (!q_is_int(c.t[t].e[li]) || !z_fits_i64(c.t[t].e[li].num, &e) || e < 0 || e > 100000))
+        if (li >= 0 && (!q_is_int(ct_e(&c.t[t], li)) || !z_fits_i64(ct_e(&c.t[t], li).num, &e) || e < 0 || e > 100000))
             nm_fail("the equation must have whole powers of %s", letter_name(li));
         if (e > deg) deg = (int)e;
     }
@@ -577,7 +577,7 @@ static Poly c_to_poly(C c, const char *var) {
     for (int i = 0; i <= deg; i++) p.c[i] = qi(0);
     for (int t = 0; t < c.nt; t++) {
         int64_t e = 0;
-        if (li >= 0) z_fits_i64(c.t[t].e[li].num, &e);
+        if (li >= 0) z_fits_i64(ct_e(&c.t[t], li).num, &e);
         p.c[e] = q_add(p.c[e], c.t[t].k);
     }
     while (p.deg >= 0 && q_sign(p.c[p.deg]) == 0) p.deg--;
@@ -643,8 +643,8 @@ static C derivative_c(C p, int l) {
     C out = c_zero();
     for (int t = 0; t < p.nt; t++) {
         CT term = p.t[t];
-        if (!q_sign(term.e[l])) continue;
-        term.k = q_mul(term.k,term.e[l]); term.e[l] = q_sub(term.e[l],qi(1));
+        if (!q_sign(ct_e(&term, l))) continue;
+        term.k = q_mul(term.k,ct_e(&term, l)); ct_set(&term, l, q_sub(ct_e(&term, l),qi(1)));
         C m = {1,&term}; out = c_add(out,m);
     }
     return out;
@@ -1226,7 +1226,7 @@ static Val eval(Node *n) {
                 for (int t = 0; t < b->v.c.nt; t++) {
                     CT term = b->v.c.t[t];
                     int64_t e;
-                    if (!q_is_int(term.e[li]) || !z_fits_i64(term.e[li].num, &e)) nm_fail("a fractional power at a number is not in this version");
+                    if (!q_is_int(ct_e(&term, li)) || !z_fits_i64(ct_e(&term, li).num, &e)) nm_fail("a fractional power at a number is not in this version");
                     acc = q_add(acc, q_mul(term.k, q_pow(arg.q, e)));
                 }
                 return vq(acc);
@@ -1250,7 +1250,7 @@ static Val eval(Node *n) {
             int li=n->len?letter_index(n->s,n->len):rational_letter(as_r(v));
             int finite=li>=0;
             if(v.kind==V_POLY && li>=0) for(int t=0;t<v.c.nt;t++)
-                for(int l=0;l<letter_count();l++) if(!q_is_int(v.c.t[t].e[l])) finite=0;
+                for(int l=0;l<letter_count();l++) if(!q_is_int(ct_e(&v.c.t[t], l))) finite=0;
             if(finite) {
                 R f=as_r(v);
                 C lo=c_zero(),hi=c_zero();
@@ -1285,13 +1285,13 @@ static Val eval(Node *n) {
         C r = c_zero();
         for (int t = 0; t < p.nt; t++) {
             CT term = p.t[t];
-            Q e = term.e[li];
+            Q e = ct_e(&term, li);
             if (n->kind == N_DERIV) {
                 if (q_sign(e) == 0) continue;
-                term.k = q_mul(term.k, e); term.e[li] = q_sub(e, qi(1));
+                term.k = q_mul(term.k, e); ct_set(&term, li, q_sub(e, qi(1)));
             } else {                                       /* Newton's first rule: a x^m gives a x^(m+1)/(m+1) */
                 if (q_cmp(e, qi(-1)) == 0) nm_fail("the fluent of 1/%s is a logarithm: write it as a root of an equation", letter_name(li));
-                term.e[li] = q_add(e, qi(1)); term.k = q_div(term.k, term.e[li]);
+                ct_set(&term, li, q_add(e, qi(1))); term.k = q_div(term.k, ct_e(&term, li));
             }
             C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = term;
             r = c_add(r, one);
@@ -1405,10 +1405,10 @@ static Ser s_from_c(C c, const char *var, int n) {
     for (int t = 0; t < c.nt; t++) {
         CT term = c.t[t];
         int64_t e;
-        if (!q_is_int(term.e[vi]) || !z_fits_i64(term.e[vi].num, &e) || e < 0)
+        if (!q_is_int(ct_e(&term, vi)) || !z_fits_i64(ct_e(&term, vi).num, &e) || e < 0)
             nm_fail("a negative or fractional power of %s: use the parallelogram (root of ... for y)", var);
         if (e >= n) continue;
-        term.e[vi] = qi(0);
+        ct_set(&term, vi, qi(0));
         C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = term;
         s.c[e] = c_add(s.c[e], one);
     }
@@ -1743,11 +1743,11 @@ static Ser resolve_ex(Node *root, const char *var, int n, const C *shift, const 
 }
 
 /* the free letters of a statement (not the unknown of an equation); the series letter is one of them */
-typedef struct { const char *s[NM_MAXL + 4]; size_t len[NM_MAXL + 4]; int n; } Letters;
+typedef struct { const char *s[64]; size_t len[64]; int n; } Letters;
 
 static void add_letter(Letters *L, const char *s, size_t len) {
     for (int i = 0; i < L->n; i++) if (same(L->s[i], L->len[i], s, len)) return;
-    if (L->n < NM_MAXL + 4) { L->s[L->n] = s; L->len[L->n] = len; L->n++; }
+    if (L->n < 64) { L->s[L->n] = s; L->len[L->n] = len; L->n++; }
 }
 
 static const char *sum_skip[64]; static size_t sum_skiplen[64]; static int nsum_skip;
@@ -2161,7 +2161,7 @@ static char *show(Val v, int64_t places, int asked) {
         int lone = v.c.nt == 1 && q_is_int(v.c.t[0].k) && z_is_one(v.c.t[0].k.num);
         int li = -1, nl = 0;
         for (int l = 0; l < letter_count(); l++) if (c_uses(v.c, l)) { li = l; nl++; }
-        if (asked && lone && nl == 1 && letter_is_surd(li) && surd_root(li) && q_cmp_one(v.c.t[0].e[li]) == 0) {
+        if (asked && lone && nl == 1 && letter_is_surd(li) && surd_root(li) && q_cmp_one(ct_e(&v.c.t[0], li)) == 0) {
             Val rv; memset(&rv, 0, sizeof rv); rv.kind = V_ROOT; rv.root = surd_root(li);
             return show(rv, places, asked);                /* a named root: its certified places */
         }
@@ -2440,9 +2440,9 @@ static char *solve_linear_letters(C *eqs, int ne, int *vars, int nv) {
     for (int i = 0; i < ne; i++) for (int t = 0; t < eqs[i].nt; t++) {
         CT term = eqs[i].t[t];
         int unknown = -1;
-        for (int j = 0; j < nv; j++) if (q_sign(term.e[vars[j]])) {
-            if (unknown >= 0 || q_cmp_one(term.e[vars[j]]) != 0) return NULL;
-            unknown = j; term.e[vars[j]] = qi(0);
+        for (int j = 0; j < nv; j++) if (q_sign(ct_e(&term, vars[j]))) {
+            if (unknown >= 0 || q_cmp_one(ct_e(&term, vars[j])) != 0) return NULL;
+            unknown = j; ct_set(&term, vars[j], qi(0));
         }
         C coefficient = {1,&term};
         if (c_has_plain(coefficient)) parameters = 1;

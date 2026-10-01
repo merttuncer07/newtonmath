@@ -30,9 +30,9 @@ static Q eval_c(C p, Q *v) {
     Q s = qi(0);
     for (int t = 0; t < p.nt; t++) {
         Q m = p.t[t].k;
-        for (int l = 0; l < letter_count(); l++) if (q_sign(p.t[t].e[l])) {
+        for (int l = 0; l < letter_count(); l++) if (q_sign(ct_e(&p.t[t], l))) {
             int64_t e = 0;
-            if (!z_fits_i64(p.t[t].e[l].num, &e)) nm_fail("test exponent too large");
+            if (!z_fits_i64(ct_e(&p.t[t], l).num, &e)) nm_fail("test exponent too large");
             m = q_mul(m, q_pow(v[l], e));
         }
         s = q_add(s, m);

@@ -29,10 +29,10 @@ static int marks(C F, int ti, int zi, Pt **out) {
     for (int a = 0; a < F.nt; a++) {
         CT t = F.t[a];
         int64_t j;
-        if (!q_is_int(t.e[zi]) || !z_fits_i64(t.e[zi].num, &j) || j < 0)
+        if (!q_is_int(ct_e(&t, zi)) || !z_fits_i64(ct_e(&t, zi).num, &j) || j < 0)
             nm_fail("the equation must be a polynomial in %s (whole powers)", letter_name(zi));
-        Q i = t.e[ti];
-        CT rest = t; rest.e[ti] = q0(); rest.e[zi] = q0();
+        Q i = ct_e(&t, ti);
+        CT rest = t; ct_set(&rest, ti, q0()); ct_set(&rest, zi, q0());
         C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = rest;
         int found = -1;
         for (int b = 0; b < np; b++) if (p[b].j == j && q_cmp(p[b].i, i) == 0) found = b;
@@ -102,14 +102,14 @@ static int ruler_roots(Pt *p, int np, Edge e, Start *st, int max) {
             nm_fail("the terms on the ruler have coefficients that are not single terms (%s); this comes later", c_to_str(k[j]));
     CT L1 = k[e.j1].t[0], L2 = k[e.j2].t[0];
     Q eM[NM_MAXL];
-    for (int l = 0; l < NM_MAXL; l++) eM[l] = q_div(q_sub(L1.e[l], L2.e[l]), qi(e.j2 - e.j1));
+    for (int l = 0; l < letter_count(); l++) eM[l] = q_div(q_sub(ct_e(&L1, l), ct_e(&L2, l)), qi(e.j2 - e.j1));
     Q *r = arena_alloc((size_t)(e.j2 - e.j1 + 1) * sizeof(Q));
     for (int j = e.j1; j <= e.j2; j++) {
         r[j - e.j1] = q0();
         if (c_is_zero(k[j])) continue;
         CT t = k[j].t[0];
-        for (int l = 0; l < NM_MAXL; l++)
-            if (q_cmp(q_add(t.e[l], q_mul(eM[l], qi(j))), q_add(L1.e[l], q_mul(eM[l], qi(e.j1)))) != 0)
+        for (int l = 0; l < letter_count(); l++)
+            if (q_cmp(q_add(ct_e(&t, l), q_mul(eM[l], qi(j))), q_add(ct_e(&L1, l), q_mul(eM[l], qi(e.j1)))) != 0)
                 nm_fail("the terms on the ruler do not reduce to numbers alone; this comes later");
         r[j - e.j1] = t.k;
     }
@@ -151,8 +151,8 @@ static int ruler_roots(Pt *p, int np, Edge e, Start *st, int max) {
                 }
                 if (m && ns < max) {
                     C c; c.nt = 1; c.t = arena_alloc(sizeof(CT));
-                    c.t[0].k = v;
-                    for (int l2 = 0; l2 < NM_MAXL; l2++) c.t[0].e[l2] = eM[l2];
+                    c.t[0].k = v; c.t[0].n = 0;
+                    for (int l2 = 0; l2 < letter_count(); l2++) ct_set(&c.t[0], l2, eM[l2]);
                     st[ns].gamma = e.gamma; st[ns].c = c; st[ns].mult = m; st[ns].exact = 1; st[ns].note = NULL;
                     ns++;
                 }
@@ -161,8 +161,8 @@ static int ruler_roots(Pt *p, int np, Edge e, Start *st, int max) {
         Poly rest; rest.deg = left; rest.var = "v";
         rest.c = arena_alloc((size_t)(left + 1) * sizeof(Q));
         for (int j = 0; j <= left; j++) rest.c[j] = q_from_z(cur[j]);
-        C M; M.nt = 1; M.t = arena_alloc(sizeof(CT)); M.t[0].k = qi(1);
-        for (int l2 = 0; l2 < NM_MAXL; l2++) M.t[0].e[l2] = eM[l2];
+        C M; M.nt = 1; M.t = arena_alloc(sizeof(CT)); M.t[0].k = qi(1); M.t[0].n = 0;
+        for (int l2 = 0; l2 < letter_count(); l2++) ct_set(&M.t[0], l2, eM[l2]);
         st[ns].gamma = e.gamma; st[ns].c = M; st[ns].mult = left; st[ns].exact = 0;
         st[ns].note = p_to_str(rest);
         ns++;
@@ -176,18 +176,18 @@ static C substitute(C F, int Ti, int Zi, int ti, int zi, int64_t q, int64_t p, C
     C cz = c_add(c, c_letter(zi));
     for (int a = 0; a < F.nt; a++) {
         CT t = F.t[a];
-        int64_t j; z_fits_i64(t.e[Zi].num, &j);
-        Q te = q_add(q_mul(t.e[Ti], qi(q)), qi(p * j));
+        int64_t j; z_fits_i64(ct_e(&t, Zi).num, &j);
+        Q te = q_add(q_mul(ct_e(&t, Ti), qi(q)), qi(p * j));
         if (!q_is_int(te)) nm_fail("internal: a fractional power after substitution");
-        CT rest = t; rest.e[Ti] = q0(); rest.e[Zi] = q0(); rest.e[ti] = te;
+        CT rest = t; ct_set(&rest, Ti, q0()); ct_set(&rest, Zi, q0()); ct_set(&rest, ti, te);
         C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = rest;
         out = c_add(out, c_mul(one, c_pow_int(cz, j)));
     }
     Q m = q0(); int first = 1;
-    for (int a = 0; a < out.nt; a++) if (first || q_cmp(out.t[a].e[ti], m) < 0) { m = out.t[a].e[ti]; first = 0; }
+    for (int a = 0; a < out.nt; a++) if (first || q_cmp(ct_e(&out.t[a], ti), m) < 0) { m = ct_e(&out.t[a], ti); first = 0; }
     C tm; tm.nt = 1; tm.t = arena_alloc(sizeof(CT)); tm.t[0].k = qi(1);
-    for (int l = 0; l < NM_MAXL; l++) tm.t[0].e[l] = q0();
-    tm.t[0].e[ti] = m;
+    tm.t[0].n = 0;
+    ct_set(&tm.t[0], ti, m);
     return c_div(out, tm);
 }
 
@@ -197,9 +197,9 @@ static Ser eval_series(C F, int ti, int zi, Ser Zs, int n) {
     for (int a = 0; a < F.nt; a++) {
         CT t = F.t[a];
         int64_t ex, j;
-        z_fits_i64(t.e[ti].num, &ex); z_fits_i64(t.e[zi].num, &j);
+        z_fits_i64(ct_e(&t, ti).num, &ex); z_fits_i64(ct_e(&t, zi).num, &j);
         if (ex >= n) continue;
-        CT rest = t; rest.e[ti] = q0(); rest.e[zi] = q0();
+        CT rest = t; ct_set(&rest, ti, q0()); ct_set(&rest, zi, q0());
         C k; k.nt = 1; k.t = arena_alloc(sizeof(CT)); k.t[0] = rest;
         Ser term = s_pow_int(s_trunc(Zs, n), j);
         Ser sh = s_const(c_zero(), n);
@@ -245,7 +245,7 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
         int pick = -1;
         if (!c_is_zero(S)) {
             Q emin = q0(); int f = 1;
-            for (int a = 0; a < S.nt; a++) if (f || q_cmp(S.t[a].e[T], emin) < 0) { emin = S.t[a].e[T]; f = 0; }
+            for (int a = 0; a < S.nt; a++) if (f || q_cmp(ct_e(&S.t[a], T), emin) < 0) { emin = ct_e(&S.t[a], T); f = 0; }
             C lead = c_coeff_of(S, T, emin);
             for (int a = 0; a < ns; a++) if (st[a].exact && q_cmp(st[a].gamma, emin) == 0 && c_equal(st[a].c, lead)) pick = a;
             for (int a = 0; a < ne && pick < 0 && ns < 63; a++) {
@@ -293,7 +293,7 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
         Q eg = q_add(G, q_div(s.gamma, Qs));
         found[nfound].e = eg; found[nfound].c = s.c; nfound++;
         Q qq = gcdq_lcm_den(s.gamma, qi(1));
-        for (int a = 0; a < cur.nt; a++) qq = gcdq_lcm_den(cur.t[a].e[T], qq);
+        for (int a = 0; a < cur.nt; a++) qq = gcdq_lcm_den(ct_e(&cur.t[a], T), qq);
         int64_t q, pp;
         z_fits_i64(qq.num, &q);
         z_fits_i64(q_mul(s.gamma, qq).num, &pp);
@@ -304,10 +304,10 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
         /* the user's remaining terms, as z in the new letter */
         if (!c_is_zero(S)) {
             C xg; xg.nt = 1; xg.t = arena_alloc(sizeof(CT)); xg.t[0].k = qi(1);
-            for (int l = 0; l < NM_MAXL; l++) xg.t[0].e[l] = q0();
-            xg.t[0].e[T] = s.gamma;
+            xg.t[0].n = 0;
+            ct_set(&xg.t[0], T, s.gamma);
             C rest = c_sub(c_div(S, xg), s.c);
-            for (int a = 0; a < rest.nt; a++) { rest.t[a].e[ti] = q_mul(rest.t[a].e[T], qi(q)); rest.t[a].e[T] = q0(); }
+            for (int a = 0; a < rest.nt; a++) { ct_set(&rest.t[a], ti, q_mul(ct_e(&rest.t[a], T), qi(q))); ct_set(&rest.t[a], T, q0()); }
             S = rest;
         }
         G = eg;
@@ -315,11 +315,11 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
         if (s.mult > 1) { cur = next; T = ti; Zl = zi; continue; }
         /* a simple root: the rest term by term, z(0) = 0, each coefficient from the lowest term left */
         C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0].k = qi(1);
-        for (int l = 0; l < NM_MAXL; l++) one.t[0].e[l] = q0();
+        one.t[0].n = 0;
         C dz = c_zero();                         /* dF/dz at t = 0, z = 0 */
         for (int a = 0; a < next.nt; a++)
-            if (q_sign(next.t[a].e[ti]) == 0 && q_cmp_one(next.t[a].e[zi]) == 0) {
-                CT r = next.t[a]; r.e[zi] = q0();
+            if (q_sign(ct_e(&next.t[a], ti)) == 0 && q_cmp_one(ct_e(&next.t[a], zi)) == 0) {
+                CT r = next.t[a]; ct_set(&r, zi, q0());
                 C cc; cc.nt = 1; cc.t = arena_alloc(sizeof(CT)); cc.t[0] = r;
                 dz = c_add(dz, cc);
             }
@@ -358,7 +358,7 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
         /* the check by substitution, in u = x^(1/D) */
         {
             Q D = Qs;
-            for (int a = 0; a < F.nt; a++) D = gcdq_lcm_den(F.t[a].e[xi], D);
+            for (int a = 0; a < F.nt; a++) D = gcdq_lcm_den(ct_e(&F.t[a], xi), D);
             int64_t Dn; z_fits_i64(D.num, &Dn);
             int64_t vmin = 0; int f2 = 1;
             for (int a = 0; a < na; a++) {
@@ -375,8 +375,8 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
             }
             int64_t lo = 0, known = 0; int f3 = 1;
             for (int a = 0; a < F.nt; a++) {
-                int64_t j; z_fits_i64(F.t[a].e[yi].num, &j);
-                Q ie = q_mul(F.t[a].e[xi], D); int64_t iv; z_fits_i64(ie.num, &iv);
+                int64_t j; z_fits_i64(ct_e(&F.t[a], yi).num, &j);
+                Q ie = q_mul(ct_e(&F.t[a], xi), D); int64_t iv; z_fits_i64(ie.num, &iv);
                 int64_t e0 = iv + j * vmin;
                 if (f3 || e0 < lo) lo = e0;
                 if (f3 || e0 + nW < known) known = e0 + nW;
@@ -387,9 +387,9 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
                 C *sum = arena_alloc((size_t)len * sizeof(C));
                 for (int i = 0; i < len; i++) sum[i] = c_zero();
                 for (int a = 0; a < F.nt; a++) {
-                    int64_t j; z_fits_i64(F.t[a].e[yi].num, &j);
-                    Q ie = q_mul(F.t[a].e[xi], D); int64_t iv; z_fits_i64(ie.num, &iv);
-                    CT r = F.t[a]; r.e[xi] = q0(); r.e[yi] = q0();
+                    int64_t j; z_fits_i64(ct_e(&F.t[a], yi).num, &j);
+                    Q ie = q_mul(ct_e(&F.t[a], xi), D); int64_t iv; z_fits_i64(ie.num, &iv);
+                    CT r = F.t[a]; ct_set(&r, xi, q0()); ct_set(&r, yi, q0());
                     C k; k.nt = 1; k.t = arena_alloc(sizeof(CT)); k.t[0] = r;
                     Ser Wj = s_pow_int(W, j);
                     int64_t off = iv + j * vmin - lo;
@@ -403,7 +403,7 @@ char *parallelogram(C F, int xi, int yi, C *start, int have_start, int64_t order
         *o = 0;
         for (int a = 0; a < np2; a++) o += sprintf(o, "%s", parts[a]);
         CT one2; one2.k = qi(1);
-        for (int l = 0; l < NM_MAXL; l++) one2.e[l] = q0();
+        one2.n = 0;
         char *ob = ct_str(one2, x, shown, 1);
         sprintf(o, "%sO(%s)", np2 ? " + " : "", ob);
         return out;

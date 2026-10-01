@@ -664,3 +664,18 @@ Small choices:
 - the Euler fixtures live in tests/euler.nm: one session of Slice 11 and 12 together met the limit of 32 letters
   (each root, each t and each named constant log(k) is a letter). Sparse letters are the next technical step;
 - the Makefile compiles each source once (src/*.o) and links the tests: a clean make test went from 58 s to 29 s.
+
+# Slice 13: sparse letters
+Question: every term carried one exponent for each of 32 possible letters; a single session of Slices 11 and 12
+ran out, since each root, each Euler letter and each named constant log(k) is a letter.
+Newton: a term is written with the letters it has, aax or 2ax^3, never with the absent ones; a new quantity
+gets a new letter whenever it is needed ("pro singulis pono totidem literas"). So a term keeps only its own
+letters, and the stock of letters is not small.
+Built: CT = {k, n, l[], x[]}: the letters of the term in rising order and their exponents, at most 12 different
+letters in one term; a session may hold 4096 letters, surds and named values. Every access goes through
+ct_e (read) and ct_set (write); products merge the two letter lists.
+Check: every fixture gives the same output as before, byte for byte, with gcc, clang and AddressSanitizer;
+tests/run.sh runs Slices 11 and 12 as one session and a session of 240 surds and named constants.
+Speed: the fixtures run 1.5 to 4.7 times faster (euler.nm 178 ms -> 44 ms, integral.nm 115 ms -> 24 ms), since
+a term is about 400 bytes instead of 1100 and loops run over its own letters only.
+Small choices: more than 12 different letters in one term is refused with the reason.

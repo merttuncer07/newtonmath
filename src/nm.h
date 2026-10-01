@@ -88,8 +88,11 @@ char *p_to_str(Poly a);
 struct Root;
 
 /* ---- quantities in letters: sums of k * a^e1 * b^e2 ..., rational k and rational exponents ---- */
-#define NM_MAXL 32
-typedef struct { Q k; Q e[NM_MAXL]; } CT;
+#define NM_MAXL 4096                          /* letters, surds and named values in one session */
+#define CT_MAXV 12                             /* different letters in one term */
+typedef struct { Q k; int n; short l[CT_MAXV]; Q x[CT_MAXV]; } CT;   /* k * product of l[i]^x[i]; l rising, x != 0 */
+Q ct_e(const CT *t, int l);                    /* the exponent of letter l in the term (0 if absent) */
+void ct_set(CT *t, int l, Q e);
 typedef struct { int nt; CT *t; } C;
 
 int letter_index(const char *name, size_t len);

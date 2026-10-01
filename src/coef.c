@@ -75,9 +75,35 @@ int letter_count(void) { return nletters; }
 static Q q0(void) { return q_from_z(z_zero()); }
 static Q qi(int64_t v) { return q_from_z(z_from_i64(v)); }
 
+Q ct_e(const CT *t, int l) {
+    for (int i = 0; i < t->n; i++) if (t->l[i] == l) return t->x[i];
+    return q0();
+}
+
+void ct_set(CT *t, int l, Q e) {
+    int i = 0;
+    while (i < t->n && t->l[i] < l) i++;
+    if (i < t->n && t->l[i] == l) {
+        if (q_sign(e)) { t->x[i] = e; return; }
+        for (int j = i; j + 1 < t->n; j++) { t->l[j] = t->l[j + 1]; t->x[j] = t->x[j + 1]; }
+        t->n--;
+        return;
+    }
+    if (!q_sign(e)) return;
+    if (t->n == CT_MAXV) nm_fail("more than %d different letters in one term", CT_MAXV);
+    for (int j = t->n; j > i; j--) { t->l[j] = t->l[j - 1]; t->x[j] = t->x[j - 1]; }
+    t->l[i] = (short)l; t->x[i] = e; t->n++;
+}
+
+/* letters in rising order; at the first difference the larger exponent is the larger term */
 static int exps_cmp(const CT *a, const CT *b) {
-    for (int i = 0; i < NM_MAXL; i++) {
-        int c = q_cmp(a->e[i], b->e[i]);
+    int i = 0, j = 0;
+    while (i < a->n || j < b->n) {
+        int la = i < a->n ? a->l[i] : NM_MAXL, lb = j < b->n ? b->l[j] : NM_MAXL;
+        int c;
+        if (la == lb) { c = q_cmp(a->x[i], b->x[j]); i++; j++; }
+        else if (la < lb) { c = q_sign(a->x[i]); i++; }
+        else { c = -q_sign(b->x[j]); j++; }
         if (c) return c;
     }
     return 0;
@@ -88,7 +114,7 @@ static int cmp_terms(const void *x, const void *y) { return exps_cmp(x, y); }
 static CT term_one(void) {
     CT t;
     t.k = qi(1);
-    for (int i = 0; i < NM_MAXL; i++) t.e[i] = q0();
+    t.n = 0;
     return t;
 }
 
@@ -120,7 +146,7 @@ C c_zero(void) { return c_alloc(0); }
 static C c_pow_raw(int l, int k) {            /* r^k, unreduced */
     C c = c_alloc(1);
     c.t[0] = term_one();
-    c.t[0].e[l] = qi(k);
+    ct_set(&c.t[0], l, qi(k));
     return c;
 }
 
@@ -135,7 +161,7 @@ C c_const(Q k) {
 C c_letter(int idx) {
     C c = c_alloc(1);
     c.t[0] = term_one();
-    c.t[0].e[idx] = qi(1);
+    ct_set(&c.t[0], idx, qi(1));
     return c;
 }
 
@@ -144,13 +170,13 @@ int c_is_zero(C a) { return a.nt == 0; }
 int c_const_value(C a, Q *out) {
     if (a.nt == 0) { *out = q0(); return 1; }
     if (a.nt > 1) return 0;
-    for (int i = 0; i < NM_MAXL; i++) if (q_sign(a.t[0].e[i])) return 0;
+    if (a.t[0].n) return 0;
     *out = a.t[0].k;
     return 1;
 }
 
 int c_uses(C a, int idx) {
-    for (int i = 0; i < a.nt; i++) if (q_sign(a.t[i].e[idx])) return 1;
+    for (int i = 0; i < a.nt; i++) if (q_sign(ct_e(&a.t[i], idx))) return 1;
     return 0;
 }
 
@@ -179,10 +205,10 @@ static C c_reduce(C a) {
         int hit = -1, l = -1;
         for (int t = 0; t < a.nt && hit < 0; t++)
             for (int m = 0; m < nletters; m++)
-                if (alg[m].d && q_cmp(a.t[t].e[m], qi(alg[m].d)) >= 0) { hit = t; l = m; break; }
+                if (alg[m].d && q_cmp(ct_e(&a.t[t], m), qi(alg[m].d)) >= 0) { hit = t; l = m; break; }
         if (hit < 0) return a;
         CT t = a.t[hit];
-        t.e[l] = q_sub(t.e[l], qi(alg[l].d));
+        ct_set(&t, l, q_sub(ct_e(&t, l), qi(alg[l].d)));
         C mono; mono.nt = 1; mono.t = arena_alloc(sizeof(CT)); mono.t[0] = t;
         C rest = c_alloc(a.nt - 1);
         int w = 0;
@@ -204,7 +230,19 @@ static C c_mul_raw(C a, C b) {
         for (int j = 0; j < b.nt; j++) {
             CT t;
             t.k = q_mul(a.t[i].k, b.t[j].k);
-            for (int l = 0; l < NM_MAXL; l++) t.e[l] = q_add(a.t[i].e[l], b.t[j].e[l]);
+            t.n = 0;
+            const CT *A = &a.t[i], *B = &b.t[j];
+            int u = 0, v = 0;
+            while (u < A->n || v < B->n) {               /* merge the two letter lists */
+                int la = u < A->n ? A->l[u] : NM_MAXL, lb = v < B->n ? B->l[v] : NM_MAXL;
+                Q e;
+                int l = la < lb ? la : lb;
+                if (la == lb) e = q_add(A->x[u++], B->x[v++]); else if (la < lb) e = A->x[u++]; else e = B->x[v++];
+                if (q_sign(e)) {
+                    if (t.n == CT_MAXV) nm_fail("more than %d different letters in one term", CT_MAXV);
+                    t.l[t.n] = (short)l; t.x[t.n++] = e;
+                }
+            }
             c.t[w++] = t;
         }
     c.nt = w;
@@ -215,12 +253,12 @@ int c_is_monomial(C a) { return a.nt == 1; }
 
 int c_has_plain(C a) {                        /* a letter that is not a surd */
     for (int t = 0; t < a.nt; t++)
-        for (int l = 0; l < nletters; l++) if (!alg[l].d && !alg[l].value && q_sign(a.t[t].e[l])) return 1;
+        for (int l = 0; l < nletters; l++) if (!alg[l].d && !alg[l].value && q_sign(ct_e(&a.t[t], l))) return 1;
     return 0;
 }
 
 static int mono_has_surd(CT t) {
-    for (int l = 0; l < nletters; l++) if (alg[l].d && q_sign(t.e[l])) return 1;
+    for (int l = 0; l < nletters; l++) if (alg[l].d && q_sign(ct_e(&t, l))) return 1;
     return 0;
 }
 
@@ -238,11 +276,11 @@ static RP rp_alloc(int deg) {
 static RP rp_trim(RP p) { while (p.deg >= 0 && c_is_zero(p.c[p.deg])) p.deg--; return p; }
 static RP rp_from(C a, int r) {                /* a as a polynomial in r (whole powers) */
     int deg = 0;
-    for (int t = 0; t < a.nt; t++) { int64_t e; z_fits_i64(a.t[t].e[r].num, &e); if (e > deg) deg = (int)e; }
+    for (int t = 0; t < a.nt; t++) { int64_t e; z_fits_i64(ct_e(&a.t[t], r).num, &e); if (e > deg) deg = (int)e; }
     RP p = rp_alloc(deg);
     for (int t = 0; t < a.nt; t++) {
-        int64_t e; z_fits_i64(a.t[t].e[r].num, &e);
-        CT u = a.t[t]; u.e[r] = qi(0);
+        int64_t e; z_fits_i64(ct_e(&a.t[t], r).num, &e);
+        CT u = a.t[t]; ct_set(&u, r, qi(0));
         C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = u;
         p.c[e] = c_add(p.c[e], one);
     }
@@ -286,24 +324,25 @@ C c_inv(C a) {
     if (a.nt == 1 && !mono_has_surd(a.t[0])) {
         CT inv;
         inv.k = q_div(qi(1), a.t[0].k);
-        for (int l = 0; l < NM_MAXL; l++) inv.e[l] = q_neg(a.t[0].e[l]);
+        inv.n = a.t[0].n;
+        for (int i = 0; i < inv.n; i++) { inv.l[i] = a.t[0].l[i]; inv.x[i] = q_neg(a.t[0].x[i]); }
         C m = c_alloc(1);
         m.t[0] = inv;
         return m;
     }
     /* a common single term in the ordinary letters comes out first */
     CT common = a.t[0];
-    for (int l = 0; l < NM_MAXL; l++) if (l >= nletters || alg[l].d) common.e[l] = qi(0);
+    for (int i = common.n - 1; i >= 0; i--) if (alg[common.l[i]].d) ct_set(&common, common.l[i], qi(0));
     for (int t = 1; t < a.nt; t++)
         for (int l = 0; l < nletters; l++)
-            if (!alg[l].d && q_cmp(a.t[t].e[l], common.e[l]) != 0)
+            if (!alg[l].d && q_cmp(ct_e(&a.t[t], l), ct_e(&common, l)) != 0)
                 nm_fail("division by %s, whose ordinary letters are not a single term (this comes later)", c_to_str(a));
     common.k = qi(1);
     C M; M.nt = 1; M.t = arena_alloc(sizeof(CT)); M.t[0] = common;
     C rest = c_mul_raw(a, c_inv(M));
     if (!mono_has_surd(M.t[0]) && M.nt == 1) {
         int r = -1;
-        for (int t = 0; t < rest.nt; t++) for (int l = 0; l < nletters; l++) if (alg[l].d && q_sign(rest.t[t].e[l]) && l > r) r = l;
+        for (int t = 0; t < rest.nt; t++) for (int l = 0; l < nletters; l++) if (alg[l].d && q_sign(ct_e(&rest.t[t], l)) && l > r) r = l;
         if (r < 0) return c_mul(c_inv(rest), c_inv(M));
         RP A = rp_alloc(alg[r].d);                       /* r^d - e[d-1] r^(d-1) - ... - e[0] */
         A.c[alg[r].d] = c_const(qi(1));
@@ -488,9 +527,10 @@ int c_pow_q(C a, Q alpha, C *out) {
         C number = c_radical_q(q_pow(t.k, p), q);                 /* k^alpha */
         CT plain = t, surd = t;
         plain.k = qi(1); surd.k = qi(1);
-        for (int l = 0; l < NM_MAXL; l++) {
-            if (l < nletters && alg[l].d) plain.e[l] = qi(0); else surd.e[l] = qi(0);
-            plain.e[l] = q_mul(plain.e[l], alpha);
+        plain.n = surd.n = 0;
+        for (int i = 0; i < t.n; i++) {
+            int l = t.l[i];
+            if (alg[l].d) ct_set(&surd, l, t.x[i]); else ct_set(&plain, l, q_mul(t.x[i], alpha));
         }
         C P; P.nt = 1; P.t = arena_alloc(sizeof(CT)); P.t[0] = plain;
         C S; S.nt = 1; S.t = arena_alloc(sizeof(CT)); S.t[0] = surd;
@@ -509,8 +549,9 @@ C c_persist(C a) {
     C r = a;
     r.t = perm_alloc((size_t)(a.nt > 0 ? a.nt : 1) * sizeof(CT));
     for (int i = 0; i < a.nt; i++) {
+        r.t[i] = a.t[i];
         r.t[i].k = q_persist(a.t[i].k);
-        for (int l = 0; l < NM_MAXL; l++) r.t[i].e[l] = q_persist(a.t[i].e[l]);
+        for (int j = 0; j < a.t[i].n; j++) r.t[i].x[j] = q_persist(a.t[i].x[j]);
     }
     return r;
 }
@@ -520,7 +561,7 @@ C c_coeff_of(C a, int idx, Q e) {
     C c = c_alloc(a.nt);
     int w = 0;
     for (int i = 0; i < a.nt; i++)
-        if (q_cmp(a.t[i].e[idx], e) == 0) { c.t[w] = a.t[i]; c.t[w].e[idx] = q0(); w++; }
+        if (q_cmp(ct_e(&a.t[i], idx), e) == 0) { c.t[w] = a.t[i]; ct_set(&c.t[w], idx, q0()); w++; }
     c.nt = w;
     return c;
 }
@@ -575,13 +616,13 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     for (int oi = 0; oi < nletters; oi++) {
         int l = order[oi];
         if (alg[l].imag) continue;
-        int s = q_sign(t.e[l]);
-        if (s > 0) { pn = put_factor(num, pn, l, letter_power(l, t.e[l])); nfac++; }
-        if (s < 0) { pd = put_factor(den, pd, l, letter_power(l, q_neg(t.e[l]))); dfac++; }
+        int s = q_sign(ct_e(&t, l));
+        if (s > 0) { pn = put_factor(num, pn, l, letter_power(l, ct_e(&t, l))); nfac++; }
+        if (s < 0) { pd = put_factor(den, pd, l, letter_power(l, q_neg(ct_e(&t, l)))); dfac++; }
     }
     for (int oi = 0; oi < nletters; oi++) {          /* i last: sqrt(3)i, 2a*i */
         int l = order[oi];
-        if (!alg[l].imag || q_sign(t.e[l]) == 0) continue;
+        if (!alg[l].imag || q_sign(ct_e(&t, l)) == 0) continue;
         if (pn > num && ((pn[-1] >= 'a' && pn[-1] <= 'z') || (pn[-1] >= 'A' && pn[-1] <= 'Z'))) *pn++ = '*';
         pn += sprintf(pn, "i"); nfac++;
     }
@@ -631,14 +672,14 @@ static int cmp_for_print(const void *x, const void *y) {
     int c;
     for (int i = 0; i < nflow; i++) {
         int l = print_order[i];
-        if ((c = q_cmp(b->e[l], a->e[l]))) return c;
+        if ((c = q_cmp(ct_e(b, l), ct_e(a, l)))) return c;
     }
     Q da = q0(), db = q0();
-    for (int i = nflow; i < nletters; i++) { int l = print_order[i]; da = q_add(da, a->e[l]); db = q_add(db, b->e[l]); }
+    for (int i = nflow; i < nletters; i++) { int l = print_order[i]; da = q_add(da, ct_e(a, l)); db = q_add(db, ct_e(b, l)); }
     if ((c = q_cmp(db, da))) return c;
     for (int i = nflow; i < nletters; i++) {
         int l = print_order[i];
-        if ((c = q_cmp(b->e[l], a->e[l]))) return c;
+        if ((c = q_cmp(ct_e(b, l), ct_e(a, l)))) return c;
     }
     return 0;
 }

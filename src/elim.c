@@ -28,11 +28,11 @@ static int64_t whole_exp(Q e) {
 
 UP up_from(C a, int v) {
     int deg = 0;
-    for (int t = 0; t < a.nt; t++) { int64_t e = whole_exp(a.t[t].e[v]); if (e > deg) deg = (int)e; }
+    for (int t = 0; t < a.nt; t++) { int64_t e = whole_exp(ct_e(&a.t[t], v)); if (e > deg) deg = (int)e; }
     UP p = up_alloc(deg);
     for (int t = 0; t < a.nt; t++) {
-        int64_t e = whole_exp(a.t[t].e[v]);
-        C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = a.t[t]; one.t[0].e[v] = q0();
+        int64_t e = whole_exp(ct_e(&a.t[t], v));
+        C one; one.nt = 1; one.t = arena_alloc(sizeof(CT)); one.t[0] = a.t[t]; ct_set(&one.t[0], v, q0());
         p.c[e] = c_add(p.c[e], one);
     }
     return up_trim(p);
