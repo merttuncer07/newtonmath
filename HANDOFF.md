@@ -71,14 +71,16 @@ make test                  # tests/run.sh + tests/check_z + tests/unit/*  (must 
 ./newtonmath -e "sqrt(2) to 30 places"
 ```
 
-The last `make test` passed completely (local macOS, Apple clang; 8.81 s):
-- `run.sh`: 97 checks (the original 91 plus six evaluation/printing regressions);
+The last `make test` passed completely (local macOS, Apple Clang 21; 12.95 s including rebuilding test binaries):
+- `run.sh`: 104 checks, including the 67-statement rational fixture and six registration-order regressions;
 - `check_z`: 9065 checks;
-- unit tests: arith 19, cplx 13, elim 9, linalg 13.
+- unit tests: arith 19, cplx 13, elim 9, linalg 13, ratfun 788, ratmat 553.
+- `tests/rational.nm` also passed AddressSanitizer/UndefinedBehaviorSanitizer with no diagnostics.
+See docs/SLICE8_VERIFICATION.md for the exact acceptance output, independent-Q checks, timings and limits.
 
 `tests/run.sh` contains:
 - the known-answer lines in `tests/cases.txt`, format `stmt ||| expected output`;
-- whole-file diffs, `tests/X.nm` against `tests/X.out`, for series, newton, irrational, rules and integration;
+- whole-file diffs, `tests/X.nm` against `tests/X.out`, for series, newton, irrational, rules, integration and rational functions;
 - independent checks against `bc` (sqrt, series values, complex values, fact(300), F[2000]).
 
 When a test disagrees, check the math independently, e.g. with `bc -l`, before changing anything. Several times
@@ -115,8 +117,11 @@ sin(1/2 + x) to x^3                           # series moved to a point: sin(1/2
 See `README.md` for every slice with examples. See `tests/*.nm` and `tests/*.out` for exact expected behaviour.
 
 ### Known gaps ("not yet")
-- Division by a *sum of letters*: no rational functions yet. So there is no inverse, solve or rank for matrices
-  with letters. Their det and charpoly work, through Berkowitz.
+- Rational functions v1 handles ordinary letters with whole exponents over Q. Fractional powers in quotients
+  and surds mixed with ordinary letters in denominators are refused. Series coefficients still use C, so a
+  series requiring inversion of a coefficient such as a+b is outside this slice.
+- Generic matrix results describe rank drops, input poles and basis/formula poles. They do not solve every
+  exceptional parameter case; enumerating maximal minors can be expensive for large rectangular matrices.
 - Division by quantities whose surds are nested in each other's equations.
 - Arithmetic on fractional-power (Puiseux) results.
 - Moving a series to a complex point.
@@ -134,12 +139,13 @@ See `README.md` for every slice with examples. See `tests/*.nm` and `tests/*.out
 | `nm.h` | all shared types and declarations: Z, Q, Poly, C/CT, Ser, Root, Ball, Solutions, Mat, Factors, CBall, TermRule |
 | `z.c` | big integers, base 10^9 blocks |
 | `q.c` | rationals |
-| `coef.c` | **quantities in letters** C: sums of k·a^e with rational exponents. Letters, surds (letters with equations: reduction, inverse by Euclid, root choice by bracket), i, named letters (known only by a value callback, e.g. `exp(1)`), printing |
+| `coef.c` | **quantities in letters** C: sums of k·a^e with rational exponents. Letters, surds (letters with equations: reduction, inverse by Euclid, root choice by bracket), i, named letters (known only by a value callback, e.g. `exp(1)`), printing and the shared fixed leading-term order |
 | `series.c` | truncated power series `Ser` with C coefficients |
 | `approx.c` | balls (midpoint·10^e ± radius), roots refined by Newton's iteration with doubling places |
 | `newton.c` | Newton's parallelogram (lower hull, ruler polynomial, Puiseux) |
 | `elim.c` | module 1: resultants (Sylvester, Berkowitz `det_nodiv`), rational roots, quadratic formula, Sturm isolation → surds `r_1, r_2...`, `elim_solve`, `elim_roots` |
-| `linalg.c` | module 2: exact matrices (echelon over numbers and surds, Berkowitz for letters); results checked by multiplying back |
+| `ratfun.c` | reduced R {num, den}; recursive primitive pseudo-remainder gcd over Q, shared UP from elim.c, exact division and cross-multiplication checks |
+| `linalg.c` | exact matrices over R (echelon, Berkowitz); inverse/solutions/nullspace checked by multiplying back; generic rank loci from maximal minors |
 | `cplx.c` | module 3: complex balls, `rule_value` (value or j-th fluxion at a complex point from a term rule, with a rigorous tail bound) |
 | `arith.c` | module 4: mod arithmetic, Miller–Rabin/BPSW, Pocklington proofs, Pollard rho (Brent), factor/sigma/phi/divisors/nextprime |
 | `lang.c` | the language: lexer, parser (grammar at the top of the file), `eval` (numbers), `sev` (series with duals for fluxions), recipes, rules, sequences, builtins, `show` (verdicts), `nm_run` (statements, solve/eliminate) |
@@ -155,7 +161,7 @@ Important internals:
   `try_builtin`. Variables changed between setjmp and longjmp must be `volatile`, or gcc warns `-Wclobbered`.
 - **Value kinds** (`Val.kind`): V_Q, V_POLY (a C quantity), V_ROOT, V_BALL, V_REC (a series recipe: source text
   plus letter), V_NUMREC, V_FUNC (a rule), V_SEQ, V_MAT, V_CBALL, V_TEXT (a verdict text such as factor or isprime
-  output).
+  output), V_RAT. Mat entries are R; ordinary C quantities embed with a unit denominator.
 - **Recipes.** These are stored source text, re-parsed when used. `recipe_is_equation` tells `root of ...`
   definitions from expression definitions.
 - **Values of series** come from `series_value_d(b, arg, deriv)` in `lang.c`. It does three things:
@@ -164,6 +170,10 @@ Important internals:
   - calls `rule_value` (cplx.c).
 - **Built-in functions** live in `builtin()` in `lang.c`. They are used only when the user has not defined the
   name.
+- **Rational integration.** vr collapses constant denominators. Explicit `to x^N` enters sev directly; rational
+  bindings expand by s_div of their numerator and denominator. Bound one-letter quotients use UP Horner
+  substitution. Parametric affine solve statements route to mat_solve; nonlinear elimination is unchanged.
+  Val.verdict preserves generic conditions with saved values and through arithmetic/builtins/matrix entries.
 - **Adding a value kind:** update `arith`, `show`, `persist_val`, and `as_cball`/`entry_of` if relevant.
 - **Adding a module.** The pattern so far:
   1. Write an isolated `src/X.c` with declarations in `nm.h`.
@@ -189,6 +199,8 @@ Important internals:
 6. Slice 6: surds and i, exact.
 7. Modules 1–4 built in isolation (elim, linalg, cplx, arith).
 8. Slice 7: the four modules wired into the language (commit `35a8c1f`).
+9. Slice 8: isolated rational functions (`514b63f`), then language/matrix integration (`20090ef`). The supplied
+   D1-D6 design was approved; small implementation choices and scope are recorded in DECISIONS.md.
 
 `docs/DECISIONS.md` holds the research and reasoning (Newton quotes with NATP ids) behind every slice.
 
@@ -199,10 +211,10 @@ Important internals:
 Mert's order:
 1. **Grow the mathematics first.** In Mert's words, "our mathematics is still too small to leave C". Natural
    next steps, each decided Newton's way and logged in DECISIONS.md:
-   - **rational functions:** quotients of sums of letters. This unlocks the inverse, solve and rank of matrices
-     with letters, and division by a sum of letters;
-   - polynomial gcd and factorization over Q as first-class operations, i.e. `factor` for polynomials;
-   - **integration:** Newton's quadratures and tables of integrals, through series and closed forms;
+   - **partial fractions and integration of rational functions:** the next step requested after slice 8,
+     explicitly not part of slice 8; a new design is still needed;
+   - polynomial factorization over Q as a first-class operation, i.e. `factor` for polynomials (gcd now exists);
+   - further **integration:** Newton's quadratures and tables of integrals, through series and closed forms;
    - **ODE solving beyond linear:** the series exists already; values need it too;
    - more prelude functions (log, tan, Bessel...), written as fluxional equations in `lib/prelude.nm`;
    - arithmetic geometry basics: points on curves, rational points, elliptic curve arithmetic over Q and mod p.

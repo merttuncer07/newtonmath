@@ -51,8 +51,8 @@ Near the edge of convergence, for example log1p(1), the language says the terms 
 ## Letters and the parallelogram (slice 4)
 
 Letters are given quantities, following Newton's convention: a, b, c are given and x, z flow. Exponents may be
-fractions or negative (a^(1/2), x^(-2/5)). Division is by a single term. `to x^8` names the series letter when
-it is not clear.
+fractions or negative (a^(1/2), x^(-2/5)). Quotients in ordinary letters with whole exponents use rational
+functions (slice 8 below). `to x^8` explicitly requests a series and names its letter.
 
 Finite sums print in descending total degree. Equal degrees are ordered by descending exponents of the
 alphabetically ordered letter names, independently of when the letters first appeared:
@@ -123,6 +123,68 @@ to a point keeps the values at that point as letters (sin(1/2), sin'(1/2)), each
 
 Not yet:
 - division by quantities with several different surds nested in each other's equations;
-- division by a sum of letters (so inverses of matrices with letters);
 - arithmetic on fractional-power results;
 - moving a series to a complex point.
+
+
+## Rational functions (slice 8)
+
+A finite quotient is exact by default. Ask for `to x^N` to expand it as a series. Ordinary letters with whole
+exponents and rational coefficients form a field; recursive polynomial gcd reduces every fraction. The gcd
+and denominator are monic in the fixed term order described above, so signs can differ from handwritten forms.
+A unit denominator collapses to an ordinary number or polynomial.
+
+    (x^2 - a^2)/(x - a)                    a + x  [exact]
+    1/(x + a) + 1/(x - a)                  -2x/(a^2 - x^2)  [exact]
+    a/(a - b) + b/(b - a)                  1  [exact]
+    (a/b)/(c/d)                            ad/bc  [exact]
+    gcd(6*a*x + 6*a, 4*x + 4)              x + 1  [exact]
+    a^2/(b + x)                           a^2/(b + x)  [exact]
+    a^2/(b + x) to x^3                    a^2/b - a^2x/(b^2) + a^2x^2/(b^3) - a^2x^3/(b^4) + O(x^4)
+
+Write products of letters with `*` or spaces: `a*x` is a product, whereas `ax` is a name. Negative whole powers
+are cleared into numerator and denominator. Polynomial gcd accepts nonnegative whole powers. Integer-only
+`gcd(12,18)` retains the integer answer 6; a polynomial argument selects polynomial gcd over Q.
+
+    let g = 1/(1 - x)
+    g(1/3)                                3/2  [exact]
+    g(2 + x) to x^3                       -1 + x - x^2 + x^3 + O(x^4)
+    d/dx (1/(1 - x))                      1/(x^2 - 2x + 1)  [exact]
+
+Rational functions can be stored, passed to rules, used in sequences and compared for exact equality. A stored
+quotient in one ordinary letter accepts exact substitution; for multiple letters, define an explicit rule.
+Equality is equality in the rational-function field: cancellation forgets removed holes, so `p/p` becomes 1.
+The quotient operation still refuses an identically zero denominator.
+
+Matrices accept rational-function entries. Inverse, linsolve, rank and nullspace work over this field:
+
+    inverse([[a, b], [c, d]])
+        [[d/(ad - bc), -b/(ad - bc)], [-c/(ad - bc), a/(ad - bc)]]
+        [exact, for general a, b, c, d; displayed formula undefined where ad - bc = 0]
+    linsolve([[a, 1], [1, a]], [1, 0])
+        [[a/(a^2 - 1)], [-1/(a^2 - 1)]]
+        [exact, for general a; rank drops where a^2 - 1 = 0; displayed formula undefined where a^2 - 1 = 0]
+    rank([[a, b], [c, d]])
+        2  [exact, for general a, b, c, d; rank drops where ad - bc = 0]
+    nullspace([[a, b]])
+        [[-b/a], [1]]
+        [exact, for general a, b; rank drops where a = 0 and b = 0; displayed formula undefined where a = 0]
+    solve a*x + y = 1, x + a*y = 0 for x, y
+        x = a/(a^2 - 1), y = -1/(a^2 - 1)
+        [exact, for general a; rank drops where a^2 - 1 = 0; displayed formula undefined where a^2 - 1 = 0]
+
+Rank drops where **all** nonzero minors of the generic-rank size vanish, on the input domain. A chosen basis
+can have extra poles without a rank drop. Substitute particular values and run again when an exceptional case
+is needed. Generic conditions survive storage and arithmetic; no random test is labelled a proof.
+
+Scope of this version:
+- Fractional exponents in a finite quotient are refused. Surds or i in a denominator continue through the old
+  inverse only when that denominator has no ordinary letters. Surds mixed with letters in a denominator are
+  refused; a letter denominator requires rational coefficients in the numerator too.
+- Explicit surd-series requests such as `1/(sqrt(2)+x) to x^3` still work. Series coefficients retain the existing
+  C representation; expansions requiring inversion of a coefficient such as `a+b` remain unsupported.
+- Special parameter cases are not solved automatically. Listing all maximal minors can be expensive for large
+  rectangular matrices. The shared UP representation retains its existing degree limit of 10000 per letter.
+- Polynomial factorization, partial fractions and closed-form integration of rational functions are not added.
+  They are subsequent steps. See [the verification record](docs/SLICE8_VERIFICATION.md) for the acceptance key,
+  check counts, measured times and the single changed old fixture line.
