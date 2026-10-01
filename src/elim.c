@@ -172,13 +172,7 @@ static C real_root(RQ p, Q lo, Q hi, char *name_out) {
     return c_surd_from_root(nm, r);
 }
 
-/* the roots of p (rational coefficients): rational ones exactly, other real ones as surds, and the complex pair of
- * a remaining quadratic with i. Returns how many roots were left unresolved (complex roots of higher factors). */
-static int rq_roots(RQ p, C *out, int *nout, int max) {
-    p = rq_trim(p);
-    if (p.deg <= 0) return 0;
-    RQ g = rq_gcd(p, rq_deriv(p));                 /* the square-free part: each root once */
-    if (g.deg > 0) { RQ q, r; rq_divmod(p, g, &q, &r); p = q; }
+static RQ rq_rational_roots(RQ p, C *out, int *nout, int max) {
     /* rational roots, p/q with p | a0 and q | an, for coefficients of moderate size */
     Q l = qi(1);
     for (int i = 0; i <= p.deg; i++) if (q_sign(p.c[i])) { Z gg = z_gcd(l.num, p.c[i].den), qq, rr; z_divmod(z_mul(l.num, p.c[i].den), gg, &qq, &rr); l = q_from_z(qq); }
@@ -210,6 +204,17 @@ static int rq_roots(RQ p, C *out, int *nout, int max) {
                 }
         }
     }
+    return p;
+}
+
+/* the roots of p (rational coefficients): rational ones exactly, other real ones as surds, and the complex pair of
+ * a remaining quadratic with i. Returns how many roots were left unresolved (complex roots of higher factors). */
+static int rq_roots(RQ p, C *out, int *nout, int max) {
+    p = rq_trim(p);
+    if (p.deg <= 0) return 0;
+    RQ g = rq_gcd(p, rq_deriv(p));                 /* the square-free part: each root once */
+    if (g.deg > 0) { RQ q, r; rq_divmod(p, g, &q, &r); p = q; }
+    p = rq_rational_roots(p, out, nout, max);
     if (p.deg <= 0) return 0;
     if (p.deg == 2) {                              /* a quadratic: the formula, with i when needed */
         Q A = p.c[2], B = p.c[1], Cc = p.c[0];
@@ -407,4 +412,85 @@ int elim_roots(C p, int v, C *out, int max, int *unresolved) {
     int n = 0;
     *unresolved = up_roots(up_from(p, v), out, &n, max);
     return n;
+}
+
+
+/* Rational linear factors followed by exact quadratic factors. Kronecker's
+ * three integer samples find quadratic factors missed by the root theorem.
+ * Every candidate is divided back; bounded searches never assert irreducibility. */
+static RQ rq_from_c(C p, int v) {
+    UP a = up_from(p,v); RQ r = rq_alloc(a.deg);
+    for (int i=0;i<=a.deg;i++)
+        if (!c_const_value(a.c[i], &r.c[i])) nm_fail("letters in a nonlinear conic factor: sign unknown; later");
+    return r;
+}
+static C rq_to_c(RQ p, int v) {
+    C a=c_zero(), x=c_letter(v);
+    for (int i=p.deg;i>=0;i--) a=c_add(c_mul(a,x),c_const(p.c[i]));
+    return a;
+}
+static void small_factors(RQ p, int v, C *out, int *n, int max) {
+    if (p.deg<=0) return;
+    if (*n>=max) nm_fail("too many conic factors");
+    if (p.deg==2) {
+        Q disc=q_sub(q_mul(p.c[1],p.c[1]),q_mul(qi(4),q_mul(p.c[2],p.c[0]))),root;
+        if(q_sign(disc)>=0 && q_root_exact(disc,2,&root)) {
+            if(*n+2>max) nm_fail("too many conic factors");
+            out[(*n)++]=c_sub(c_letter(v),c_const(q_div(q_sub(q_neg(p.c[1]),root),q_mul(qi(2),p.c[2]))));
+            out[(*n)++]=c_sub(c_letter(v),c_const(q_div(q_add(q_neg(p.c[1]),root),q_mul(qi(2),p.c[2]))));
+            return;
+        }
+    }
+    if (p.deg<=2) { out[(*n)++]=rq_to_c(p,v); return; }
+    C roots[256]; int nr=0;
+    RQ rem=rq_rational_roots(p,roots,&nr,256);
+    for (int i=0;i<nr;i++) {
+        if (*n>=max) nm_fail("too many conic factors");
+        out[(*n)++]=c_sub(c_letter(v),roots[i]);
+    }
+    if (nr) { small_factors(rem,v,out,n,max); return; }
+    if (p.deg>=4) {
+        Z l=z_from_i64(1);
+        for (int i=0;i<=p.deg;i++) {
+            Z g=z_gcd(l,p.c[i].den),q,r;
+            z_divmod(z_mul(l,p.c[i].den),g,&q,&r); l=q;
+        }
+        RQ ip=rq_alloc(p.deg);
+        Z content=z_zero();
+        for(int i=0;i<=p.deg;i++) { ip.c[i]=q_mul(p.c[i],q_from_z(l)); content=z_gcd(content,ip.c[i].num); }
+        for(int i=0;i<=p.deg;i++) ip.c[i]=q_div(ip.c[i],q_from_z(content));
+        Z ds[3][256]; int nd[3];
+        for(int i=0;i<3;i++) nd[i]=z_divisors(z_abs(rq_at(ip,qi(i-1)).num),ds[i],256);
+        int tried=0;
+        for(int i=0;i<nd[0];i++) for(int j=0;j<nd[1];j++) for(int k=0;k<nd[2];k++)
+            for(int s=-1;s<=1;s+=2) for(int t=-1;t<=1;t+=2) {
+                if(++tried>100000) nm_fail("quadratic factor search bound reached; later: Rothstein-Trager");
+                Q fm=q_from_z(ds[0][i]), f0=q_mul(qi(s),q_from_z(ds[1][j])), fp=q_mul(qi(t),q_from_z(ds[2][k]));
+                RQ f=rq_alloc(2);
+                f.c[0]=f0; f.c[1]=q_div(q_sub(fp,fm),qi(2));
+                f.c[2]=q_sub(q_div(q_add(fp,fm),qi(2)),f0);
+                if(!q_sign(f.c[2]) || !q_is_int(f.c[1]) || !q_is_int(f.c[2])) continue;
+                RQ q,r; rq_divmod(p,f,&q,&r);
+                if(r.deg<0) { out[(*n)++]=rq_to_c(f,v); small_factors(q,v,out,n,max); return; }
+            }
+    }
+    nm_fail("remaining degree-%d factor has no supported linear/quadratic split; later: Rothstein-Trager",p.deg);
+}
+int elim_conic_factors(C p, int v, C *out, int max) {
+    int n=0; small_factors(rq_from_c(p,v),v,out,&n,max); return n;
+}
+int elim_has_root_closed(C p, int v, Q lo, Q hi) {
+    RQ a=rq_from_c(p,v);
+    if(q_cmp(lo,hi)>0) { Q t=lo;lo=hi;hi=t; }
+    if(!q_sign(rq_at(a,lo)) || !q_sign(rq_at(a,hi))) return 1;
+    if(a.deg<=0) return 0;
+    RQ s[256]; int n=0; s[n++]=a; s[n++]=rq_deriv(a);
+    while(s[n-1].deg>0) {
+        if(n>=256) nm_fail("pole check degree limit");
+        RQ q,r; rq_divmod(s[n-2],s[n-1],&q,&r);
+        if(r.deg<0) break;
+        for(int i=0;i<=r.deg;i++) r.c[i]=q_neg(r.c[i]);
+        s[n++]=r;
+    }
+    return sturm_changes(s,n,lo)!=sturm_changes(s,n,hi);
 }

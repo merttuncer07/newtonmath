@@ -198,6 +198,27 @@ C elim_resultant(C A, C B, int v);
 Solutions elim_solve(C *eqs, int ne, int *vars, int nv);
 int elim_roots(C p, int v, C *out, int max, int *unresolved);
 
+/* Exact conic factorization and closed-interval pole checks (elim.c). */
+int elim_conic_factors(C p, int v, C *out, int max);
+int elim_has_root_closed(C p, int v, Q lo, Q hi);
+
+/* Rational integrals: a rational part and logarithmic/circular areas. */
+enum { AREA_LOG, AREA_ATAN };
+typedef struct { C coef, poly; int kind; } AreaTerm;
+typedef struct { int var, n; R rational; AreaTerm *term; } Integral;
+typedef struct { int n; R *part; } Apart;
+C integ_diff_poly(C p, int v);
+C integ_subst_poly(C p, int v, C x);
+R integ_derivative(Integral a);
+Integral integ_rational(R f, int v);
+Integral integ_persist(Integral a);
+char *integ_to_str(Integral a);
+C integ_value(Integral a, C x, C (*conic)(int, C));
+Apart integ_apart(R f, int v);
+Apart apart_persist(Apart a);
+R apart_sum(Apart a);
+char *apart_to_str(Apart a);
+
 /* ---- matrices (linalg.c) ---- */
 typedef struct { int r, c; R *a; } Mat;       /* row by row */
 Mat mat_new(int r, int c);
