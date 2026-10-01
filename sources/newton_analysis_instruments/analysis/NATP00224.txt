@@ -1,0 +1,60 @@
+<1r>
+Trinity College Cambridge.
+Ian 1669
+
+Sir
+
+I received Dr Wallis his Mechanicks which you sent to Mr Barrow for mee. I must needs acknowledg you more then ordinarily obliging, & my selfe puzzeled how I shall quit Courtesys.
+
+The Problemes you proposed to mee I have considered & sent you here the best solutions of one of them that I can contrive; Namely how to find the aggregate of a series of fractions, whose numerators are the same & their denominators in arithmeticall progression. To doe this I shall propound two ways, The first by reduction to one common denominator as followeth.
+
+If (a)/(b).(a)/(b+c).(a)/(b+2⁢c).(a)/(b+3⁢c) &c be the series: Multiply all their denominators together, & the product will bee [b^4 | + | 6⁢b^3⁢c | + | 11⁢b⁢b⁢c⁢c | + | 6⁢b⁢c^3; 4 | | 3 | | 2 | | 1 | ] ; each terme of which being multiplyed by its dimensions of b, & the product againe multiplyed by (a)/(b) , the result shall bee the Numerator of the desired aggregate [ | (4⁢a⁢b^3+18⁢a⁢b⁢b⁢c+22⁢a⁢b⁢c⁢c+6⁢a⁢c^3)/(b^3+6⁢b^3⁢c+11⁢b⁢b⁢c⁢c+6⁢b⁢c^3) | ]
+
+If (a)/(b−2⁢c).(a)/(b−c).(a)/(b).(a)/(b+c).(a)/(b+2⁢c) , be the series: The factus of their denominators is bin(b⁢b−c⁢c)inb⁢b−4⁢c⁢c , or b^5−5⁢b^3⁢c⁢c+4⁢b⁢c^4 , the denominator; which multiplyed as before gives 5⁢a⁢b^4−15⁢a⁢b⁢b⁢c⁢c+4⁢a⁢c^4 , the Numerator of the aggregate.
+
+If (a)/(b−c).(a)/(b+c).(a)/(b+3⁢c) &c is the series. Then (b⁢b−c⁢c)×b+3⁢c or b^3+3⁢b⁢b⁢c−b⁢c⁢c−3⁢c^3 is the denominator and 3⁢a⁢b⁢b+6⁢a⁢b⁢c−a⁢c⁢c the numerator of the Aggregate.
+
+In numbers: If (1)/(2).(1)/(3).(1)/(4).(1)/(5).(1)/(6) is the series, then putting b=2 that the series may bee
+(1)/(b).(1)/(b+1).(1)/(b+2).(1)/(b+3).(1)/(b+4) ; the factus of their denominators will bee b^5+10⁢b^4+35⁢b^3+50⁢b⁢b+24⁢b
+the denominator, & consequently 5⁢b^4+40⁢b^3+105⁢b⁢b+100⁢b+24 the numerator of the aggregate.
+
+But it is better to put b=4 , that the series may bee
+(1)/(b−2).(1)/(b−1).
+(1)/(b).(1)/(b+1).(1)/(b+2). And so shall the aggregate bee (5⁢b^4−15⁢b⁢b+4)/(b^5−5⁢b^3+4⁢b) .
+
+[[The annexed table will; much faciliate y^e multiplication; of denominators together.] | [[[ | | | | +1 | −1; | | | +1 | −5 | +4; | | +1 | −14 | +49 | −36; | +1 | −30 | +273 | −820 | +576; +1 | −55 | +1023 | −7645 | +51276 | −14400]; [b^11. | b^9⁢c⁢c. | b^7⁢c^4. | b^5⁢c^6. | b^3⁢c^8. | b⁢c^10; +1 | −55 | +1023 | −7645 | +51276 | −14400]] | [ | [for 3 terms; for 5 termes; for 7 termes; for 9 termes; for 11 termes]]]]
+
+This rule holds good though the differences of the denominators bee not equall: as if (a)/(b+c).(a)/(b+d).(a)/(b−e) are to bee added the factus of their denominators is b^3+b⁢b⁢c+b⁢b⁢d−b⁢b⁢e+b⁢c⁢d−b⁢c⁢e−b⁢d⁢e−c⁢d⁢e the denominator, which multiplyed by the dimensions of b & againe by (a)/(b) produces 3⁢a⁢b⁢b+2⁢a⁢b⁢c+2⁢a⁢b⁢d−2⁢a⁢b⁢e+a⁢c⁢d−a⁢c⁢e −b⁢d⁢e the numerator of the desired summ.
+
+The other way of resolving this Probleme is by approximation. Suppose the number of termes in the propounded series bee p. And make (p⁢p−p)/(2)=q . (2⁢p⁢q−q)/(3)=r . q⁢q=s . (6⁢q⁢r−r)/(5)=t . (4⁢q⁢s−s)/(3)=v . (12⁢r⁢s−5⁢t)/(7)=x . 2⁢s⁢s−v=y . (r⁢v−r⁢s)/(3)+t=z . &c. Now if the propounded series bee (a)/(b).(a)/(b+c).(a)/(b+2⁢c).(a)/(b+3⁢c) &c their Aggregate shall bee (a)/(b)inp−q⁢(c)/(b)+r⁢(c⁢c)/(b⁢b)−s⁢(c^3)/(b^3)−t⁢(c^4)/(b^4) &c: In which progression the farther you proceede, the nearer you approach to truth.
+
+But it is better to put b
+for the Denominator of the middle terme of the propounded series, thus .(a)/(b−2⁢c).(a)/(b−c).(a)/(b).(a)/(b+c).(a)/(b+2⁢c) . And making n the number of termes from the said middle terme either way; as also n⁢n+n=m . 2⁢n+1=p . (m⁢p)/(3)=r . (3⁢m⁢r−r)/(5)=t . (3⁢m⁢m⁢r−5⁢t)/(7)=x . (m^3⁢r−2⁢m⁢m⁢r)/(3)+t=z . &c, the desired Aggregate shall bee (a)/(b)inp+r⁢(c⁢c)/(b⁢b) +t⁢(c^4)/(b^4)+x⁢(c^6)/(b^6)+z⁢(c^8)/(b^8) &c: a progression wanting each other terme & also converging much more towards the truth then the former.
+
+Now a series of fractions being propounded: first consider how exact <1v> you would have their aggregate; suppose not erring from truth above (1)/(e) part of an unit. Then make a rude guesse how many times (b)/(n⁢c) multiplyed into it selfe will bee about the bignesse of (5⁢a⁢e)/(2⁢b) more or lesse. And omit all those termes of the progression where
+b is of more then soe many dimensions. For example if the aggregate of (10000)/(100)+(10000)/(106)+(10000)/(112)+(10000)/(118)+(10000)/(124)+(10000)/(130)+(10000)/(136) bee desired to the exactnesse of (1)/(8)th part of an unite Then is a=10000 . b=118 . c=6 . n=3 . e=8 . (b)/(n⁢c)=(118)/(18) or about 6(1)/(2) . (5⁢a⁢e)/(2⁢b)=(200000)/(118) or about 1700; to which 6(1)/(2) square-squared or multiplyed 3 times into it selfe is about equall. Therefore I take only the two first termes of the rule (a)/(b)inp+r⁢(c⁢c)/(b⁢b) : b in the rest being of above 3 dimensions. And soe making 2⁢n+1(=7)=p . & (n⁢n+n)/(3)⁢p(=28)=r , the desired aggregate will bee (a)/(b)×7+28⁢(c⁢c)/(b⁢b) or (70000)/(118)in(14068)/(13924) , wanting about an eighth part of an unit. But if an exacter aggregate bee desired, take another terme of the rule & the error will not bee above (1)/(350) of an unit. Thus if the said series were continued to 21 termes (10000)/(100) being the first, (10000)/(160) the middle, & (10000)/(220) the last terme: three termes of the rule would give an aggregate too little by about (1)/(2) of an unit, 4 termes by about (1)/(12) or (1)/(15) part & 5 termes by about ((1)/(100))^th part, or lesse. But perhaps it might bee more convenient to resolve this at twice, first finding the aggregate of the last eleven termes, & then of the next nine, & lastly adding the first terme to the other two aggregates. And this may bee done to about the 60^th part of an unit by using onely the three first termes of the rule.
+
+From these instances may bee guessed what is to bee done in other cases. But it may bee further noted that it will much expedite the work to subduct the Logarithm of b from that of c and multiply the remainder by 2.4.6.8 &c which products shall bee the Logarithms of (c⁢c)/(b⁢b).(c^4)/(b^4).(c^6)/(b^6).(c^8)/(b^8) &c. whose computation in propper numbers would bee troublesom.
+
+This Probleme much resembles the squaring of the Hyperbola: That being only to find the aggregate of a series of fractions infinite in number & littlenesse, with one common numerator to denominators whose differences are equall & infinitely little. And as I referred all the series to the middle terme, the like may bee done conveniently in the Hyperbola. If AC AH are its rectangled Asymptot{es} & the area BDGE is desired: bisect BD in C=b , make AC=a [figure] CF=b , & CD or CB=x . soe that (a⁢b)/(a+x)=DG & (a⁢b)/(a−x)=BE . Then according to Mercator the area GDCF is b⁢x−(b⁢x⁢x)/(2⁢a)+(b⁢x^3)/(3⁢a⁢a)−(b⁢x^4)/(4⁢a^3) +(b⁢x^5)/(5⁢a^4) &c. & the area BCFE is b⁢x+(b⁢x⁢x)/(2⁢a)+(b⁢x^3)/(3⁢a⁢a)+(b⁢x^4)/(4⁢a^3) +(b⁢x^5)/(5⁢a^4) &c. And the summ of these two make the whole area BDGE= 2⁢b⁢x+(2⁢b⁢x^3)/(3⁢a⁢a)+(2⁢b⁢x^5)/(5⁢a^5) &c. Where each other terme is wanting, & x is lesse by half then it would otherwise have beene, which makes the series more converging towar{d} the truth.
+
+As to your other Problem about the resolution of Equations by tables. There may bee such Tables made for Cubick equations; & consequen{t}ly shall serve for those of foure dimensions too: But scarcely for any others. Indeed could all Equations bee reduced to three termes only, tables might bee made for all: but that's beyond my skill to doe it, & beleife that it can bee done. For those of three dimensions there needs but one colum{n} of figures bee added to the ordinary tables of Logarithms, & the construction of it is pretty easy & obvious enough. If you please I will some time send you a specimen of its composition & use, but I cannot perswade my selfe to undertake the drudgery of making it.
+
+Your Kinck-Huysons Algebra I have made some notes upon. I suppose you are not much in hast of it, which makes me doe that onely at my leisure.
+
+Your obliged friend & Servant
+
+Is: Newton.
+
+<1av>
+These
+
+To Mr John Collins his house in Bloomsbury next
+
+doore to the three Crowns
+
+in
+
+London
+
+Mr Newton about the Musicall Progression

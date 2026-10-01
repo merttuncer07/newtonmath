@@ -1,0 +1,537 @@
+<3>
+
+divisoris termino hoc modo x+b) a⁢a (prodibit (a⁢a)/(x)−(a⁢a⁢b)/(x⁢x) +(a⁢a⁢b⁢b)/(x^3)−(a⁢a⁢b^3)/(x^4) &c .
+
+Ad eundem modum fractio (1)/(1+x⁢x) reducitur ad 1−x⁢x+ x^4−x^6+x^8 &c vel ad x^(−2)−x^(−4)+x^(−6)−x^(−8) &c
+
+Et fractio (2⁢x^((1)/(2))−x^((3)/(2)))/(1+x^((1)/(2))−3⁢x) ad 2⁢x^((1)/(2))−2⁢x+7⁢x^((3)/(2))−13⁢x^2+34⁢x^((5)/(2)) &c
+
+Ubi obiter notandum est quòd usurpo x^(−1) , x^(−2) , x^(−3) , x^(−4) , &c: pro (1)/(x) , (1)/(x⁢x) , (1)/(x^3) , (1)/(x^4) ; & x^((1)/(2)) , x^((3)/(2)) , x^((5)/(2)) , x^((1)/(3)) , x^((2)/(3)) , &c: pro sqrt()x , sqrt()x^3 , sqrt()x^5 , sqrt()c:x , sqrt()c:x⁢x ; & x^(−(1)/(2)) , x^(−(2)/(3)) , x^(−(1)/(4)) , &c pro (1)/(sqrt()x) , (1)/(sqrt()c: x⁢x) , (1)/(sqrt()4: x) . Idque ob analogiam rei, quæ deprehendi potest ex hujusmodi geometricis progressionibus x^3 , x^((5)/(2)) , x⁢x , x^((3)/(2)) , x, x^((1)/(2)) , x^0 (sive 1,) x^(−(1)/(2)) , x^(−1) , x^(−(3)/(2)) , x^(−2) &c
+
+Ad hunc modum pro (a⁢a)/(x)−(a⁢a⁢b)/(x⁢x)+(a⁢a⁢b⁢b)/(x^3) &c scribi potest a⁢a⁢x^(−1)−a⁢a⁢b⁢x^(−2)+a⁢a⁢b⁢b⁢x^(−3) &c . Et sic vice sqrt()(a⁢a−x⁢x) scribi potest ((a⁢a−x⁢x))^((1)/(2)) ; et ((a⁢a−x⁢x))^2 vice quadrati ex a⁢a−x⁢x ; et ((a⁢b⁢b−y^3)/(b⁢y+y⁢y)|)^((1)/(3)) vice sqrt()c: (a⁢b⁢b−y^3)/(b⁢y+y⁢y) . Et sic in alijs. Unde meritò potestates distingui possunt in affermativas et negativas, integras, et fractas.
+
+Exempla reductionum per extractionem radicum.
+
+Proposito a⁢a+x⁢x , radicem ejus ut sequitur extrahes,
+[[a⁢a+x⁢x (a+(x⁢x)/(2⁢a)−(x^4)/(8⁢a^3)+(x^6)/(16⁢a^5)−(5⁢x^8)/(128⁢a^7)+(7⁢x^10)/(256⁢a^9)−(21⁢x^12)/(1024⁢a^11) &c]; [(a⁢a); 00+x⁢x; 00+(x⁢x+(x^4)/(4⁢a⁢a)); 00+x⁢x−(x^4)/(4⁢a⁢a); 00+x⁢x−((x^4)/(4⁢a⁢a)−(x^6)/(8⁢a^4)+(x^8)/(64⁢a^6)); 00+x⁢x−(x^4)/(4⁢a⁢a)+(x^6)/(8⁢a^4)−(x^8)/(64⁢a^6); 00+x⁢x−(x^4)/(4⁢a⁢a)+((x^6)/(8⁢a^4)+(x^8)/(16⁢a^6)−(x^10)/(064⁢a^8)+(x^12)/(256⁢a^10)); 00+x⁢x−(x^4)/(4⁢a⁢a)+(x^6)/(8⁢a^4)−(5⁢x^8)/(64⁢a^6)+(x^10)/(064⁢a^8)−(x^12)/(256⁢a^10) | &c; 00+x⁢x−(x^4)/(4⁢a⁢a)+(x^6)/(8⁢a^4)−((5⁢x^8)/(64⁢a^6)−(5⁢x^8)/(128⁢a^8)+(5⁢x^12)/(512⁢a^10)); 00+x⁢x−(x^4)/(4⁢a⁢a)+(x^6)/(8⁢a^4)−(5⁢x^8)/(64⁢a^6)−(7⁢x^10)/(128⁢a^8)−(7⁢x^12)/(512⁢a^10); 00+x⁢x−(x^4)/(4⁢a⁢a)+(x^6)/(8⁢a^4)−(5⁢x^8)/(64⁢a^6)−((7⁢x^10)/(128⁢a^8)+(7⁢x^12)/(512⁢a^10)); 00+x⁢x−(x^4)/(4⁢a⁢a)+(x^6)/(8⁢a^4)−(5⁢x^8)/(64⁢a^6)−(7⁢x^10)/(128⁢a^8)−(21⁢x^12)/(512⁢a^10)]] <4> et prodit a+(x⁢x)/(2⁢a)−(x^4)/(8⁢a^3) &c . Ubi notandum quòd circa finem operis eos omnes terminos negligo quorum dimensiones trascenderent dimensiones ultimi termini ad quem cupio quotientem solummodò produci, puta (x^12)/(a^11) . Potest etiam ordo terminorum inverti ad hunc modum x⁢x+a⁢a , et radix est x+(a⁢a)/(2⁢x)−(a^4)/(8⁢x^3)+(a^6)/(16⁢x^5) &c .
+
+Sic ex a⁢a−x⁢x radix est a−(x⁢x)/(2⁢a)−(x^4)/(8⁢a^3)−(x^6)/(16⁢a^5) &c
+
+Et ex x−x⁢x est x^((1)/(2))−(1)/(2)⁢x^((3)/(2))−(1)/(8)⁢x^((5)/(2))−(1)/(16)⁢x^((7)/(2)) &c
+
+* * et ex a⁢a+b⁢x−x⁢x est a+(b⁢x)/(2⁢a)−(x⁢x)/(2⁢a)−(b⁢b⁢x⁢x)/(8⁢a^3) &c
+
+Et ex (1+a⁢x⁢x)/(1−b⁢x⁢x) est (1+(1)/(2)⁢a⁢x^2−(1)/(8)⁢a⁢a⁢x^4+(1)/(16)⁢a^3⁢x^6)/(1−(1)/(2)⁢b⁢x⁢x−(1)/(8)⁢b⁢b⁢x^4−(1)/(16)⁢b^3⁢x^6) &c . factâque in super divisione, fit [1^0 | | [+(1)/(2)⁢b; +(1)/(2)⁢a] | ⁢x^2 | | [+(3)/(8)⁢b⁢b; +(1)/(4)⁢a⁢b; −(1)/(8)⁢a⁢a] | ⁢x^4 | | [+(5)/(16)⁢b^3; +(3)/(16)⁢a⁢b⁢b; −(1)/(16)⁢a⁢a⁢b; +(1)/(16)⁢a^3] | ⁢x^6 | | &c]
+
+Operationes verò per debitam præparationem non rarò abbreviari possunt; Ut in allato exemplo ad extrahendam sqrt()(1+a⁢x⁢x)/(1−b⁢x⁢x) , si non eadem fuisset numeratoris ac denominatoris forma, utrumque multiplicassem per sqrt() (1−b⁢x⁢x) & sic prodijsset (sqrt(): 1 [+a; −b]⁢x⁢x−a⁢b⁢x^4 :)/(1−b⁢x⁢x) , et reliquum opus perficeretur extrahendo radicem numeratoris tantùm ac dividendo per denominatorem.
+
+Ex hisce credo manifestum est quo pacto radices aliæ possunt extrahi et quælibet compositæ quantitates (quibuscunque radicibus vel denominatoribus perplexæ, ut hic videre est x^3+(sqrt() (x−sqrt() (1−x⁢x)))/(sqrt()3: a⁢x⁢x+x^3)−(sqrt()5: (x^3+2⁢x^5−x^((3)/(2))))/(sqrt()3: (x+x⁢x) − sqrt() (2⁢x−x^((2)/(3)))) .) in series infinitas simplicium terminorum reduci.
+
+De Affectarum æquationum reductione.
+
+Propositis verò affectis æquationibus, modus quo radices earum ad hujusmodi series reduci possint obnixiùs explicari debet idque cùm earum doctrina quam hactenus in numeris exposuerunt Mathematici, per ambages (superfluis etiam operationibus adhibitis) tradatur, ut in specimen <5> operis in speciebus non debeat adhiberi. Imprimis itaque numerosam affectarum æquationum resolutionem compendiosè tradam, dein speciosam similiter explicabo.
+
+Proponatur æquatio y^3−2⁢y−5=0 resolvenda, Et sit 2 numerus utcunque inventus qui minùs quàm decimâ sui parte differt a radice quæsitâ. Tum pono 2+p=y , et pro y substituo 2+p in æquationem, et inde nova prodit p^3+6⁢p⁢p+10⁢p−1=0 . cujus radix p exquirenda est ut quotienti addatur. Nempe (neglectis p^3+6⁢p⁢p ob parvitatem) 10⁢p−1 =0 sive p=0,1 ad veritatem proxime accedit. Scribo itáque 0,1 in quotiente & suppono 0,1+q=p , et hunc ejus fictitium valorem ut ante substituo, et prodit q^3+6,3⁢q⁢q+11,23⁢q+0,061=0 . Et cùm 11,23⁢q+0,061 =0 veritatem appropinquet sive ferè sit q=−0,0054 (dividendo nempe 0,061 per 11,23 donec tot eliciantur figuræ quot loca primis figuris hujus et principalis quotientis exclusivè intercedunt, quemadmodum hic duo sunt inter 2, & 0,005) scribo −0,0054 in inferiori parte quotientis siquidem negativa sit, et supponens −0,0054+r=q , hunc ut priùs substituo. Et sic operationem ad placitum produco, pro more subjecti diagrammatis.
+
+[[________________________________________ | _; | [([+ | 2,10000000; − | 0,00544852]; [+ | 2,09455148]]]; [________________________________________ | _; [2+p=y.0,0000000 | +y^3; | −2⁢y; | −5] | [+ | 8 | + | 12⁢p | + | 6⁢p⁢p | + | p^3; − | 4 | − | 02⁢p; − | 5]; [; p^3Summap^3] | [; − | 1 | + | 10⁢p | + | 6⁢p⁢p | + | p^3]]; [________________________________________ | _; [0,1+q=p.0000000 | +p^3; | +6⁢p⁢p; | +10⁢p; | −1] | [+ | 0,001 | + | 00,03⁢q | + | 0,3⁢q⁢q | + | q^3; + | 0,061 | + | 01,20⁢q | + | 6,3⁢q⁢q; + | 1,001 | + | 10,0⁢q; − | 1]; [; q^3Summaq^3] | [; + | 0,061 | + | 11,23⁢q | + | 6,3⁢q⁢q | + | q^3]]; [________________________________________ | _; [[−0,0054+r=q.00000] | 0[dot]+q^3; | 0[dot]+6,3⁢q⁢q; | +11,23⁢q; | +0,061] | [− | 0,0000001 5[dot]7[dot]4[dot]6[dot]4[dot] | + | 00,000 0[dot]8[dot]7[dot]4[dot]8[dot] ⁢r | − | 0[dot],0[dot]1[dot]6[dot]2[dot] ⁢r⁢r | + | 1[dot] ⁢r^3 | q^3; + | 0,0001837 0[dot]8[dot] | − | 00,068 0[dot]4[dot] | + | 6[dot],3[dot] | q^3; − | 0,0606420 | + | 11,23 | q; + | 0,061]; [; q^3Summaq^3] | [; + | 0,0005416 0[dot]0[dot]0[dot]0[dot]0[dot] | + | 11,162⁢r | 0000000000000000000]]; [________________________________________ | _; [−0,00004852+s=r.] | 0; ________________________________________ | _]]
+
+<6>
+Opus verò sub fine (præsertim in æquationibus plurium dimensionum) hac methodo multùm abbreviabitur. Determinato quousque velis radicem extrahi, tot loca post primam figuram coefficientis penultimi termini æquationum in dextra parte diagrammatis resultantium adnumera, quot supersunt loca in quotiente complenda, et subsequentes decimales neglige. In ultimo verò termino decimales post tot plura loca neglige quot in quotiente complentur loca decimalia. Inque antepenultimo termino neglige omnes post tota pauciora loca. Et sic deinceps, Arithmeticè progrediendo per intervallum istud locorum, sive quod perinde est, tot figuras passim elidendo quot in penultimo termino, modò depressissima earum loca sint in Arithmeticâ progressione juxta seriem terminorum, aut circulis compleri subintelligantur ubi res aliter eveniat. Sic in exemplo jam posito, si cupiam ut quotiens ad octavum tantùm decimalem locum compleatur; inter substituendum 0,0054+r pro q, ubi quatuor loca decimalia in quotiente complentur ac totidem supersunt complenda, potui figuras in inferioribus quinque locis omisisse quas eapropter lineolâ transversim notavi; imò primum terminum r^3 , etsi coefficientem 99999 habuisset, potui tamen penitus omisisse. Expunctis itaque figuris istis, pro subsequente operatione prodit summa 0,0005416+11,162⁢r , quæ per divisionem ad usque præscriptum terminum peractam dat −0,00004852 pro r, quod quotientem ad optatam periodum complet.
+
+Denique negativam partem quotientis ab affirmativâ subduco, et oritur 2,09455148 quotiens absoluta.
+
+Præterea notandum est quòd sub initio operis si dubitarem an 0,1=p ad veritatem satis accederet, vice 10⁢p−1=0 finxissem 6⁢p⁢p+10⁢p−1=0 , et ejus radicis nihilo propioris primam figuram in quotiente scripsissem. Et hoc modo secundam vel etiam tertiam quotientis figuram explorare convenit ubi in æquatione secundaria circa quam <7> versaris, quadratum coefficientis penultimi termini non sit decies major quàm factus ex ultimo termino ducto in coefficientem termini antepenultimi. Quinimò laborem plerumque minues, præsertim in æquationibus plurimarum dimensionum, si figuras omnes quotienti addendas hoc modo (id est extrahendo minorem radicum ex tribus ultimis terminis æquationis ejus secundariæ) quæras. Sic enim figuras duplo plures in quotiente quâlibet vice lucraberis.
+
+His in numeris sic ostensis, consimiles operationes in speciebus explicandæ restant, de quibus convenit sequentia prænoscere. 1 Quod e speciebus coefficientibus aliqua præ reliquis (si sint plures) insignienda sit, ea nempe quæ est, aut fingi potest esse omnium longè minima vel maxima vel datæ quantitati vicinissima; . Cujus rei causa est, ut ob ejus dimensiones in numeratoribus vel denominatoribus terminorum quotientis perpetim auctas, illi termini continuò minores et inde quotiens radici propinquior evadat, sicut ante de specie x in exemplis reductionum per divisionem et extractionem radicum manifestum esse potest. Pro isthâc verò specie in sequentibus ut plurimùm usurpabo etiam x vel z, quemadmodum ety, p, q, r, s &c pro specie radicali extrahenda.
+
+2 Siquando fractiones intricatæ complexæ vel surdæ quantitates in æquatione propositâ vel post in operatione occurrant, tolli debent per methodos Analystis satis notas. Quemadmodum si habeatur y^3+(b⁢b)/(b−x)⁢y⁢y−x^3=0 , multiplico per b−x et ex facto b⁢y^3−x⁢y^3+b⁢b⁢y⁢y−b⁢x^3+x^4=0 valorem y elicio. Vel possum fingere y×(b−x)=v , et sic scribendo (v)/(b−x) pro y, orietur v^3+b⁢b⁢y⁢y−b⁢b⁢x^3+2⁢b⁢x^4−x^5=0 dein extractâ radice v, divido quotientem per b−x ut obtineatur valor y. Item si proponatur y^3−x⁢y^((1)/(2))+x^((4)/(3)) =0 fingo y^((1)/(2))=v , et x^((1)/(3))=z , et sic scribendo v⁢v pro y et z^3 pro x, oritur v^6−z^3⁢v+z ; qua æquatione resolutâ restituo y et x. Scilicet radix invenietur v=z+z^3+6⁢z^5 &c , et restitutis y et x orietur <8> y^((1)/(2))=x^((1)/(3))+x+6⁢x^((5)/(3)) &c ; et quadrando, y=x^((2)/(3))+2⁢x^((4)/(3))+13⁢x⁢x &c . Ad eundem modum siquæ sint negativæ ipsorum x et y , tollo multiplicando per easdem x et y Sic habito x^3+3⁢x⁢x⁢y^(−1)−2⁢x^(−1)−16⁢y^(−3)=0 , multiplico per x et y^3 , oriturque x^4⁢y^3+3⁢x^3⁢y⁢y−2⁢y^3−16=0 . Et habito x=(a⁢a)/(y)−(2⁢a^3)/(y⁢y)+(3⁢a^4)/(y^3) duco in y^3 et oritur x⁢y^3=y⁢y−2⁢y+3 . Et sic de cæteris.
+
+3 Æquatione sic præparatâ, opus ab inventione primi termini quotientis initium sumit, de quâ ut et consimili subsequentium terminorum inventione hæc esto regula generalis cùm species indefinita (x vel z) parva esse fingitur, * * ad quem casum cæteri duo casus sunt reducibiles. E terminis in quibus species radicalis (y, p, q vel r &c) non reperitur selige depressissimum respectu dimensionum indefinitæ speciei (x vel z &c) dein alium terminum in quo sit illa species radicalis selige, talem nempe ut progressio dimensionum utriusque præfatæ speciei a termino priùs assumpto ad hunc terminum continuata, quàm maximè potest descendat vel minimè ascendat. Et siqui sint alij termini quorum dimensiones cum hâc progressione ad arbitrium continuatâ conveniant, eos etiam selige. Denique ex his selectis terminis tanquam nihilo æqualibus quære valorem dictæ speciei radicalis et quotienti appone.
+
+Cæterùm ut hæc regula magis elucescat, placuit insuper ope sequentis diagrammatis exponere. Descripto angulo recto BAC, latera ejus BA, AC divido in partes æquales, et inde normales erigo distribuentes angulare spatium in æqualia quadrata vel parallelogramma, quæ concipio denominata esse a dimensionibus specierum x et y, pro ut vides in fig 1 inscriptas. Deinde cùm æquatio aliqua proponitur, parallelogramma singulis ejus terminis [figure] correspondentia insignio notâ aliquâ et Regulâ ad duo vel forte plura ex insignitis parallelogrammis applicatâ, quorum unum sit humillimum in columnâ sinistra juxta AB, et alia ad regulam dextrorsum sita, cæteraque omnia non contingentia <9> regulam supra eam jaceant: seligo terminos æquationis per parallelogramma contingentia regulam designatos et inde quæro quantitatem quotienti addendam.
+
+Sic ad extrahendam radicem y ex y^6−5⁢x⁢y^5+(x^3)/(a)⁢y^4− 7⁢a⁢a⁢x⁢x⁢y⁢y+6⁢a^3⁢x^3+b⁢b⁢x^4=0 ; parallelogramma hujus terminis respondentia signo nota aliqua ∗ ut vides in schem. 2. Dein applico regulam DE ad inferiorem e locis signatis in sinistra columna, eámque ab inferioribus ad superiora dextrorsum gyrare facio donec alium similiter vel fortè plura e reliquis signatis locis cœperit attingere, videóque loca sic attracta esse x^3 , x^2⁢y^2 , & y^6 . E terminis itáque y^6−7⁢a⁢a⁢x⁢x⁢y⁢y+6⁢a^3⁢x^3 tanquam nihilo æqualibus (et insuper si placet reductis ad v^6−7⁢v⁢v+6=0 ponendo y×sqrt()a⁢x ) quæro valorem y, et invenio quadruplicem +sqrt()a⁢x , −sqrt()a⁢x , +sqrt()2⁢a⁢x & −sqrt()2⁢a⁢x , quorum quemlibet pro initio quotientis accipere liceat prout e radicibus quampiam extrahere decretum est
+
+Sic ex y^5−b⁢y⁢y+9⁢b⁢x⁢x−x^3=0 seligo −b⁢y⁢y+9⁢b⁢x⁢x , et inde obtineo +3⁢x pro initiali termino quotientis
+
+Et ex y^3+a⁢x⁢y+a⁢a⁢y−x^3−2⁢a^3=0 seligo y^3+a⁢a⁢y−2⁢a^3 , et radicem ejus +a scribo in quotiente.
+
+Et ex x⁢x⁢y^5−3⁢c^4⁢x⁢y⁢y−c^5⁢x⁢x+c^7=0 seligo x⁢x⁢y^5+c^7 , quod exhibet sqrt()5:(c^7)/(x⁢x) pro initio quotientis. Et sic de cæteris.
+
+Cæterùm invento hoc termino, si is contingat esse negativæ potestatis, æquationem per eandem indefinitæ speciei potestatem deprimo, eo ut non opus sit inter solvendum deprimere, et insuper ut regula de superfluis terminis elidendis mox tradenda aptè possit adhiberi. Sic proposito 8⁢z^6⁢y^3+a⁢z^6⁢y⁢y−27⁢a^9=0 , cujus quotiens exordiri debet a (3⁢a^3)/(2⁢z⁢z) , deprimo per z⁢z , ut fiat 8⁢z^4⁢y^3+a⁢z^4⁢y⁢y−27⁢a^9⁢z^(−2)=0 , antequam solutionem ineo.
+
+Subsequentes quotientum termini eâdem methodo ex æquationibus secundarijs inter operandum prodeuntibus eruuntur, sed ut plurimum leviori curâ. Res enim peragi solet dividendo depressissimum e terminis cum indefinitè parva specie (x, x⁢x , x^3 &c) absque specie radicali (p, q, r &c) affectis, per quantitatem quâcum species illa radicalis unius tantùm dimensionis abque alterâ indefinitâ specie afficitur, et exitum scribendo in quotiente. Sic in exemplo sequente termini (x)/(4) , (x⁢x)/(64⁢a) , (131⁢x^3)/(512⁢a⁢a) &c eliciuntur dividendo a⁢a⁢x , (1)/(16)⁢a⁢x⁢x {,} (131)/(128)⁢x^3 &c per 4⁢a⁢a .
+
+<10>
+His praemissis restat ut praxin resolutionis exhibeam. Sit itáque y^3+a⁢a⁢y+a⁢x⁢y−2⁢a^3−x^3=0 æquatio resolvenda, et ex ejus terminis y^3+a⁢a⁢y−2⁢a^3=0 æquatione fictitiâ, juxta tertium e præmissis elicio y−a=0 , & scribo +a in quotiente. Deinde cùm +a non accurate valeat y, pono a+p=y , et pro y in terminis æquationis in margine scriptis substituo a+p , terminosque resultantes ( p^3+3⁢a⁢p⁢p+a⁢x⁢p &c) rursum scribo in margine, ex quibus iterum juxta tertium e præmissis excerpo terminos +4⁢a⁢a⁢p+a⁢a⁢x=0 pro æquatione fictitiâ, quæ cùm exhibeat p=−(1)/(4)⁢x , scribo −(1)/(4)⁢x in quotiente. Præterea cùm −(1)/(4)⁢x non accurate valeat p, pono −(1)/(4)⁢x+q =p , & pro p in terminis marginalibus substituo −(1)/(4)⁢x+q , terminosque resultantes ( q^3−(3)/(4)⁢x⁢q⁢q+ 3⁢a⁢q⁢q &c) iterum scribo in margine, ex quibus denuò juxta regulam præfatam seligo terminos 4⁢a⁢a⁢q−(1)/(16)⁢a⁢x⁢x=0 pro æquatione fictitiâ quae cùm exhibeat q=(x⁢x)/(6a⁢a) scribo +(x⁢x)/(64⁢a) in quotiente. Porrò cùm (x⁢x)/(64⁢a) non accuratè valeat q, pono (x⁢x)/(64⁢a)+r=q & pro q in terminis marginalibus substituo (x⁢x)/(64⁢a)+r , & sic opus ad placitum produco prout indicat subjectum diagramma.
+
+[[________________________________________ | _; | (a−(x)/(4)+(x⁢x)/(64⁢a)+(131⁢x^3)/(512⁢a⁢a)+(509⁢x^4)/(16384⁢a^3) &c]; [________________________________________ | _; [+a+p=y.000000000 | +y^3; | +a⁢x⁢y; p^0 | +a⁢a⁢y; | −x^3; | −2⁢a^3] | [+ | a^3 | + | 3⁢a⁢a⁢p | + | 3⁢a⁢p⁢p | + | p^3; + | a⁢a⁢x | + | a⁢x⁢p; + | a^3 | + | a⁢a⁢p; − | x^3; − | 2⁢a^3]]; [________________________________________ | _; [−(1)/(4)⁢x+q=p.0000000 | (0)/(0)+p^3; | (0)/(0)+3⁢a⁢p^2; | (0)/(0)+a⁢x⁢p; | +4⁢a⁢a⁢p; | +a⁢a⁢x; | −x^3] | [− | (1)/(64)⁢x^3 | + | (3)/(16)⁢x⁢x⁢q | ∗ | − | (3)/(4)⁢x⁢q⁢q | + | q^3; + | (3)/(16)⁢a⁢x⁢x | − | (3)/(2)⁢a⁢x⁢q | | + | 3⁢a⁢q⁢q; − | (1)/(4)⁢a⁢x⁢x | + | a⁢x⁢q; − | a⁢a⁢x | + | 4⁢a⁢a⁢q; + | a⁢a⁢x; − | x^3]]; [________________________________________ | _; [+(x⁢x)/(64⁢a)⁢x+r=q.0000 | (0)/(0)+q^3; | −(3)/(4)⁢x⁢q⁢q; | (x^0)/(0)+3⁢a⁢q⁢q; | (x^0)/(0)+(3)/(16)⁢x⁢x⁢q; | −(1)/(2)⁢a⁢x⁢q; | (0)/(0)+4⁢a⁢a⁢q; | −(65)/(64)⁢x^3; | −(1)/(16)⁢a⁢x⁢x] | [∗ | (0)/(0); ∗ | (0)/(0); + | (3⁢x^4)/(4096⁢a) | ∗ | + | (3)/(32)⁢x⁢x⁢r | + | 3⁢a⁢r⁢r; + | (3⁢x^4)/(1024⁢a) | ∗ | + | (3)/(16)⁢x⁢x⁢r; − | (1)/(128)⁢x^3 | | − | (1)/(2)⁢a⁢x⁢r; + | (1)/(16)⁢a⁢x⁢x | | + | 4⁢a⁢a⁢r; − | (65)/(64)⁢x^3 | ; − | (1)/(16)⁢a⁢x⁢x | ]]; [_; +4⁢a⁢a−(1)/(2)⁢a⁢x) +(131)/(128)⁢x^3−(15⁢x^4)/(4096⁢a) (+(131⁢x^3)/(512⁢a⁢a)+(509⁢x^4)/(16384⁢a^3).; _]]
+
+<11>
+Quod si Quotientem ad certam usque periodum produci cupiam, ut x nempe in ultimo ejus termino ultra datum dimensionum numerum non ascendat; terminos inter substituendum semper omitto quos nulli deinceps usui fore prævideam. Cujus rei regula esto, quòd post primum terminum ex qualibet quantitate in margine collaterali resultantem non addantur plures dextrorsum, quàm istius primò resultantis termini dimensio a periodica sive maximâ dimensione quotientis deficit gradibus. Ut in hoc exemplo si cupiam ut quotiens (sive x in quotiente) ad quatuor tantùm dimensiones ascendat, omitto omnes terminos post x^4 , & post x^3 pono unicum tantùm. Terminos itaque post notam ∗ delendos esse concipe: Et opere sic continuato donec ultimò ad terminos ((15⁢x^4)/(4096⁢a)−(131)/(128)⁢x^3+4⁢a⁢a⁢r−(1)/(2)⁢a⁢x⁢r) deveniatur in quibus (p, q, r vel s &c) residuum radicis extrahendæ sit unicæ tantùm dimensionis; tot terminos (+(131⁢x^3)/(512⁢a⁢a)+(509⁢x^4)/(16384⁢a^3)) per divisionem elicies, quot ad complendum quotientem deesse videbis. Atque ita tandem obtinebitur y=a−(1)/(4)⁢x+(x⁢x)/(64⁢a)+(131⁢x^3)/(512⁢a^2)+(509⁢x^4)/(16384⁢a^3) .
+
+Plenioris illustrationis gratia dedi aliud exemplum resolvendo (1)/(5)⁢y^5−(1)/(4)⁢y^4+(1)/(3)⁢y^3−(1)/(2)⁢y⁢y+y−z=0 , ubi proponitur inventio quotientis ad quintam tantùm dimensionem, terminique superflui post notam (&c) negliguntur.
+
+[[________________________________________ | _; | (z+(1)/(2)⁢z⁢z+(1)/(6)⁢z^3+(1)/(24)⁢z^4+(1)/(120)⁢z^5 &c]; [________________________________________ | _; [z+p=y0000000000 | +(1)/(5)⁢y^5; | −(1)/(4)⁢y^4; | +(1)/(3)⁢y^3; | −(1)/(2)⁢y^2; | +y; | −z] | [+ | (1)/(5)⁢z^5 | | &c; − | (1)/(4)⁢z^4 | − | z^3⁢p | | &c; + | (1)/(3)⁢z^3 | + | z^2⁢p | + | z⁢p⁢p | + | &c; − | (1)/(2)⁢z^2 | − | z⁢p | − | (1)/(2)⁢p⁢p; + | z | + | p; − | z]]; [________________________________________ | _; [+(1)/(2)⁢z⁢z+q=p.00000000 | +z⁢p^2; | −(1)/(2)⁢p^2; | (0)/(0)−z^3⁢p; | (0)/(0)+z^2⁢p; | (0)/(0)−z⁢p; | (0)/(0)+p; | +(1)/(5)⁢z^5; | −(1)/(4)⁢z^4; | +(1)/(3)⁢z^3; | −(1)/(2)⁢z^2] | [+ | (1)/(4)⁢z^5 | | &c; − | (1)/(8)⁢z^4 | − | (1)/(2)⁢z^2⁢q | + | &c; − | (1)/(2)⁢z^5 | | &c; + | (1)/(2)⁢z^4 | + | z^2⁢q; − | (1)/(2)⁢z^3 | − | z⁢q; + | (1)/(2)⁢z^2 | + | q; + | (1)/(5)⁢z^5; − | (1)/(4)⁢z^4; + | (1)/(3)⁢z^3; − | (1)/(2)⁢z^2]]; [_; 1−z+(1)/(2)⁢z⁢z) +(1)/(6)⁢z^3−(1)/(8)⁢z^4+(1)/(20)⁢z^5 (+(1)/(6)⁢z^3+(1)/(24)⁢z^4+(1)/(120)⁢z^5.; _]]
+
+Atque ita si cupiam æquationem (63⁢y^11)/(2816)+(35)/(1152)⁢y^9+(5)/(112)⁢y^7+ <12> (3)/(40)⁢y^5+(1)/(6)⁢y^3+y−z=0 ad usque nonam tantùm dimensionem quotientis resolvi, ante opus initum negligo terminum (63)/(2816)⁢y^11 , deinde inter operandum negligo etiam omnes terminos post z^9 , post z^7 pono unicum, ac duos tantum post z^5 , eò quòd percipio quotientem ubique per gradus binarum {unitatum} (hoc modo z, z^3 , z^5 , &c) debere ascendere. Tandemque prodit y=z−(1)/(6)⁢z^3+(1)/(120)⁢z^5−(1)/(5040)⁢z^7+(1)/(362880)⁢z^9
+
+Et hinc patet artificium quo æquationes in infinitum affectæ, vel utcunque multis numeróve infinitis terminis constantes possunt solvi. Scilicet omnes termini ante opus initum debent negligi in quibus dimensio speciei indefinitè parvæ non affectæ cum radicali specie transcendit maximam dimensionem in quotiente desideratam vel ex quibus, substituendo pro radicali specie primum terminum quotientis ope tessellatæ tabulæ inventum, non nisi ejusmodi transcendentes termini possunt emergere. Sic in exemplo novissimo terminos omnes supra y^9 , quamvis infinitè progrederentur, omisissem. Et sic in hâc æquatione
+0={[− | 8 | + | z⁢z | − | 4⁢z^4 | + | 9⁢z^6 | − | 16⁢z^8 | + | &c; + | y | in | z⁢z | − | 2⁢z^4 | + | 3⁢z^6 | − | 4⁢z^8 | + | &c; − | y⁢y | in | z⁢z | − | z^4 | + | z^6 | − | z^8 | + | &c; + | y^3 | in | z⁢z | − | (1)/(2)⁢z^4 | + | (1)/(3)⁢z^6 | − | (1)/(4)⁢z^8 | + | &c]
+ut radix cubica ad quatuor tantùm dimensiones ipsius z extrahatur, mitto omnes in infinitum terminos post +y^3inz⁢z−(1)/(2)⁢z^4+(1)/(3)⁢z^6 , et post −y⁢yinz⁢z−z^4+z^6 et post +yinz⁢z−2⁢z^4 , et post −8+z⁢z−4⁢z^4 . Et hanc tantùm æquationem (1)/(3)⁢z^6⁢y^3−(1)/(2)⁢z^4⁢y^3+z⁢z⁢y^3−z^6⁢y⁢y+z^4⁢y⁢y−2⁢z^4⁢y+z⁢z⁢y−4⁢z^4 +z⁢z−8=0 resolvendam sumo, siquidem 2⁢z^(−(2)/(3)) (primus nempe quotientis terminus,) pro y in reliquâ æquatione per z^((2)/(3)) substitutus, dat plures ubique quàm quatuor dimensiones{.}
+
+Quæ de altioribus æquationibus dixi, ad quadraticas etiam applicari possunt. Quemadmodum si hujus
+0={[+y⁢y | .; −y | in | a | + | x | + | (x⁢x)/(a) | + | (x^3)/(a⁢a) | + | (x^4)/(a^3) | + | &c; +(x^4)/(4⁢a⁢a) | .]
+radicem ad usque periodum x^6 desiderem, mitto terminos in infinitum post −yina+x+(x⁢x)/(a) et isthanc tantùm <13> y⁢y−a⁢y−x⁢y+(x⁢x)/(a)⁢y+(x^4)/(4⁢a⁢a)=0 , sive id fiat hâc lege y=(1)/(2)⁢a+(1)/(2)⁢x+(x⁢x)/(2⁢a)−sqrt()((1)/(4)⁢a⁢a+(1)/(2)⁢a⁢x+(3)/(4)⁢x⁢x+(x^3)/(2⁢a)) , ut solet, sive expeditiùs per methodum de affectis æquationibus jam traditam, resolvo; et exit y=(x^4)/(4⁢a^3)−(x^5)/(4⁢a^4)∗ , ultimo desiderato termino existente nullo.
+
+Postquam verò radices ad convenientem periodum extractæ sunt, possunt aliquando, ex analogiâ seriei observatâ, ad placitum produci. Sic hanc z+(1)/(2)⁢z⁢z+(1)/(6)⁢z^3+(1)/(24)⁢z^4+(1)/(120)⁢z^5 &c (radicem æquationis infinitæ x=y+(1)/(2)⁢y⁢y+(1)/(3)⁢y^3 &c ) perpetuò produces dividendo ultimum terminum per hos ordine numeros 2,3,4,5,6,7 &c. Et hanc z−(1)/(6)⁢z^3+(1)/(120)⁢z^5−(1)/(5040)⁢z^7 +(1)/(362880)⁢z^9 &c dividendo per hos 2×3,4×5,6×7,8×9 &c [Et hanc a+(x⁢x)/(2⁢a)−(x^4)/(8⁢a^3)+(x^6)/(16⁢a^5)−(5⁢x^8)/(128⁢a^7) &c multiplicando per hos (1)/(2),(−1)/(4),(−3)/(6),(−5)/(8),(−7)/(10) &c.] Et sic in alijs.
+
+Cæterùm in inventione primi termini quotientis et nonnunquam secundi tertijve difficultas etiamnum enodanda superest. Potest enim valor ejus secundum præcedentia quæsitus esse surda sive inextricabilis radix æquationis multipliciter affectæ. Quod cùm accidit, modò non sit insuper impossibilis, illum literâ aliquâ designabis, dein operabere tanquam si cognitum haberes. Quemadmodum in exemplo y^3+a⁢x⁢y+a⁢a⁢y−x^3−2⁢a^3=0 , si radix hujus y^3+a⁢a⁢y−2⁢a^3=0 fuisset surda vel ignota finxissem quamlibet (b) , pro ea ponendam esse, et resolutionem (puta ad tertiam dimensionem quotientis) ut sequitur perfecissem.
+
+[[________________________________________ | _; | (b−(a⁢b⁢x)/(c⁢c)+(a^4⁢b⁢x⁢x)/(c^6)+(x^3)/(c⁢c)+(a^4⁢b^3⁢x^3)/(c^8)−(a^5⁢b⁢x^3)/(c^8)+(6⁢a^5⁢b^3⁢x^3)/(c^10).]; [________________________________________ | _; [b+p=y.0000000 | b^0+y^3; | b+a⁢x⁢y; | b+a⁢a⁢y; | −x^3; | −2⁢a^3] | [+ | b^3 | + | 3⁢b⁢b⁢p | + | 3⁢b⁢p⁢p | + | p^3; + | a⁢b⁢x | + | a⁢x⁢p; + | a⁢a⁢b | + | a⁢a⁢p; − | x^3; − | 2⁢a^3]]; [________________________________________ | _; [(b^0)/(c^0)(−a⁢b⁢x)/(c⁢c)+q=p.00000 | +p^3; | (b^0)/(c^0)+3⁢b⁢p⁢p; | (b)/(c)+a⁢x⁢p; | b+c⁢c⁢p; | −x^3; | +a⁢b⁢x] | [− | (a^3⁢b^3⁢x^3)/(c^6) | + | &c; + | (3⁢a⁢a⁢b^3⁢x⁢x)/(c^4) | − | (6⁢a⁢b⁢b⁢x)/(c⁢c)⁢q | + | &c; − | (a⁢a⁢b⁢x⁢x)/(c⁢c) | + | a⁢x⁢q; − | a⁢b⁢x | + | c⁢c⁢q; − | x^3; + | a⁢b⁢x]]; [_; c⁢c+a⁢x−(6⁢a⁢b⁢b⁢x)/(c⁢c)⁢z⁢z) (a^4⁢b⁢x⁢x)/(c^4)+x^3+(a^3⁢b^3⁢x^3)/(c^6) ((a^4⁢b⁢x⁢x)/(c^6)+(x^3)/(c⁢c)+(a^3⁢b^3⁢x^3)/(c^8) &c; _]]
+
+<14>
+Scribens b in quotiente suppono b+p=y & pro y substituo ut vides: unde prodit p^3+3⁢b⁢p⁢p &c, rejectis terminis b^3+a⁢a⁢b −2⁢a^3 , qui nihilo sunt æquales propterea quod b supponitur radix hujus y^3+a⁢a⁢y−2⁢a^3=0 . Deinde termini 3⁢b⁢b⁢p+a⁢a⁢p +a⁢b⁢x dant (−a⁢b⁢x)/(3⁢b⁢b+a⁢a) , quotienti apponendum & (−a⁢b⁢x)/(3⁢b⁢b+a⁢a)+q substituendum pro p. Brevitatis autem gratiâ scribo c⁢c pro 3⁢b⁢b+a⁢a , cavendo tamen ut 3⁢b⁢b+a⁢a restituatur ubi terminos sic abbreviari posse percipiam. Completo opere assumo numerum aliquem pro a, et hanc y^3+a⁢a⁢y −2⁢a^3=0 (sicut de numerali æquatione ostensum supra) resolvo, et quamlibet ejus radicem (modo tres haberet) pro b substituo. Vel potiùs hujusmodi æquationes a speciebus, ut possum, libero, præsertim ab indefinitâ; idque pro morequem volui innuere pag 9 lin 14: et pro cæteris tantùm (siquæ supersint indelebiles) pono numeros. Sic y^3+a⁢a⁢y−2⁢a^3=0 liberabitur ab a dividendo radicem per a, fietque y^3+y−2=0 , cujus inventa radix ducta in a substitui debet pro b.
+
+Hactenus indefinitam speciem suposui parvam esse. Quod si datæ quantitati vicina supponatur, pro indefinitè parvâ differentiâ pono speciem aliquam, et hâc substitutâ, solvo ut ante. Quemadmodum in (1)/(5)⁢y^5−(1)/(4)⁢y^4+(1)/(3)⁢y^3−(1)/(2)⁢y^2 +y−a−x=0 , cognito vel ficto x esse ejusdem prope quantitatis ac a, pono z differentiam inter ea, & scribendo a+z , vel a−z pro x, orietur (1)/(5)⁢y^5−(1)/(4)⁢y^4+(1)/(3)⁢y^3−(1)/(2)⁢y^2+y− vel +z=0 solvendum ut in præcedentibus.
+
+Sin autem species ilia supponatur indefinite magna, pro reciproco ejus indefinitè parvo pono speciem aliquam, quâ substitutâ solvo ut ante. Sic habito y^3+y^2+y−x^3=0 ubi x cognoscitur vel fingitur esse valde magnum, <15> pro reciprocè parvo (1)/(x) pono z, et substituto (1)/(z) pro x, orietur y^3+y⁢y+y−(1)/(z^3)=0 , cujus radix est (1)/(z)−(1)/(3)−(2)/(9)⁢z+(7)/(81)⁢z⁢z+(5)/(81)⁢z^3 &c. et x si placet restituto fit y=x−(1)/(3)−(2)/(9⁢x)+(7)/(81⁢x⁢x)+(5)/(81⁢x^3) &c {.}
+
+Siquando ex aliquâ harum trium suppositionum res non omninò aut non commodè succedat, ad aliam recurri potest. Sic in y^4−x⁢x⁢y⁢y+x⁢y⁢y+2⁢y⁢y−2⁢y+1=0 cùm primus terminus obtineri deberet fingendo y^4+2⁢y⁢y−2⁢y+1=0 , quæ tamen nullam admittit possibilem radicem, Tento quid fiet aliter: quemadmodum si fingam x parùm differre a +2 sive esse 2+z=x , substituendo 2+z vice x prodibit y^4−z⁢z⁢y⁢y−2⁢z⁢y⁢y −2⁢y+1=0 , et quotiens exordietur ab +1 . Vel si fingam x indefinitè magnam esse, sive (1)/(x)=z , obtinebitur y^4− (y⁢y)/(z⁢z)+(y⁢y)/(z)+2⁢y⁢y−2⁢y+1=0 , & +z pro initio quotientis. Et hac ratione secundum varias Hypotheses procedendo, licebit varijs modis extrahere ac designare radices.
+
+Quod si cupias explorare quot modis id potest fieri, tentabis quænam quantitates pro indefinitâ specie in æquationem propositam substitutæ, efficient divisibilem per y + vel − aliquâ quantitate vel per y solum. Id quod verbi gratia in æquatione y^3+a⁢x⁢y+a⁢a⁢y−x^3−2⁢a^3=0 eveniet substituendo +a , vel −a , vel −2⁢a , vel sqrt()c:−2⁢a^3 , &c pro y. Atque ita possis commodè supponere quantitatem x parùm ab +a , vel −a , vel −2⁢a , vel sqrt()c:−2⁢a^3 differre, et inde radicem propositæ æquationis tot modis extrahere. Imò et fortasse tot alijs modis fingendo differentias istas esse indefinitè magnas. Quinetiam si aliam atque aliam e speciebus radicem definientibus pro indefinitâ adhibeas, possis alijs adhuc fortassè modis propositum consequi; et etiamnum alijs substituendo valores quâcunque ratione fictos (quales sunt a⁢z+b⁢z⁢z , (a)/(b+z) , (a+c⁢z)/(b+z) &c) pro indefinitâ specie & in æquatione resultante operando sicut in præcedentibus.
+
+Cæterùm ut conclusionum veritas constet, quotientes nempe sic extractos, dum producuntur, ita propiùs ad radicem accedere, ut minùs tandem quâvis datâ quantitate differant, adeóque in infinitum productos non omninò differre: perpende <16> quod quantitates in sinistrâ columnâ dextræ partis diagrammatum, sint ultimi termini æquationum quarum p, q, r, s, &c existunt radices et inde quòd ipsis evanescentibus, illæ p, q, r, s, id est differentiæ inter quotientem & quæsitam radicem, simul evanescunt. Adeóque quotiens tunc non differt a radice. Quamobrem sub initio operis si terminos in dictâ columnâ sese omnes destruere videas, conclude quotientem eatinus extractam, esse justam radicem. Sin aliter, videbis tamen terminos in quibus indefinite parva species est pauciorum dimensionum, id est longè maximos, e columna ista perpetuò tolli, ut tandem non restent nisi datâ quâvis quantitate minores, et proinde non majores nihilo cùm opus infinitè producitur. Quare quotiens infinitè extracta fiet etiam justa radix.
+
+[Etsi denique species, quas hactenus perspicuitatis gratiam supposui indefinitè parvas esse, quantumvis magnæ supponàtur, tamen veræ erunt quotientes, ut ut minùs citò ad justam radicem convergant quemadmodum ex analogiâ rei constet. Sed hic radicum termini, maximæque et minimæ quantitates spectandæ veniunt: Nam infinitarum cum finitis asquationibus communia sunt hujusmodi symptomata . Radix autem in his maxima fit vel minima quando maxima vel minima est differentia summæ affirmativorum terminorum a summâ negativorum, ac terminatur cùm indefinita quantitas (quam ideò parvam esse non immeritò finxi) non potest major sumi quin magnitudo radicis in infinitum prosiliet, hoc est fiet impossibilis. Verbi gratiâ posito ACD semicirculo super diametro AD descripto, et BC ordinatim applicatâ: Dic AB=x BC=y AD=a et erit y=(sqrt()(a⁢x−x⁢x)=) sqrt()a⁢x−(x)/(2⁢a)⁢sqrt()a⁢x−(x⁢x)/(8⁢a⁢a)⁢sqrt()a⁢x [figure] −(x^3)/(16⁢a^3)⁢sqrt()a⁢x &c . Fit ergo BC sive y maxima cum sqrt()a⁢x maximè superat omnes (x)/(2⁢a)⁢sqrt()a⁢x+(x⁢x)/(8⁢a⁢a)⁢sqrt()a⁢x+(x^3)/(16⁢a^3)⁢sqrt()a⁢x &c , id est cùm sit x=(1)/(2)⁢a : terminabitur autem cùm sit x=a quia si summas x ((|_)_) a , summa omnium terminorum −(x)/(2⁢a)⁢sqrt()a⁢x−(x⁢x)/(8⁢a⁢a)⁢sqrt()a⁢x−(x^3)/(16⁢a^3)⁢sqrt()a⁢x &c erit infinita. Est et alius terminus cùm ponitur x=0 , propter impossibilitatem radicalis sqrt()−a⁢x ; Quibus terminis correspondent semicirculi limites A et D.]
+
+<17>
+Hactenus de modis computandi quorum posthac frequens erit usus: Jam restat ut in illustrationem Artis Analyticæ tradam aliquot Problematum specimina qualia præsertim natura curvarum ministrabit. Sed imprimis observandum venit quod hujusmodi difficultates possunt omnes ad hæc duo tantùm problemata reduci quæ circa spatium motu locali utcunque accelerato
+vel retardato descriptum proponere licebit.
+
+1. Spatij longitudine continuò (sive ad omne tempus) data, celeritatem
+motûs ad tempus propositum invenire.
+
+2. Celeritate motûs continuò datâ longitudinem spatij 2 descripti 1 ad tempus propositum invenire.
+
+Sic in æquatione x⁢x=y si y designat spatij longitudinem ad quodlibet tempus quod aliud spatium x uniformi celeritate in crescendo mensurat et exhibet descriptam: tunc 2⁢m⁢x designabit celeritatem qua spatium y ad idem temporis momentum describi pergit; et contra. Et hinc est quod in sequentibus considerem quantitates quasi generatæ essent per incrementum continuum ad modum spatij quod mobile percurrendo describit{.}
+
+Cùm autem temporis nullam habeamus æstimationem nisi quatenus, id per æquabilem motum localem exponitur et mensuratur, et præterea cùm quantitates ejusdem tantùm generis inter se conferri possint et earum incrementi et decrementi celeritates inter se, eapropter ad tempus formaliter spectatum in sequentibus haud respiciam, sed e propositis quantitatibus quæ sunt ejusdem generis aliquam æquabili fluxione augeri fingam cui cæteræ tanquam tempori referantur, adeoque cui nomen temporis analogicè tribui mereatur. Siquando itaque vocabulum temporis in sequentibus occurrat (quemadmodum perspicuitatis et distinctionis gratia nonnumquàm intertexui) eo nomine non tempus formaliter spectatum subintelligi debet sed illa alia quantitas cujus æquabili incremento sive fluxione tempus exponitur et mensuratur.
+
+Quantitates autem quas ut sensim crescentes indefinitè considero, quo distinguam ab alijs quantitatibus quæ in æquationibus quibuscunque pro determinatis et cognitis habendæ sunt ac <18> initialibus literis a, b, c, &c designantur, posthac denominabo fluentes, ac designabo finalibus literis v, x, y, et z. Et celeritates quibus singulæ a motu generante fluunt et augentur (quas possim fluxiones vel simpliciter celeritates vocitare) designabo literis l, m, n et r. Nemp{e} pro celeritate quantitatis v ponam l et sic pro celeritatibus aliarum quantitatum x, y, et z ponam m, n, et r respectivè. His præmissis, e vestigio rem aggredior, imprimis duorum jam modo propositorum problematum solutionem exhibiturus.
+
+Problema 1.
+Relatione quantitatum fluentium inter se datâ, fluxionum relationem determinare.
+Solutio.
+
+Æquationem qua data relatio exprimitur dispone secundum dimensiones alicujus fluentis quantitatis puta x, ac terminos ejus multiplica per quamlibet Arithmeticam progressionem ac deinde per (m)/(x) . Et hoc opus in qualibet fluenti quantitate seorsim institue. Dein omnium factorum summam pone nihilo æqualem, et habes æquationem desideratam.
+
+Exemplum 1. Si quantitatum x et y relatio sit x^3−a⁢x⁢x+a⁢x⁢y−y^3 =0 , terminos primò secundum x ac deinde secundum y dispositos multiplico ad hunc modum.
+[[Mult: | x^3 | − | a⁢x⁢x | + | a⁢x⁢y | − | y^3 | . | [− | 0; + | x^0].; per | (3⁢m)/(x). | | (2⁢m)/(x). | | (m)/(x). | | 0 | .; fit | 3⁢m⁢x⁢x | − | 2⁢m⁢a⁢x | + | m⁢a⁢y. | | ∗ | .] | [[− | 0; + | x^0]. | Mult | − | y^3 | + | a⁢x⁢y | [− | a⁢x⁢x; + | x^3] | .; | per | | (3⁢n)/(y). | | (n)/(y). | [+ | 0] | .; | fit | − | 3⁢n⁢y⁢y | + | a⁢n⁢x. | [+ | ∗] | .]]
+Et factorum summa est 3⁢m⁢x⁢x−2⁢a⁢m⁢x+a⁢m⁢y−3⁢n⁢y⁢y+a⁢n⁢x=0. æquatio quæ dat relationem inter fluxiones m et n. Nempe si assumas x ad arbitrium, æquatio x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 dabit y. Quibus determinatis erit m.n∷3⁢y⁢y−a⁢x.3⁢x⁢x−2⁢a⁢x+a⁢y .
+
+Exemplum 2. Si quantitatum x, y, et z relatio sit 2⁢y^3+x⁢x⁢y−2⁢c⁢y⁢z+3⁢y⁢z⁢z−z^3=0 ,
+[[Mult | 2⁢y^3 | [+ | x⁢x; − | 2⁢c⁢z; + | 3⁢z⁢z] ⁢y | − | z^3 | .; per | (2⁢n)/(y). | 0. | − | (n)/(y) | .; fit | 4⁢n⁢y⁢y | ∗ | + | (n⁢z^3)/(y) | . | (0^0)/(0)] | [ | Mult | x⁢y⁢y | [+ | 2⁢y^3; − | 2⁢c⁢y⁢z; + | 3⁢y⁢z⁢z; − | z^3] | .; | per | (2⁢m)/(x). | 0 | . | (0^0)/(0); (0^0)/(0) | fit | 2⁢m⁢x⁢y | ∗ | . | (0^0)/(0)] | [ | Mult | − | z^3 | + | 3⁢y⁢z⁢z | − | 2⁢c⁢y⁢z | [+ | x⁢x⁢y; + | 2⁢y^3] | .; | per | | (3⁢r)/(z). | | (2⁢r)/(z). | | (r)/(z). | 0 | .; (0^0)/(0) | fit | − | 3⁢r⁢z⁢z | + | 6⁢r⁢y⁢z | − | 2⁢c⁢r⁢y | ∗ | .]]
+Quare fluendi celeritatum m n et r relatio est 4⁢n⁢y⁢y+(n⁢z^3)/(y)+2⁢m⁢x⁢y −3⁢r⁢z⁢z+6⁢r⁢y⁢z−2⁢c⁢r⁢y=0 .
+
+Cæterùm cùm tres sint hic fluentes quantitates x, y, et z deberet alia insuper æquatio dari qua relatio inter ipsas ut et inter earum fluxiones penitiùs determinetur. Quemadmodum si ponitur x+y−z=0. exinde fluxionum alia relatio juxta Regulam erit m+n−r=0. Confer <19> jam hasce cum præcedentibus æquationibus, eliminando quamlibet e tribus quantitatibus et quamlibet etiam e tribus earum fluxionibus, et reliquorum relationes penitiùs determinatas obtinebis.
+
+Siquando in æquatione propositâ insint fractiones complexæ aut surdæ quantitates, pro singulis pono totidem literas, easque fingens designare quantitates fluentes, operor ut ante. Dein supprimo et extermino literas ascriptitias, ut hic videre est{.}
+
+Exemplum 3. Si quantitatum x et y relatio sit y⁢y−a⁢a−x⁢sqrt()(a⁢a−x⁢x) : pro x⁢sqrt()(a⁢a−x⁢x) scribo z et inde habeo duas æquationes y⁢y−a⁢a−z=0 , et a⁢a⁢x⁢x−x^4−z⁢z=0 quarum prior ut ante dabit 2⁢n⁢y−r=0 pro relatione celeritatum n et r, et posterior dabit 2⁢a⁢a⁢m⁢x−4⁢m⁢x^3−2⁢r⁢z=0 sive (a⁢a⁢m⁢x−2⁢m⁢x^3)/(z)=r pro relatione celeritatum m et r. Jam r suppresso fiet 2⁢n⁢y(−a⁢a⁢m⁢x+2⁢m⁢x^3)/(z)=0 , dein restituto x⁢sqrt()(a⁢a−x⁢x) pro z habebitur 2⁢n⁢y(−a⁢a⁢m+2⁢m⁢x⁢x)/(sqrt()(a⁢a−x⁢x))=0 relatio inter m et n quæ quærebatur.
+
+Exemplum 4. Si x^3−a⁢y⁢y+(b⁢y^3)/(a+y)−x⁢xsqrt()(a⁢y+x⁢x)=0 designat relationem inter x et y: pono z pro (b⁢y^3)/(a+y) , et v pro x⁢xsqrt()(a⁢y+x⁢x) et inde nactus sum tres æquationes x^3−a⁢y⁢y+z−v=0 , a⁢z+y⁢z−b⁢y^3=0 , & a⁢x^4⁢y+x^6−v⁢v=0 . Prima dat 3⁢m⁢x⁢x−2⁢a⁢n⁢y+r−l=0 , secunda dat a⁢r+r⁢y +n⁢z−3⁢b⁢n⁢y⁢y=0 , et tertia dat 4⁢a⁢m⁢x^3⁢y+6⁢m⁢x^5+a⁢n⁢x^4−2⁢l⁢v=0 pro relationibus celeritatum l, m, n et r. Ipsorum verò r et l valores per secundam ac tertiam inventos (nempe (3⁢b⁢n⁢y⁢y−n⁢z)/(a+y) pro r, et (4⁢a⁢m⁢x^3⁢y+6⁢m⁢x^5+a⁢n⁢x^4)/(2⁢v) pro l) substituo in primam et oritur 3⁢m⁢x⁢x−2⁢a⁢n⁢y (3⁢b⁢n⁢y⁢y−n⁢z)/(a+y) (−4⁢a⁢m⁢x^3⁢y−6⁢m⁢x^5−a⁢n⁢x^4)/(2⁢v)=0 . Et vice z et v restitutis valoribus (b⁢y^3)/(a+y) et x⁢xsqrt()(a⁢y+x⁢x) , prodit æquatio quæsita 3⁢m⁢x⁢x−2⁢a⁢n⁢y (3⁢a⁢b⁢n⁢y⁢y+2⁢b⁢n⁢y^3)/(a⁢a+2⁢a⁢y+y⁢y) (−4⁢a⁢m⁢x⁢y−6⁢m⁢x^3−a⁢n⁢x⁢x)/(2⁢sqrt()(a⁢y+x⁢x))=0 quâ relatio celeritatum m et n designatur.
+
+Quo pacto in alijs casibus operandum est, quemadmodum cùm in æquatione propositâ reperiuntur surdi denominatores, radicales cubicæ, radicales intra radicales ut sqrt()(a⁢x+sqrt()(a⁢a−x⁢x)) <20> aut alij ejusmodi perplexi termini, ex his credo manifestum esse. Quinimò si in æquatione quantitates involvantur quæ nullâ ratione geometricâ determinari et exprimi possunt, quales sunt areæ vel longitudines curvarum: tamen relationes fluxionum haud secus investigantur, prout in exemplo sequente constabit.
+
+Præparatio in Exemplum 5.
+
+Pone BD ordinatam esse [figure] in angulo recto ad AB et quod ADH sit curva quæ per relationem inter AB et BD æquatione qualibet exhibitam definitur. AB verò dicatur x et curvæ area ADB ad unitatem applicata dicatur z{.} Dein erige perpendiculum AC æquale unitati et per C duc CE parallelam AB et occurrentem BD in E, et concipiendo has duas superficies ADB et ACEB genitas esse per motum rectæ BED, manifestum erit quòd earum fluxiones (hoc est fluxiones quantitatum 1×z et 1×x , sive quantitatum z et x) sunt inter se ut BD & BE lineæ generantes. Est ergo r.m∷BD.BE sive 1, adeóque r=m×BD . Et hinc fit quod z in æquatione quâlibet designante relationem inter x et aliam quamvis fluentem quantitatem y involvi potest, et tamen fluxionorum m et n relatio nihil minùs inveniri.
+
+Exemplum 5. Quemadmodum si proponitur z⁢z+a⁢x⁢z− y^4=0 pro designanda relatione inter x et y, ut et sqrt()(a⁢x−x⁢x)=BD pro curvâ determinandâ, quæ proin erit circulus: æquatio z⁢z+a⁢x⁢z−y^4=0 sicut in præcedentibus dabit 2⁢r⁢z+a⁢r⁢x+a⁢m⁢z−4⁢n⁢y^3=0 , pro relatione celeritatum m, n, et r. Et præterea cùm sit r=m×BD sive m⁢sqrt()(a⁢x−x⁢x) , pro eo substitue hunc valorem, et orietur (2⁢m⁢z+a⁢m⁢x)⁢sqrt()(a⁢x−x⁢x)+a⁢m⁢z−4⁢n⁢y^3=0 æquatio definiens relationem celeritatum m et n.
+
+Demonstratio.
+
+Fluentium quantitatum momenta (i.e. earum partes indefinitè parvæ quarum additamento per singula temporis indefinita parva spatia augentur,) sunt ut fluendi celeritates. Quare si cujusvis ut x momentum per factum ex ejus celeritate m et infinitè parva quantitate o (i.e. per m⁢o ) designetur, cæterorum v, y, z momenta per l⁢o , n⁢o , r⁢o designabuntur, siquidem l⁢o , m⁢o , n⁢o , et r⁢o sunt <21> inter se ut l, m, n, et r.
+
+Jam cùm quantitatum fluentium (ut x et y) momenta (ut m⁢o et n⁢o ) sint additamenta infinitè parva quibus illæ quantitates per singula temporis infinite parva intervalla augentur, sequitur quod quantitates illæ x & y post quodlibet infinite parvum temporis intervallum futuræ sunt x+m⁢o et y+n⁢o . Et inde æquatio quæ relationem quantitatum fluentium ad omne tempus indifferenter designat, æque designabit relationem inter x+m⁢o et y+n⁢o , ac inter x et y: adeò ut x+m⁢o et y+n⁢o pro quantitatibus istis vice x et y in dictam æquationem substitui possint.
+
+Detur itaque quælibet æquatio x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 , et substitue x+m⁢o pro x et y+n⁢o pro y, et emerget
+[+x^3+3⁢m⁢o⁢x⁢x+3⁢m⁢m⁢o⁢o⁢x+m^3⁢o^3; −a⁢x⁢x−2⁢a⁢m⁢o⁢x−a⁢m⁢m⁢o⁢o0^0; +a⁢x⁢y+a⁢m⁢o⁢y+a⁢n⁢o⁢x+a⁢m⁢n⁢o⁢o0^0; −y^3−3⁢n⁢o⁢y⁢y−3⁢n⁢n⁢o⁢o⁢y−n^3⁢o^3]}=0
+Jam ex Hypothesi sunt x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 , quibus deletis et reliquis terminis per o divisis restabunt 3⁢m⁢x⁢x+3⁢m⁢m⁢o⁢x+m^3⁢o⁢o −2⁢a⁢m⁢x−a⁢m⁢m⁢o+a⁢m⁢y+a⁢n⁢x+a⁢m⁢n⁢o−3⁢n⁢y⁢y−3⁢n⁢n⁢o⁢y−n^3⁢o⁢o=0 {.} Et insuper cùm o supponitur esse infinitè parvum, eo ut momenta quantitatum designare possit, termini per illud multiplicati respectu cæterorum nihil valebunt. Rejicio itaque, et restat 3⁢m⁢x⁢x−2⁢a⁢m⁢x +a⁢m⁢y+a⁢n⁢x−3⁢n⁢y⁢y=0 , ut supra in Exemplum 1.
+
+Hinc observare est quòd termini non multiplicati per o semper evanescent, ut et illi multiplicati per o plusquam unius dimensionis: et quòd reliquorum terminorum per o divisorum ea semper erit forma quam juxta Regulam habere debent. Id quod volui ostendere.
+
+Ex hoc monstrato cætera quæ Regula involvit facilè consequentur; quemadmodum quòd in æquatione propositâ plures fluentes quantitates involvi possunt, et quòd termini non modò per numerum dimensionum quantitatum fluentium sed per quaslibet alias Arithmeticas progressiones multiplicari possunt dummodò in operatione juxta quamlibet fluentem quantitatem sit eadem terminorum differentia, et progressio secundum eundem cujusque dimensionum ordinem disponatur. Et his concessis quæ præterea in exemplis 3, 4, et 5 docentur, per se manifesta sunt.
+
+<22>
+
+<23>
+Problema 2
+Exposita æquatione fluxiones quantitatum
+involvente, invenire relationem quantitatum
+inter se.
+
+Solutio particularis.
+
+Cum hoc Problema sit præcedentis conversum, contrario modo solvi debet: Utpote terminos per m multiplicatos disponendo secundum dimensiones ipsius x, dividendoque per (m)/(x) ac deinde per numerum dimensionum aut fortasse per aliam arithmeticam progressionem, Atque idem opus in terminis per l, n, vel r multiplicatis instituendo, Et resultantium summam, rejectis terminis redundantibus, ponendo æqualem nihilo.
+
+Exemplum. Sic expositâ æquatione 3⁢m⁢x⁢x−2⁢a⁢m⁢x+ a⁢m⁢y−3⁢n⁢y⁢y+a⁢n⁢x=0 ; Operor ad hunc modum,
+[[Divido | 3⁢m⁢x⁢x | − | 2⁢a⁢m⁢x | + | a⁢m⁢y | 0; per (m)/(x), & fit | 3⁢x^3 | − | 2⁢a⁢x⁢x | + | a⁢x⁢y; Dein divido per | 3. | | 2. | | 1.; et fit | x^3 | − | a⁢x⁢x | + | a⁢x⁢y] | [0 | Div: | − | 3⁢n⁢y⁢y | + | a⁢n⁢x; | per (n)/(y), fit | − | 3⁢y^3 | + | a⁢x⁢y; | Div: per | | 3. | | 1.; | fit | − | y^3 | + | a⁢x⁢y | .]]
+
+Et summa x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 erit relatio desiderata quantitatum x et y. Ubi observandum venit quod etsi terminus a⁢x⁢y bis resultavit, tamen non pono bis in hac summâ x^3−a⁢x⁢x+a⁢x⁢y−y^3 sed redundantem terminum rejicio. Et sic ubicunque terminus aliquis bis resultat (aut sæpius si de pluribus fluentibus quantitatibus agitur,) semel tantùm in summâ terminorum scribo{.}
+
+Sunt et aliæ circumstantiæ quas Artificis ingenio pro re nata observandas esse remitto; nam supervacaneum esset his multa verba impendere, siquidem Problema non semper potest hoc artificio solvi. Addo tamen quod postquam Artifex relationem fluentium quantitatum hac methodo adeptus est, si juxta Problema 1 potest regredi ad expositam æquationem fluxiones involventem, rectè operatus est; sin secùs, vitiosè. Sic in exemplo proposito, ubi æquationem x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 adeptus sum, si relatio inter m et x ope primi Problematis <24> vicissim inde requiratur, obtinebitur æquatio exposita 3⁢m⁢x⁢x−2⁢a⁢m⁢x+a⁢m⁢y−3⁢n⁢y⁢y+a⁢n⁢x=0 . Unde constat æquationem x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 rectè inventam fuisse. At si æquatio m−m⁢y+n⁢a=0 exponeretur, et inde præscripta methodo elicerem (1)/(2)⁢x⁢x−x⁢y+a⁢y=0 , pro relatione inter x et y, vitiosa foret operatio siquidem exinde per Problema 1 vicissim produceretur m⁢x−m⁢y−n⁢x+n⁢a=0 , quæ differt ab æquatione primo exposita{.}
+
+Hæc itaque perfunctoriè notata prætermittens, solutionem generalem aggredior.
+
+<25>
+Præparatio in generalem solutionem.
+
+Et imprimis observandum est quod in exposita æquatione symbola Fluxionum (cum sint quantitates diversi generis a quantitatibus quarum sunt fluxiones) in singulis terminis debent ad æque-multas dimensiones ascendere. Et ubi res aliter se habet, alia alicujus fluentis quantitatis fluxio subintellegi debet esse unitas per quam termini depressiores toties multiplicantur ut in omnibus symbola fluxionum ad eundem dimensionum gradum ascendant. Quemadmodum si exponitur æquatio m+m⁢n⁢x−a⁢x⁢x=0 , tertiæ alicujus fluentis quantitatis ut z fluxio r subintelligi debet esse unitas per quam primus terminus m semel et ultimus a⁢x⁢x bis multiplicetur ut fluxiones inibi ad æque-multas dimensiones ac in secundo termino m⁢n⁢x ascendant quasi exposita æquatio ex hac m⁢r+ m⁢n⁢x−r⁢r⁢x⁢x=0 derivata fuisset ponendo r=1 . Et sic in æquatione n⁢x=y⁢y debes imaginari m esse unitatem per quam terminus y⁢y multiplicatur.
+
+Æquationes autem in quibus duæ tantum sunt fluentes quantitates quæ ad æquè multas dimensiones passim ascendunt, semper possunt ad talem formam reduci ut ex una parte habeatur ratio fluxionum (velut (n)/(m) vel (m)/(n) vel (r)/(m) &c ) et ex altera parte valor ejus rationis simplicibus terminis Algebraicis designatus; sicut hic videre est (n)/(m)=2+2⁢x−y . Et ubi æquationibus præcedens particularis solutio non satisfacit, requiritur ut ad hanc formam reducas.
+
+Quamobrem cum in illius rationis valore terminus aliquis a composita quantitate denominetur vel sit radicalis vel si ratio illa sit æquationis radix affecta: reductio vel per divisionem, vel extractionem radicis, vel æquationis affectæ resolutionem institui debet, prout in superioribus ostensum est.
+
+Quemadmodum si exponitur n⁢a−n⁢x−m⁢a+m⁢x−m⁢y=0 . Hæc imprimis reductione vel fit (n)/(m)=1+(y)/(a−x) , vel (m)/(n)=(a−x)/(a−x+y) . Et in priori casu si terminum (y)/(a−x) a composita quantitate a−x denominatum reduco ad infinitam seriem simplicium terminorum (y)/(a)+(x⁢y)/(a⁢a)+(x⁢x⁢y)/(a^3)+(x^3⁢y)/(a^4) &c dividendo numeratorem y per denominatorem a−x , obtinebo (n)/(m)=1+(y)/(a)+(x⁢y)/(a⁢a)+(x⁢x⁢y)/(a^3)+(x^3⁢y)/(a^4) &c cujus ope relatio inter x et y determinanda est.
+
+Sic exposita n⁢n=m⁢n+m⁢m⁢x⁢x , sive (n⁢n)/(m⁢m)=(n)/(m)+x⁢x , et ulteriori reductione (n)/(m)=(1)/(2)±sqrt()((1)/(4)+x⁢x) : Radicem quadraticam e terminis (1)/(4)+x⁢x extraho et obtineo infinitam seriem (1)/(2)+x⁢x−x^4+2⁢x^6−5⁢x^8+14⁢x^10 &c <26> quam pro sqrt()((1)/(4)+x⁢x) substituendo prodit (n)/(m)=1+x⁢x−x^4+2⁢x^6−5⁢x^8 &c . Vel (n)/(m)=−x⁢x+x^4−2⁢x^6+5⁢x^8 &c , prout sqrt()((1)/(4)+x⁢x) additur vel subducitur a (1)/(2) .
+
+Atque ita si exponitur n^3+a⁢x⁢m⁢m⁢n+a⁢a⁢m⁢m⁢n−m^3−2⁢m^3⁢a^3=0. sive (n^3)/(m^3)+a⁢x⁢(n)/(m)+a⁢a⁢(n)/(m)−x^3−2⁢a^3=0 , extraho radicem cubicè affectam et prodit (n)/(m)=a−(x)/(4)+(x⁢x)/(64⁢a)+(131⁢x^3)/(512⁢a⁢a)+(509⁢x^4)/(16384⁢a^3) &c prout videre est ad pag 10.
+
+Cæterum hic observandum venit quod terminos solummodò pro compositis habeo qui ex parte fluentium quantitatum componuntur. Terminos ubi nulla est nisi ex parte datarum quantitatum compositio pro simplicibus habeo, siquidem ad simplices reduci possunt fingendo æquales esse alijs datis. Sic quantitates (a⁢x+b⁢x)/(c) , (x)/(a+b) , (b⁢c⁢c)/(a⁢x+b⁢x) , (b^4)/(a⁢x⁢x+b⁢x⁢x) , sqrt()(a⁢x+b⁢x) &c pro simplicibus habeo siquidem ad simplices (e⁢x)/(c) , (x)/(e) , (b⁢c⁢c)/(e⁢x) , (b^4)/(e⁢x⁢x) , sqrt()e⁢x sive e^((1)/(2))⁢x^((1)/(2)) &c reduci possunt fingendo esse a+b=e .
+
+Præterea quo fluentes quantitates a se invicem clarius distinguantur, Fluxionem quæ in Numeratore Rationis disponitur, sive Antecedentem Rationis haud impropriè Relatam Quantitatem nominare possum, et alteram ad quam referetur, Correlatam; ut et fluentes Quantitates ijsdem respectivè nominibus insignire . Et quo sequentia promptiùs intelligantur, possis imaginari Correlatam Quantitatem esse Tempus vel potiùs aliam quamvis æquabiliter fluentem quantitatem qua Tempus exponitur et mensuratur, et alteram sive Relatam Quantitatem esse spatium quod mobile utcunque acceleratum vel retardatum in illo tempore transigit. Et quod Problematis intensio est ut e celeritate motûs ad omne tempus datâ spatium in toto tempore transactum determinetur.
+
+Cæterùm æquationes respectu hujus Problematis in tres ordines distingui convenit. 1 In quibus duæ quantitatum fluxiones et alterutra tantùm fluens quantitas involvuntur. 2 In quibus duæ involvuntur fluentes quantitates unà cum earum fluxionibus. 3 Quæ plures duabus quantitatum fluxionibus complectuntur. Et his præmissis, Problematis confectionem secundum hosce tres casus aggrediar.
+
+Solutionis Casus 1.
+
+Fluentem quantitatem, quam unicè æquatio complectitur suppone Correlatam esse, et æquatione perinde dispositâ, (hoc est faciendo ut ex una parte habeatur fluxionis alterius ad hujus fluxionem Ratio, et valor ejus in simplicibus terminis ex altera) Multiplica valorem Rationis Fluxionum per Correlatam Quantitatem, dein singulos ejus terminos divide per numerum dimensionum quibus illa Quantitas inibi afficitur, et quod oritur valebit altera Fluenti Quantitate.
+
+Sic expositâ n⁢n=m⁢n+m⁢m⁢x⁢x , suppono x esse Correlatam Quantitatem, et æquatione perinde reductâ habebitur (n)/(m)=1+x⁢x−x^4+2⁢x^6 &c . Jam duco valorem (n)/(m) in x et oritur x+x^3−x^5+2⁢x^7 &c quos terminos sigillatim per numerum dimensionum divido et exitum x+(1)/(3)⁢x^3−(1)/(5)⁢x^5+(2)/(7)⁢x^7 &c pono =y . Et isthac æquatione desiderata relatio inter x et y determinatur.
+
+Sic habitâ (n)/(m)=a−(x)/(4)+(x⁢x)/(64⁢a)+(131⁢x^3)/(512⁢a⁢a) &c , prodibit y=a⁢x−(x⁢x)/(8)+(x^3)/(192⁢a)+(131⁢x^4)/(2048⁢⁢a⁢a) pro determinanda relatione inter x et y.
+
+<27>
+Et sic æquatio (n)/(m)=(1)/(x^3)−(1)/(x⁢x)+(a)/(x^((1)/(2)))−x^((1)/(2))+x^((3)/(2)) dat y=−(1)/(2⁢x⁢x) +(1)/(x)+2⁢a⁢x^((1)/(2))−(2)/(3)⁢x^((3)/(2))+(2)/(5)⁢x^((5)/(2)) . Nam valorem (n)/(m) duc in x, et fit (1)/(x⁢x)−(1)/(x)+a⁢x^((1)/(2))−x^((3)/(2))+x^((5)/(2)) , sive x^(−2)−x^(−1)+a⁢x^((1)/(2))−x^((3)/(2))+x^((5)/(2)) Quibus terminis per numerum dimensionum divisis emergit valor assignatus y.
+
+Ad eundem modum æquatio (m)/(n)=(2⁢b⁢b⁢c)/(sqrt()a⁢y^3)+(3⁢y⁢y)/(a+b)+ sqrt()(b⁢y+c⁢y) dat x=−(4⁢b⁢b⁢c)/(sqrt()a⁢y)+(y^3)/(a+b)+(2)/(3)⁢sqrt()(b⁢y^3+c⁢y^3) . Nam valore (m)/(n) ducto in y, oritur (2⁢b⁢b⁢c)/(sqrt()a⁢y)+(3⁢y^3)/(a+b)+sqrt()(b⁢y^3+c⁢y^3) sive 2⁢b⁢b⁢c⁢a^((1)/(2))⁢y^((1)/(2))+(3)/(a+b)⁢y^3+sqrt()(b+c)×y^((3)/(2)) . Et inde prodit valor x, dividendo per numerum dimensionum cujusque termini.
+
+Atque ita (n)/(r)=z^((2)/(3)) dat y=(3)/(5)⁢z^((5)/(3)) . Et (n)/(m)=(a⁢b)/(c⁢x^((1)/(3))) dat y=(3⁢a⁢b⁢x^((2)/(3)))/(2⁢c) . At æquatio (n)/(m)=(a)/(x) dat y=(a)/(0) . Nam (a)/(x) ductum in x fit a, quo per numerum dimensionum (qui nullus est) diviso prodit (a)/(0) quantitas infinita pro valore y{.}
+
+Quamobrem siquando consimilis terminus (cujus denominator involvit Correlatam Quantitatem unius tantùm dimensionis) in valore (n)/(m) reperiatur, pro Correlatam Quantitatem substitue summam vel differentiam inter eandem et aliam quamvis datam quantitatem pro arbitrio assumptam. Nam quantitatum fluentium juxta prodeuntem æquationem eadem erit inter se fluendi relatio ac juxta æquationem primò expositam; et infinita quantitas Relata hoc pacto parte infinitâ diminuetur et evadet finita, sed terminis tamen numero infinitis constans.
+
+Æquatione itaque (n)/(m)=(a)/(m) expositâ, si pro x scribam b+x , quantitatem b pro lubitu assumens; prodibit (n)/(m)=(a)/(b+x) ; factâque divisione, (n)/(m)=(a)/(b)−(a⁢x)/(b⁢b)+(a⁢x⁢x)/(b^3)−(a⁢x^4)/(b^4) &c . Et inde Regula ut in superioribus dabit y=(a⁢x)/(b)−(a⁢x⁢x)/(2⁢b⁢b)+(a⁢x^3)/(3⁢b^3)−(a⁢x^4)/(4⁢b^4) &c relationem inter x et y.
+
+Sic etiam habitâ æquatione (n)/(m)=(2)/(m)+3−x⁢x , si (propter terminum (2)/(x) ) scribam 1+x pro x, emerget (n)/(m)=(2)/(1+x)+2−2⁢x−x⁢x terminoque (2)/(1+x) in infinitam seriem 2−2⁢x+2⁢x⁢x−2⁢x^3+2⁢x^4 &c <28> reducto erit (n)/(m)=4−4⁢x+x⁢x−2⁢x^3+2⁢x^4 &c . Adeoque juxta Regulam obtinebitur y=4⁢x−2⁢x⁢x+(1)/(3)⁢x^3−(1)/(2)⁢x^4+(2)/(5)⁢x^5 &c relatio inter x et y.
+
+Atque ita si proponitur (n)/(m)=x^(−(1)/(2))+x^(−1)−x^((1)/(2)) Quia terminum x^(−1) (sive (1)/(x) ) inesse video, transmuto x: quemadmodum pro eo substituendo 1−x , et oritur (n)/(m)=(1)/(sqrt()(1−x))+ (1)/(1−x)−sqrt()(1−x) . Terminus autem (1)/(1−x) valet 1+x+x⁢x +x^3 &c ; Et sqrt()(1−x) valet 1−(1)/(2)⁢x−(x⁢x)/(8)−(x^3)/(16) &c . adeoque (1)/(sqrt()(1−x)) sive (1)/(1−(1)/(2)⁢x−(1)/(8)⁢x⁢x−(1)/(16)⁢x^3 &c) valet 1+(1)/(2)⁢x+(3)/(8)⁢x⁢x+(5)/(8)⁢x^3 &c . Quamobrem (valoribus hisce substitutis) erit (n)/(m)=1+2⁢x+(3)/(2)⁢x⁢x+(27)/(16)⁢x^3 &c Et inde per regulam fit y=x+x⁢x+(1)/(2)⁢x^3+(27)/(64)⁢x^4 &c . Et sic in alijs.
+
+Hujusmodi etiam transmutatione fluentis quantitatis æquatio in alijs casibus nonnunquam commode reduci poterit. Quemadmodum si exponitur (n)/(m)=(c⁢c⁢x)/(c^3−3⁢c⁢c⁢x+3⁢c⁢x⁢x−x^3) pro x scribo c−x et obtineo (n)/(m)=(c^3−c⁢c⁢x)/(x^3) sive =(c^3)/(x^3)−(c⁢c)/(x⁢x) et inde per Regulam y=−(c^3)/(2⁢x⁢x)+(c⁢c)/(x) . At harum transmutationum usus in sequentibus magis elucescet.
+
+In Casum 2 Præparatio.
+
+Hæc itaque de æquationibus involventibus unicam tantum fluentem quantitatem. Cum verò utraque involvitur, æquatio imprimis ad præscriptam formam redigenda est, efficiendo scilicet ut ex una parte habeatur Fluxionum ratio æqualis aggregato simplicium terminorum ex alterâ. <29>
+
+Et præterea siquæ sunt in æquationibus sic reductis fractiones quæ denominantur a fluenti quantitate, a denominatoribus istis liberari debent per transmutationem ejus fluentis quantitatis paulo ante commemoratam. Sic exposita æquatione n⁢a⁢x−m⁢x⁢y−m⁢a⁢a=0 sive (n)/(m)=(y)/(a)+(a)/(x). propter terminum (a)/(x) assumo b ad arbitrium et pro x vel scribo b+x , vel b−x vel x−b . Quemadmodum si scribam b+x fiet (n)/(m)=(y)/(a)+(a)/(b+x) . Adeóque termino (a)/(b+x) , in infinitam seriem per divisionem redacto erit (n)/(m)=(y)/(a)+(a)/(b)−(a⁢x)/(b⁢b)+(a⁢x⁢x)/(b^3)−(a⁢x^3)/(b^4) &c {.}
+
+Et ad eundem modum exposita æquatione (n)/(m)=3⁢y−2⁢x +(x)/(y)−(2⁢y)/(x⁢x) ; si (propter terminos (x)/(y) & (2⁢y)/(x⁢x) ) scribam 1−y pro y et 1−x pro x, orietur (n)/(m)=1−3⁢y+2⁢x+(1−x)/(1−y) +(2⁢y−2)/(1−2⁢x+x⁢x) . Terminus autem (1−x)/(1−y) per infinitam divisionem dat 2⁢y−2+4⁢x⁢y−4⁢x+6⁢x⁢x⁢y−6⁢x⁢x+8⁢x^3⁢y−8⁢x^3+10⁢x^4⁢y−10⁢x^4 &c Quare est (m)/(n)=−3⁢x+3⁢x⁢y+y⁢y−x⁢y⁢y+y^3−y⁢y^3 &c+6⁢x⁢x⁢y −6⁢x⁢x+8⁢x^3⁢y−8⁢x^3+10⁢x^4⁢y−10⁢x^4 &c .
+
+Regula.
+
+Æquatione cùm opus est sic præparata: terminos ordina juxta dimensiones fluentium quantitatum ponendo imprimis non affectos Relata Quantitate, deinde affectos minima ejus dimensione, & sic deinceps. Terminos etiam in his singulis classibus juxta dimensiones alterius Correlatæ quantitatis pariter dispone, eosque in prima classe (i.e. quos Relata Quantitas non afficit) scriba in serie collaterali dextrorsum pergente, et cæteros in seriebus descendentibus in sinistra columnâ prout indicant subsequentia Diagrammata. Opere sic instituto Primum sive depressissimum e terminis in prima classe duc in Correlatam Quantitatem dividéque per numerum <30> dimensionum, et in Quotiente, pro initiali termino valoris Relatæ Quantitatis repone. Hunc deinde in æquationis terminos in sinistrâ columnâ dispositos pro Relatâ Quantitate substitue, et e terminis proximè depressissimis secundum Quotientis terminum eadem ratione quâ primum elicies. Et eâdem operatione sæpiùs repetitâ Quotientem ad arbitrium producere possis. Sed res exemplo clariùs patebit{.}
+
+Exemplum 1. Exponatur æquatio (n)/(m)=1−3⁢x+y+x⁢x+x⁢y cujus
+[[0 | + | 1 | − | 3⁢x | + | x⁢x; + y | + | ∗ | + | x | − | x⁢x | + | (1)/(3)⁢x^3 | − | (1)/(6)⁢x^4 | + | (1)/(30)⁢x^5 | 0 | 0; + x⁢y | + | ∗ | | ∗ | + | x⁢x | − | x^3 | − | (1)/(3)⁢x^4 | − | (1)/(6)⁢x^5 | + | (1)/(30)⁢x^6; Summa | + | 1 | − | 2⁢x | + | x⁢x | − | (2)/(3)⁢x^3 | + | (1)/(6)⁢x^4 | + | (4)/(30)⁢x^5 | 0 | 0]; [0; y | = | x−x⁢x+(1)/(3)⁢x^3−(1)/(6)⁢x^4+(1)/(30)⁢x^5+(1)/(45)⁢x^6 &c]]
+terminos 1−3⁢x +x⁢x non affectos Relata quantitate y vides in suprema serie collateraliter dispositos, cæterosque y et x⁢y in sinistrâ columnâ. Et imprimis terminum initialem 1 duco in Correlatam quantitatem x fitque x, quem per numerum dimensionum 1 divisum repono in subscripta Quotiente. Dein hoc termino pro y in marginalibus substituto, vice +y et +x⁢y obtineo +x et +x⁢x , quos e regione dextrorsum scribens, ex omnibus excerpo depressissimos terminos −3⁢x & +x quorum aggregatum −2⁢x ductum in x fit −2⁢x⁢x , et per numerum dimensionum 2 divisum dat −x⁢x pro secundo termino valoris y in Quotiente. Hoc proinde termino ad complendum valorem y in marginalibus +y et +x⁢y adscito, oriuntur præterea −x⁢x et −x^3 terminis priùs oriundis +x et +x⁢x adnectendi. Quo facto iterum terminos proximè depressissimos +x⁢x , −x⁢x , et +x⁢x in unam summam x⁢x colligo et inde ut priùs tertium terminum (1)/(3)⁢x^3 in valore y reponendum elicio. Iterumque (1)/(3)⁢x <31> marginalium terminorum valores adscito, e proxime depressissimis (1)/(3)⁢x^3 et −x^3 in unum aggregatis elicio −(1)/(6)⁢x^4 quartum terminum valoris y. Et sic in infinitum.
+
+Exemplum 2. Ad eundem modum si relationem inter x et y, habita æquatione (n)/(m)=1+(y)/(a)+(x⁢y)/(a⁢a)+(x⁢x⁢y)/(a^3)+(x^3⁢y)/(a^4) &c cujus terminorum series infinite progredi subintelligitur, determinare oportet.
+[[0 | +1; + (y)/(a) | ∗ | + | (x)/(a) | + | (x⁢x)/(2⁢a⁢a) | + | (x^3)/(2⁢a^3) | + | (x^4)/(2⁢a^4) | + | (x^5)/(2⁢a^5) | &c; + (x⁢y)/(a⁢a) | ∗ | + | ∗ | + | (x⁢x)/(a⁢a) | + | (x^3)/(2⁢a^3) | + | (x^4)/(2⁢a^4) | + | (x^5)/(2⁢a^5) | &c; + (x⁢x⁢y)/(a^3) | ∗ | + | ∗ | + | ∗ | + | (x^3)/(a^3) | + | (x^4)/(2⁢a^4) | + | (x^5)/(2⁢a^5) | &c; + (x^3⁢y)/(a^4) | ∗ | + | ∗ | + | ∗ | + | ∗ | + | (x^4)/(a^4) | + | (x^5)/(2⁢a^5) | &c; + (x^4⁢y)/(a^5) | ∗ | + | ∗ | + | ∗ | + | ∗ | + | ∗ | + | (x^5)/(a^5) | &c; Summa | 1 | + | (x)/(a) | + | (3⁢x⁢x)/(2⁢a⁢a) | + | (2⁢x^3)/(a^3) | + | (5⁢x^4)/(a^4) | + | (3⁢x^5)/(a^5) | &c]; [0; y | = | x+(x⁢x)/(2⁢a)+(x^3)/(2⁢a⁢a)+(x^4)/(2⁢a^3)+(x^5)/(2⁢a^4)+(x^6)/(2⁢a^5) &c]]
+Pono 1 in capite reliquosque terminos in sinistra columna. Et opus deinde prosequor pro more adjuncti diagrammatis. Ubi propositum est mihi elicere valorem y ad usque sex dimensiones x, et eâ de causâ terminos omnes quos proposito nihil conducere prævideo, inter operandun missos facio, sicut innuit nota &c quam seriebus intercisis adnexui.
+
+Exemplum 3. Pari methodo si proponitur æquatio n=−3⁢x+ 3⁢x⁢y+y⁢y−x⁢y⁢y+y^3−x⁢y^3+y^4−x⁢y^4 &c+6⁢x⁢x⁢y−6⁢x⁢x +8⁢x^3⁢y−8⁢x^3+10⁢x^4⁢y−10⁢x^4+12⁢x^5⁢y−12⁢x^5 &c . Et valorem y ad usque septem dimensiones x eruere institutum est, terminos, ut in adjuncto diagrammate, in ordinem redigo et operor sicut in præcedentibus hoc tantùm excepto quod cùm hic in sinistrâ columnâ y non tantùm unius sed etiam duarum ac trium dimensionum existit (vel etiam plurium prout valorem y ultra gradum <32> x^7 extrahere statuam) subjicio quadratum et cubum valoris
+[[00000000 | − | 3⁢x | − | 6⁢x⁢x | − | 8⁢x^3 | − | 10⁢x^4 | − | 12⁢x^5 | − | 14⁢x^6 | &c; + 3⁢x⁢y | + | ∗ | + | ∗ | − | (9)/(2)⁢x^3 | − | 6⁢x^4 | − | (75)/(8)⁢x^5 | − | (273)/(20)⁢x^6 | &c; + 6⁢x⁢x⁢y | + | ∗ | + | ∗ | + | ∗ | − | 9⁢x^4 | − | 12⁢x^5 | − | (75)/(4)⁢x^6 | &c; + 8⁢x^3⁢y | + | ∗ | + | ∗ | + | ∗ | + | ∗ | − | 12⁢x^5 | − | 16⁢x^6 | &c; + 10⁢x^4⁢y | + | ∗ | + | ∗ | + | ∗ | + | ∗ | + | ∗ | − | 15⁢x^6 | &c; (000&c000) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0; + y⁢y | + | ∗ | + | ∗ | + | ∗ | + | (9)/(4)⁢x^4 | + | 6⁢x^5 | + | (107)/(8)⁢x^6 | &c; − x⁢y⁢y | + | ∗ | + | ∗ | + | ∗ | + | ∗ | − | (9)/(4)⁢x^5 | − | 6⁢x^6 | &c; + y^3 | + | ∗ | + | ∗ | + | ∗ | + | ∗ | + | ∗ | − | (27)/(8)⁢x^6 | &c; &c | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0; Summa | − | 3⁢x | − | 6⁢x⁢x | − | (25)/(2)⁢x^3 | − | (91)/(4)⁢x^4 | − | (333)/(8)⁢x^5 | − | (302)/(5)⁢x^6 | 0]; [0; y | = | −(3)/(2)⁢x⁢x−2⁢x^3−(25)/(8)⁢x^4−(91)/(20)⁢x^5−(111)/(16)⁢x^6−(302)/(35)⁢x^7 &c; y⁢y | = | +(9)/(4)⁢x^4+6⁢x^5−(111)/(16)⁢x^6+(107)/(8)⁢x^6 &c; y^3 | = | −(27)/(8)⁢x^6 &c]]
+y eatinus gradatim productum, ut cùm in valoribus marginalium terminorum dextrorsum gradibus inscribuntur, termini tot dimensionum emergant quot ad sequentem operationem requiri percipio. Et hac methodo prodit tandem y=−(3)/(2)⁢x⁢x−6⁢x^3−(25)/(8)⁢x^4 &c æquatio desiderata. Qui valor cùm sit negativus, patet alterum e quantitatibus x et y decrescere dum altera increscit * * Atque idem pariter concludi debet cum fluxionum altera affirmativa est et altera negativa.
+
+Exemplum 4. Haud secus cùm Relata quantitas fractis dimensionibus afficitur possis valorem ejus extrahere. Veluti si proponitur (m)/(n)=(1)/(2)⁢y−4⁢y⁢y+2⁢y⁢x^((1)/(2))−(4)/(5)⁢x⁢x +(7)/(4)⁢y^((5)/(2))+2⁢y^3 , ubi x in termino 2⁢y⁢x^((1)/(2)) (sive 2⁢y⁢sqrt()x fracta
+[[0 | + | (1)/(2)⁢y | · | − | 4⁢y⁢y | + | 7⁢y^((5)/(2)) | + | 2⁢y^3 | 0 | · | 0 | · | 0; 2⁢y⁢x^((1)/(2)) | + | · | · | + | y⁢y | + | · | − | 2⁢y^3 | + | 4⁢y^((7)/(2)) | − | 2⁢y^4 | &c; − (4)/(5)⁢x⁢x | + | · | · | + | · | + | · | + | · | + | · | − | (1)/(20)⁢y^4 | &c; Summa | + | (1)/(2)⁢y | · | − | 3⁢y⁢y | + | 7⁢y^((5)/(2)) | 0 | · | + | 4⁢y^((7)/(2)) | + | (41)/(20)⁢y^4 | 0]; [0; x | = | +(1)/(4)⁢y⁢y·−y^3+2⁢y^((7)/(2))·+(8)/(9)⁢x^((9)/(2))−(41)/(100)⁢y^5 &c; x^((1)/(2)) | = | +(1)/(2)⁢y−y⁢y+2⁢y^((5)/(2))−y^3 &c; x⁢x | = | (1)/(16)⁢y^4 &c]]
+dimensione (1)/(2) afficitur: Ejus x^((1)/(2)) valorem e valore x paulatim elicio (extrahendo nempe radicem quadraticam) sicut in inferiori parte diagrammatis videre est; eò ut in marginalis termini 2⁢y⁢x^((1)/(2)) <33> valorem gradatim transferri et inseri possit. Et sic tandem adipiscor æquationem x=(1)/(4)⁢y⁢y−y^3+2⁢y^((7)/(2))+(8)/(9)⁢y^((9)/(2))−(41)/(100)⁢y^5 &c qua x respectu y indefinitè determinatur.
+
+Et sic in alijs quibuscunque casibus operari licet.
+
+Cæterùm dixi hasce solutiones infinitis modis præstari posse. Et hoc fiet si non tantùm initialem quantitatem supremæ seriei sed et aliam quamvis datam quantitatem pro primo termino Quotientis ad arbitrium assumas, ac deinde opereris ut in præcedentibus. Sic in primo præcedentium exemplorum si pro primo termino
+[[0 | + | 1 | − | 3⁢x | + | x⁢x; + y | + | 1 | + | 2⁢x | + | · | + | x^3 | + | (1)/(4)⁢x^4 | &c; + x⁢y | + | · | + | x | + | 2⁢x⁢x | + | · | + | x^4 | &c; Summa | + | 2 | + | · | + | 3⁢x⁢x | + | x^3 | + | (5)/(4)⁢x^4 | 0]; [0; y | = | 1+2⁢x·+x^3+(1)/(4)⁢x^4+(1)/(4)⁢x^5 &c]]
+valoris y assumas 1, et pro y in terminis marginalibus ( +y & +x⁢y ) substituas, reliquamque operationem (cujus specimen adjunxi) sicut in præcedentibus prosequaris, ipsius y alius exurget valor 1+2⁢x+x^3+(1)/(4)⁢x^4 &c . Et sic alius atque alius exurget assumendo 2, 3, vel alium quemvis numerum pro primo ejus termino. Vel si symbolum aliquod, ut a, pro illo termino indefinitè designando usurpes,
+[[0000000 | + 1 | − 3⁢x | + x⁢x; + y | + a | [+ x(0)/(0); + a⁢x(0)/(0)] | [− x⁢x(0)/(0); + a⁢x⁢x(0)/(0)] | [+ (1)/(2)⁢x^3; + (2)/(3)⁢a⁢x^3] | &c.; 0 | 0 | 0; + x⁢y | · | [+ a⁢x] | [+ x⁢x0^0; + a⁢x⁢x0^0] | [− x^3; + a⁢x^3] | &c.; Summe | [+ 1(0)/(0); + a(0)/(0)] | [− 2⁢x(0)/(0); + 2⁢a⁢x(0)/(0)] | [+ x⁢x(0)/(0); + 2⁢a⁢x⁢x(0)/(0)] | [− (2)/(3)⁢x^3; + (5)/(3)⁢a⁢x^3] | 0]; [0; y | = | a | [+ x(0)/(0); + a⁢x(0)/(0)] | [− x⁢x(0)/(0); + a⁢x⁢x(0)/(0)] | [+ (1)/(3)⁢x^3; + (2)/(3)⁢a⁢x^3] | [− (1)/(6)⁢x^4; + (5)/(12)⁢a⁢x^4] | &c.]]
+eadem operandi methodo (quam hic etiam designatam habes) elicies tandem y=a+x+a⁢x −x⁢x+a⁢x⁢x+(1)/(3)⁢x^3+(2)/(3)⁢a⁢x^3 &c . Qua inventa possis pro a substituere 1, 2, 0, (1)/(2) , aut quem vis numerum, et sic relationem inter x et y modis infinitis obtinere.
+
+Et nota quod ubi quantitas elicienda afficitur fracta dimensione (ut in præcedentium exemplorum quartó vides) convenit plerumque unitatem (vel alium quemvis aptum <34> numerum{)} pro primo ejus termino adhibere; immò hoc necesse est ubi radix (ad fractæ illius dimensionis valorem obtinendum) propter negativum signum nequit alias extrahi, ut et ubi nulli sunt termini in prima sive capitali classe reponendi, ex quibus initialis ille terminus eliciatur.
+
+Sic tandem hoc molestissimum et omnium difficillimum Problema, ubi duæ tantùm fluentes quantitates una cum earum fluxionibus in æquatione comprehenduntur, absolvi. Sed præter generalem methodum qua omnes difficultates complexus sum sunt aliæ plerumque contractiores quibus opus aliquando sublevari possit, et quarum aliqua specimina ex abundanti perstringere forte non erit ingratum.
+
+1. Siquando itaque quantitas elicienda sit alicubi negativæ dimensionis non est absolutè necessarium ut æquatio propterea ad aliam formam reducatur. Sic enim expositâ æquatione n=(1)/(y)−x⁢x ubi y est unius negativæ dimensionis, possim equidem ad aliam formam reducere, veluti scribendo 1+y pro y , sed expeditior erit resolutio quam in
+[[0 | · | + | · | − | x⁢x; (1)/(y) | 1 | − | x | + | (3)/(2)⁢x⁢x | &c; Summa | 1 | − | x | + | (1)/(2)⁢x⁢x | &c]; [0; y | = | 1+x+(1)/(2)⁢x^2+(1)/(6)⁢x^3 &c; (1)/(y) | = | 1−x+(3)/(2)⁢x⁢x &c]]
+annexo diagrammate designatam habes, ubi assumpto 1 pro initio valoris y cæteros ejus terminos ut in præcedentibus extraho, et interea valorem (1)/(y) exinde per divisionem paulatim institutam elicio et insero in valorem marginalis termini.
+
+<35> 2. Neque semper opus est ut alterius fluentis quantitatis dimensiones sint passim affirmativæ. Nam ex æquatione n=3+2⁢y−(y⁢y)/(x) , absque termini (y⁢y)/(x) reductione præscriptâ emerget y=3⁢x−(3)/(2)⁢x⁢x−4⁢x^3 &c . Et ex n=y+(1)/(x)−(1)/(x⁢x) (opere ad modum annexi speciminis istituto) emerget y=(1)/(x) .
+[[0 | − | (1)/(x⁢x) | + | (1)/(x); − y | + | · | − | (1)/(x); Summa | − | (1)/(x⁢x) | + | 0]; [0; y | = | (1)/(x)]]
+Ubi obiter nota quod inter modos infinitos quibus quælibet æquatio resolvi potest sæpe numero contingit aliquos esse qui ad finitum valorem quantitatis eliciendæ sicut in allato specimine finiuntur, et quos haud difficile est invenire si pro primo valoris termino symbolum aliquod assumatur. Et resolutione peractâ consulatur de symboli illius quantitate qua valor elicitus evadat finitus.
+
+Porro si valor y ex æquatione n=(y)/(2⁢x) +1−2⁢x+(1)/(2)⁢x⁢x eliciendus sit, id sine aliqua reductione termini (y)/(2⁢x) non incommodè fiet fingendo (pro more Analytico) datum esse quod quæritur. Utpote pro primo termino valoris ejus effingo 2⁢e⁢x assumendo 2⁢e pro
+[[0000000 | 1 | − 2⁢x | + (1)/(2)⁢x⁢x; (y)/(2⁢x) | e | + f⁢x | + g⁢x⁢x | + h⁢x^3; Summa | [+ 1(0)/(0); + e(0)/(0)] | [− 2⁢x(0)/(0); + f⁢x(0)/(0)] | [+ (1)/(2)⁢x⁢x(0)/(0); + g⁢x⁢x(0)/(0)] | [+ h⁢x^3; (0)/(0)]]; [0; Hypotheticè | y | = | 2⁢e⁢x | + 2⁢f⁢x⁢x | + 2⁢g⁢x^3 | + 2⁢h⁢x^4; 0 | 0 | 0 | = | = | = | =; Consequenter | y | = | [+ x(0)/(0); + e⁢x(0)/(0)] | [− x⁢x(0)/(0); + (1)/(2)⁢f⁢x⁢x(0)/(0)] | [+ (1)/(6)⁢x^3; + (1)/(3)⁢g⁢x^3] | [+ (1)/(4)⁢h⁢x^4]; Revera | y | = | 2⁢x | − (4)/(3)⁢x⁢x | + (1)/(5)⁢x^3]]
+numerali coefficiente quæ nondum innotescit. Et hunc 2⁢e⁢x pro y in termino marginali (y)/(2⁢X) substituens prodit e quem scribo ad dextram et summa 1+e dabit x+e⁢x pro
+eodem primo termino valoris y quem prius designaveram <36> termino 2⁢e⁢x . Pono itaque 2⁢e⁢x=x+e⁢x et inde elicio e=1 . Adeoque valoris y primus terminus ( 2⁢e⁢x ) est 2⁢x . Ad eundem modum pro secundo termino designando effictum 2⁢f⁢x^2 usurpo et inde tandem eruo −(2)/(3) pro valore f, adeoque −(4)/(3)⁢x⁢x pro secundo termino. Et sic effictus g in tertio termino valebit (1)/(10) , at h in quarto valebit 0, et proinde cum nullos præterea terminos superesse video, concludo opus finitum esse et y valere 2⁢x−(4)/(3)⁢x⁢x +(1)/(5)⁢x^3 præcisè. Ad eundem ferè modum si esset n=(3⁢y)/(4⁢x) , effinge y=e⁢x^s ubi e ignotum coefficientem et s numerum dimensionum similiter ignotum denotet. Et ** ** e⁢x^s pro y substituto, prodibit n=(3⁢e⁢x^(s−1))/(4) . et inde rursus y=(3⁢e⁢x^s)/(4⁢s) . Conferantur jam valores y, et videbis esse (3⁢e)/(4⁢s)=e , adeòque s=(3)/(4) , et e indefinitum. Quare assumpto utcunque e, erit y=e⁢x^((3)/(4)) ..
+
+4. Adhæc nonnunquam opus ab altissima dimensione æquabilis quantitatis inchoari potest et ad depressiores continuo pergere. Veluti si detur n=(y)/(x⁢x)+(1)/(x⁢x)+3 +2⁢x−(4)/(x) , & ab altissimo termino 2⁢x opus inchoetur
+[[0 | + | 2⁢x | + | 3 | − | (4)/(x) | + | (1)/(x⁢x) | .; + (y)/(x⁢x) | + | · | + | 1 | + | (4)/(x) | + | · | − | (1)/(x^3) | + | (1)/(2⁢x^4) | &c; Summa | − | 2⁢x | + | 4 | + | · | + | (1)/(x⁢x) | − | (1)/(x^3) | + | (1)/(2⁢x^4)]; [0; y | = | x⁢x+4⁢x·−(1)/(x)+(1)/(2⁢x⁢x)−(1)/(6⁢x^3) &c]]
+disponendo capitalem seriem in ordine præcedentibus contrario, emerget tandem y=x⁢x+4⁢x−(1)/(x) &c prout in appositâ operandi forma videre est. Et hic in transitu notari potest quod inter operandum potuit inter terminos 4⁢x et −(1)/(x) pro intermedio deficienti termino quælibet data quantitas inseri et sic valor y modis infinitis extrahi.
+
+5. Siquæ præterea sint fractæ dimensionum Relatæ Quantitatis indices, ad integras reduci possunt fingendo Quantitatem illam sua fracta dimensione affectam esse alij cuilibet tertiæ fluenti quantitati æqualem, et substituendo tum illam quantitatem tum fluxionem ejus ab ilia fictâ æquatione oriundam pro Relata Quantitate et ejus fluxione. Quemadmodum si exponitur <37> æquatio n=3⁢x⁢y^((2)/(3))+y , ubi Relata Quantitas fractâ dimensionis indice (2)/(3) afficitur, assumpta ad arbitrium fluenti quantitate z fingo esse y^((1)/(3))=z sive y=z^3 et fluxio
+num relatio juxta Problema 1. erit n=3⁢r⁢z⁢z . Quare substituto 3⁢r⁢z⁢z pro n ut et z^3 pro y ac z⁢z pro y^((2)/(3)) , emerget 3⁢r⁢z⁢z=3⁢x⁢z⁢z+z^3 sive r=x+(1)/(3)⁢z . Ubi z supplet vices Relatæ quantitatis. Postquam vero valor z eo nomine eruitur utpote z=(1)/(2)⁢x⁢x+(1)/(18)⁢x^3+(1)/(216)⁢x^4+(1)/(3240)⁢x^5 &c , pro z restitue y^((1)/(3)) et habebis desideratam relationem inter x et y nempe y^((1)/(3))=(1)/(2)⁢x⁢x+(1)/(18)⁢x^3+(1)/(216)⁢x^4 &c , et cubis partium utrobique positis erit y=(1)/(8)⁢x^6+(1)/(24)⁢x^7+(1)/(288)⁢x^8 &c . Pari ratione si detur n=sqrt()4⁢y+sqrt()x⁢y , sive =2⁢y^((1)/(2))+x^((1)/(2))⁢y^((1)/(2)). fingo z=y^((1)/(2)) sive z⁢z=y , et inde per Problema 1 elicio 2⁢r⁢z=n et consequenter est 2⁢r⁢z=2⁢z+x^((1)/(2))⁢z sive r=1+(1)/(2)⁢x^((1)/(2)) . Adeoque per casum priorem hujus est z(y^((1)/(2)))=x+(1)/(3)⁢x^((3)/(2)) et partibus quadratis y=x⁢x+(2)/(3)⁢x^((5)/(2))+(1)/(9)⁢x^3 . Sin valorem y modis infinitis desideres fac z=c+x+(1)/(3)⁢x^((3)/(2)) assumpto utcunque initiali termino c, et erit y(z⁢z)=c⁢c+2⁢c⁢x+(2)/(3)⁢c⁢x^((3)/(2))+x⁢x +(2)/(3)⁢x^((5)/(2))+(1)/(9)⁢x^3 .
+
+Ast haec nimis officiose tractare videor siquidem rarissime usui esse possunt.
+
+Casus 3.
+
+Problematis ubi tres vel plures quantitatum fluxiones æquatio complectitur Resolutio brevi absolvitur Scilicet inter duas quaslibet istarum quantitatum relatio (ubi ex statu Quæstionis non determinatur) quælibet effingi debet, et earum fluxionum exinde quæri, eo ut alterutra unà cum ejus fluxione ex æquatione expositâ exterminari possit. Quâ de causâ, si trium insunt quantitatum fluxiones unica effingenda est æquatio ac duæ si insunt quatuor, et sic porro, ut exposita <38> æquatio in aliam tandem æquationem transformetur cui non insint plures duabus; Et hâc deinde ut supra resolutâ, reliquarum quantitatum relationes eruentur. Sic æquatione 2⁢m−r+n⁢x=0 exposita; quo quantitatum x y et z (quarum fluxiones m n et r æquatio complectitur) relationes inter se obtineam, relationem inter duas quaslibet ut x et y pro lubitu effingo puta quod sit x=y , vel 2⁢y=a+z , vel x=y⁢y &c{.} Sit autem x=y⁢y et inde erit m=2⁢n⁢y , Quare scriptis 2⁢n⁢y pro m et y⁢y pro x, exposita æquatio transformabitur in 4⁢n⁢y−r+n⁢y⁢y=0 . Et inde relatio inter y et z emerget 2⁢y⁢y+(1)/(3)⁢y^3=z . Ubi si x pro y⁢y et x^((3)/(2)) pro y^3 vicissim scribatur prodibit etiam 2⁢x+ (1)/(3)⁢x^((3)/(2))=z . Adeóque inter modos infinitos quibus x, y et z ad invicem referuntur unus his aequationibus x=y⁢y. 2⁢y⁢y+(1)/(3)⁢y^3=z et 2⁢x+(1)/(3)⁢x^((3)/(2))=z designatus investigatur.
+
+Demonstratio.
+
+Problema tandem confecimus sed demonstratio superest. Et in tanta rerum copiâ ne per nimias ambages e proprijs fundamentis Syntheticè derivetur, sufficiat per Analysin sic breviter indicare. Scilicet æquatione quâlibet expositâ, postquam opus ad finem perduxeris experiri est quod ex elicita æquatione exposita vicissim (per Problema 1) eruetur. Et proinde quantitatum relatio in elicita æquatione exigit relationem fluxionum in exposita, et contra: sicut ostendendum erat. Sic æquatione n=x expositâ elicietur y=(1)/(2)⁢x⁢x et inde vicissim (per problema 1) n=m⁢x sive =x quandoquidem m supponitur esse 1. Et sic ex n=1−3⁢x+y+x⁢x+x⁢y provenit y=x−x⁢x+(1)/(3)⁢x^3−(1)/(6)⁢x^4+(1)/(30)⁢x^5−(1)/(45)⁢x^6 &c et inde vicissim per Problema 1, n=1−2⁢x+x^2−(2)/(3)⁢x^3+(1)/(6)⁢x^4−(2)/(15)⁢x^5 &c Qui <39> duo valores ipsius n conveniunt, ut patet substituendo x−x⁢x +(1)/(3)⁢x^3−(1)/(6)⁢x^4+(1)/(30)⁢x^5 &c pro y in priori.
+
+Cæterùm in æquationum reductione adhibui operationem de qua præterea rationem reddere oportet: Estque transmutatio fluentis quantitatis per connexionem cum quantitate data. Sunto AE et ae [figure] linæ utrinque infinitæ per quas mobilia duo e longinquo trajiciantur simul attingentia locos A et a, B et b, C et c, D et d &c; et sit B punctum a cujus et rei mobilis distantiâ in AE motus æstimetur ita ut −BA , BC, BD, BE successive sint fluentes quantitates quando mobile sit in locis A, C, D, E. Sitque b consimile punctum in altera linea: et erunt −BA ac −ba contemporaneæ fluentes quantitates, ut et BC ac bc, BD ac bd, BE ac be &c. Quod si vice punctorum B et b substituantur A et c ad quæ tanquam quiescentia motus referantur, tunc 0 & −ca , AB et −cb , AC et 0, AD et cd, AE et ce &c erunt contemporaneæ fluentes quantitates. Mutantur itaque fluentes quantitates additione et substractione datarum AB et be, sed non mutantur quoad motûs celeritatem et fluxionis mutuum respectum: nam ejusdem longitudinis sunt partes contemporaneæ AB et ab, BC et bc, CD et cd, DE et de in utroque casu. Et sic in æquationibus quibus hæ quantitates designantur partes contemporaneæ quantitatum non ideo mutantur quod earum absoluta longitudo datâ aliquâ augeatur vel minuatur. Unde constat Propositum: Nam Problematis hujus scopus propriè non alius est quam contemporaneas partes sive absolutarum quantitatum (v, x, y, aut z) contemporaneas differentias data fluendi ratione descriptas determinare. Et perinde est cujusnam sint absolutæ longitudinis quantitates illæ dummodo contemporaneæ sive correspondentes earum differentiæ cum exposita <40> fluxionum relatione conveniant.
+
+Potest et hujus rei ratio sic Algebraicè reddi. Proponatur n=m⁢x⁢y , et finge x=1+z , eritque (per Problema 1) n=r . Adeoque pro n=m⁢x⁢y scribi potest r=m⁢y+m⁢z⁢y . Jam cum sit n=r , patet quantitates x et z etsi non sint ejusdem longitudinis, pariter tamen fluere respectu ipsius y, et pares habere partes contemporaneas. Quid itaque si ijsdem symbolis denotem quæ fluendi ratione conveniunt et ad contemporaneas differentias determinandas vice n=m⁢x⁢y usurpem n=m⁢y+m⁢x⁢y .
+
+Jam denique quo pacto partes contemporaneæ ex æquatione quantitates involvente inveniri possint per se manifestum est. Exempli Gratia. Sit y=(1)/(x)+x æquatio. Et cum sit x=2 erit y=2(1)/(2) , cum verò sit x=3 erit y=3(1)/(3) . Ergo dum x fluit a 2 ad 3 y fluet a 2(1)/(2) ad 3(1)/(3) . Adeoque partes in hoc tempore transactæ sunt (3−2) 1 et (3(1)/(3)−2(1)/(2)) (5)/(6) .
+
+Jactis hisce sequentium fundamentis, ad Problemata magis particularia jam transeo.
+
+<41>
+Problema 3.
+Determinare maximas et minimas.
+
+Quantitas ubi maxima est vel minima, in illo momento nec profluit nec refluit. Nam si profluit, id arguit minorem fuisse et statim majorem fore quam jam est; et contra si refluit. Quamobrem fluxionem ejus per Problema 1 quære et pone nullam esse.
+
+Exemplum 1. Si maxima quantitas x in æquatione x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 desideretur. Quantitatum x et y fluxiones quære et prodibit 3⁢m⁢x⁢x−2⁢a⁢m⁢x+a⁢m⁢y−3⁢n⁢y⁢y +a⁢n⁢x=0 . Positóque m=0 restabit −3⁢n⁢y⁢y+a⁢n⁢x=0 sive 3⁢y⁢y=a⁢x . Cujus ope possis alterutram x vel y in æquatione primariâ exterminare, et per æquationem {resultantem}{restantem} determinare alteram, et utramque deinde per −3⁢y⁢y+a⁢x=0 .
+
+Perinde est hæc operatio ac si multiplicasses terminos propositæ æquationis per numerum dimensionum alterius fluentis quantitatis y. Unde prodit Huddeniana notissima Regula quod ad obtinendum maximam aut minimam Relatam Quantitatem Æquatio juxta dimensiones Correlatæ Quantitatis disponi debet et per quamlibet Arithmeticam progressionem multiplicari. Ast cùm neque hæc regula ad æquationes surdis quantitatibus affectas neque ulla alia hactenus quod sciam evulgata absque prævia reductione se extendat: ejus rei accipe sequens exemplum.
+
+Exemplum 2. Si maxima quantitas y in æquatione x^3−a⁢y⁢y+(b⁢y^3)/(a+y)−x⁢xsqrt()(a⁢y+x⁢x)=0 determinanda est; ipsarum x et y fluxiones quære et emerget 3⁢m⁢x⁢x−2⁢a⁢n⁢y (+3⁢a⁢b⁢n⁢y⁢y+2⁢b⁢n⁢y^3)/(a⁢a+2⁢a⁢y+y⁢y) (−4⁢a⁢m⁢x⁢y−6⁢m⁢x^3−a⁢n⁢x⁢x)/(2⁢sqrt()(a⁢y+x⁢x))=0 . Et cum ex hypothesi sit n=0 neglige terminos in n ductos (id quod inter operandum ad minuendum laborem antea fieri potuit) cæterosque per m⁢x <42> divide et restabit 3⁢x (−2⁢a⁢y−3⁢x⁢x)/(sqrt()(a⁢y+x⁢x))=0 , factaque reductione exurget 4⁢a⁢y+3⁢x⁢x=0 . Cujus ope possis utramvis quantitatem x vel y ex æquatione primò proposita exterminare ac deinde ex æquatione resultante (quæ cubica erit) valorem alterius elicere.
+
+Ex hoc problemate sequentium resolutio petenda est.
+
+In dato Triangulo aut Segmento cujusvis Curvæ, maximum rectangulum inscribere.
+
+Maximam vel minimam rectarum ducere quæ inter datum punctum et curvam positione datam interjacent. Sive, A dato puncto ad Curvam ducere perpendiculum.
+
+Maximam vel minimam rectarum ducere quæ per datum punctum transeuntes interjacent alijs duabus sive rectis sive curvis lineis.
+
+A puncto intra Parabolam dato rectam ducere quæ Parabolam omnium obliquissimè secabit. Et idem in alijs curvis facere.
+
+Curvarum vertices maximas aut minimas latitudines puncta in quibus partes circumactæ se decussant determinare.
+
+Curvarum puncta invenire ubi maxime aut minimè curvantur.
+
+Invenire minimum angulorum in quibus rectæ ad diametros suas in data Ellipsi ordinatim applicantur.
+
+Ellipsium per data quatuor puncta transeuntium vel minimam definire vel eam quæ ad formam circularem maximè accedit.
+
+Amplitudinem sphæricæ superficiei determinare quam lux e longinquo fluens postquam ab anteriori hemisphærio refracta fuit illustrat in posteriori.
+
+Et hujusmodi alia permulta faciliùs excogitari possunt quàm (propter computandi fastidium) resolvi.
+
+<43>
+Problema 4.
+Curvarum Tangentes ducere.
+Modus 1.
+
+Tangentes pro varijs relationibus curvarum ad rectas, variè ducuntur. Et imprimis esto BD recta in dato angulo ad aliam rectam AB tanquam basin ordinata et ad curvam ED terminata. Et moveatur hæc ordinata per indefinitè parvum spatium ad locum bd, ita ut momento [figure] cd augeatur dum AB augetur momento Bb, cui Dc æqualis est. Jam producatur Dd donec cum AB in T conveniat et hæc tanget curvam in D vel d, Eruntque triangula dcD, DBT similia. Adeóque TB.BD∷Dc.cd .
+
+Cùm itaque relatio BD ad AB in æquatione qualibet pro curvâ determinandâ exponitur; quære relationem fluxionum per Problema 1, et cape TB ad BD in ratione fluxionis AB ad fluxionem BD, ac TD tanget curvam in D.
+
+Exemplum 1. Nominata AB x et BD y esto earum relatio x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 . Et fluxionum relatio erit 3⁢m⁢x⁢x−2⁢a⁢m⁢x+a⁢m⁢y−3⁢n⁢y⁢y+a⁢n⁢x=0 . Adeoque n.m∷3⁢x⁢x−2⁢a⁢x+a⁢y.3⁢y⁢y−a⁢x∷BD (y).BT . Est ergo BT=(3⁢y^3−a⁢x⁢y)/(3⁢x⁢x−2⁢a⁢x+a⁢y) . Dato itaque puncto D, et inde DB et AB sive y et x; dabitur longitudo BT qua tangens TD determinatur.
+
+Potest autem hæc operandi methodus sic concinnari. Æquationis expositæ terminos fac esse nihilo aequales; per proprium numerum dimensionum ordinatæ quantitatis multiplica, et exitum colloca in numeratore; Dein terminos ejusdem æquationis per proprium numerum dimensionum Basis multiplica et exitum per Basin divisum colloca in denominatore valoris BT. Et illam BT cape ad partes adversus A si valor ejus sit affirmativus, aut versus A si sit negativus.
+
+Sic æquatio [0. | | 0. | | 1. | | 3. | ; x^3 | − | a⁢x⁢x | + | a⁢x⁢y | − | y^3 | = | 0; 3. | | 2. | | 1. | | 0. | ] per superiores <44> numeros multiplicata dat a⁢x⁢y−3⁢y^3 pro numeratore, et per inferiores multiplicata ac divisa per x dat 3⁢x⁢x−2⁢a⁢x+a⁢y pro denominatore valoris BT.
+
+Sic æquatio y^3−b⁢y⁢y−c⁢d⁢y+b⁢c⁢d+d⁢x⁢y=0 (quæ designat Parabolam secundi generis cujus beneficio Des-Cartes construxit æquationes 6 dimensionum) primâ fronte dat (3⁢y^3−2⁢b⁢y⁢y−c⁢d⁢y+d⁢x⁢y)/(d⁢y) , sive (3⁢y⁢y)/(d)−(2⁢b⁢y)/(d)−c+x=BT .
+
+Et sic a⁢a−(r)/(q)⁢x⁢x−y⁢y=0 (quæ designat Ellipsin cujus centrum A) dat (−2⁢y⁢y)/(−2⁢(r)/(q)⁢x) sive (q⁢y⁢y)/(r⁢x)=BT . Et sic in alijs.
+
+Et nota quod nihil interest cujusnam quantitatis sit angulus ordinationis ABD.
+
+Ast hæc Regula se ad æquationes surdis quantitatibus affectas Curvasque Mechanicas non extendit. In istis casibus ad fundamentalem methodum recurrendum est.
+
+Exemplum 2. Esto x^3−a⁢y⁢y+(b⁢y^3)/(a+y)−x⁢xsqrt()(a⁢y+x⁢x)=0 æquatio designans relationem inter AB et BD, et per Problema 1 relatio fluxionum erit 3⁢m⁢x⁢x−2⁢a⁢n⁢y+ (3⁢a⁢b⁢n⁢y⁢y+2⁢b⁢n⁢y^3)/(a⁢a+2⁢a⁢y+y⁢y) (−4⁢a⁢m⁢x⁢y−6⁢m⁢x^3−a⁢n⁢x⁢x)/(2⁢sqrt()(a⁢y+x⁢x))=0 . Atque adeò est 3⁢x⁢x (−4⁢a⁢x⁢y−6⁢x^3)/(2⁢sqrt()(a⁢y+x⁢x)).2⁢a⁢y (+3⁢a⁢b⁢y⁢y+2⁢b⁢y^3)/(a⁢a+2⁢a⁢y+y⁢y) (−a⁢x⁢x)/(2⁢sqrt()(a⁢y+x⁢x)) (∷n.m) ∷BD.BT .
+
+Exemplum 3. Sit ED Conchoïdes Nichomedea Polo G, Asymptoto AT [figure] et intervallo LD descripta. Sitque GA=b , LD=c , AB=x et BD=y . Et propter similia triangula DBL et DMG erit [LB | . | BD | ∷ | DM | . | MG; sqrt()(c⁢c−y⁢y) | | y | | x | | b+y] . Adeoque (b+y)insqrt()(c⁢c−y⁢y)=y⁢x . Nactus hanc æquationem fingo sqrt()(c⁢c−y⁢y)=z et sic duas æquationes <45> b⁢z+y⁢z=y⁢x et z⁢z=c⁢c−y⁢y habeo. Quarum ope fluxiones quantitatum x, y, et z (Per Problema 1) quæro et e prima prodit b⁢r+y⁢r+n⁢z=n⁢x+m⁢y , ac e secunda 2⁢r⁢z=−2⁢n⁢y , sive r⁢z+n⁢y=0 . E quibus exterminato r, oritur −(b⁢n⁢y)/(z)−(n⁢y⁢y)/(z)+n⁢z=n⁢x+m⁢y . Quâ resolutâ fit y.z−(b⁢y)/(z)−(y⁢y)/(z)−x (∷n.m)∷BD.BT . Cùm ergo BD sit =y , erit BT=z−x (−b⁢y−y⁢y)/(z) . Hoc est −BT=AL+(BD×GM)/(BL) . Ubi signum − ipsi BT præfixum denotat punctum T ad partes adversus A capiendum esse.
+
+Scholium{} Et hinc obiter inventio puncti disterminantis concavam et convexam partem Conchoidis prodit. Nempe cùm AT sit omnium minima, erit D ejusmodi punctum. Esto itaque AT=v , et cùm sit BT=−z+x (+b⁢y+y⁢y)/(z) erit v=−z+2⁢x (+b⁢y+y⁢y)/(z) . Ubi ad opus abbreviandum pro x substitue (b⁢z+y⁢z)/(y) valorem e superioribus erutum et fiet (2⁢b⁢z)/(y)+z (+b⁢y+y⁢y)/(z)=v . Unde per Problema 1 fluxionibus l, n, et r quæsitis, et per Problema 3 supposita l=0 , emerget (2⁢b⁢r)/(y)−(2⁢b⁢n⁢z)/(y⁢y)+r+(b⁢n+2⁢y⁢n)/(z) (−b⁢r⁢y−r⁢y⁢y)/(z⁢z)=(l=)0 . In hâc denique substitue (−n⁢y)/(z) pro r et c⁢c−y⁢y pro z⁢z (valores r et z⁢z e superioribus petendos) et facta reductione obtinebitur y^3+3⁢b⁢y⁢y−2⁢b⁢c⁢c=0 . Cujus æquationis constructione dabitur y sive AM; et per M acta MD ipsi AB parallela incidet in punctum flexùs contrarij D. ***
+
+< insertion from p 53 >
+***
+
+Præterea si curva Mechanica est cujus tangentem ducere oportet, quantitatum fluxiones ut in exemplo 5 Problemate 1 quærendæ sunt, cæteráque ut in præcedentibus peragenda.
+
+Exemplum 4. Sunto AC et AD duæ curvæ quibus recta BCD ad Basin AB in dato angulo applicata occurrit in C et D [figure] et appelletur AB=x , BD=y , et (area ACB)/(1)=z ; et per Problema 1, Præparationem ad Exemplum 5, erit r=m×BC .
+
+Jam sit AC circulus aut curva quævis nota et ad alteram curvam AD definiendam exponatur quævis æquatio cui z intexta est veluti z⁢z+a⁢x⁢z=y^4 . Et per Problema 1 erit 2⁢r⁢z+a⁢x⁢r+a⁢m⁢z=4⁢n⁢y^3 . Et scripto m×BC pro r, fiet 2⁢m⁢z×BC+a⁢m⁢x×BC+a⁢m⁢z=4⁢n⁢y^3 . Adeoque 2⁢z×BC+a⁢x×BC+a⁢z.4⁢y^3 (∷n.m)∷BD.BT . Quamobrem si ex natura curvæ AC detur ordinata BC et area ACB sive z, dabitur punctum T per quod tangens DT transibit.
+
+Ad eundem modum si 3⁢z=2⁢y sit æquatio ad curvam AD, erit 3⁢r (3⁢m×BC)=2⁢n . Adeoque 3⁢BC.2 (∷n.m)∷BD.BT . Et sic in alijs.
+
+Exemplum 5. Sit AB=x , BD=y ut ante, et Curvæ cujusvis AC longitudo sit z; ductâque ad eam tangente Ct, erit Bt.Ct∷m.r , sive r=(m×Ct)/(Bt) .
+
+Jam ad aliam curvam AD cujus tangens ducenda est, detur quælibet æquatio in qua z involvitur, puta si z=y , erit r=n . Adeoque Bt.Ct (∷n.m) ∷BD.BT . Invento autem T age DT tangentem.
+
+Sic posito x⁢z=y⁢y erit m⁢z+r⁢x=2⁢n⁢y , et pro r scripto (m×Ct)/(Bt) , emerget m⁢z+(m⁢x×Ct)/(Bt)=2⁢n⁢y . Quare est z+(x×Ct)/(Bt).2⁢y∷BD.DT .
+
+Exemplum 6. Sit AC circulus aut alia quævis nota curva quam tangat Ct, et sit AD alia curva cujus tangentem DT ducere oportet, et quæ definitur assumendo AB=arcui AC , et (CE, ac BD in dato angulo ad AB ordinatis) referendo BD ad CE vel AE in æquatione aliqua. Dic ergo AB vel AC=x , BD=y , AE=z , et CE=v , et patet l, m, et r [figure] fluxiones ipsarum CE, AC, et AE esse inter se ut sunt CE, Ct et Et, Adeoque m×(CE)/(Ct)=l , et (m×Et)/(Ct)=r .
+
+Detur jam quælibet æquatio ad definiendam Curvam AD, veluti y=z , et erit n=r , Adeoque Et.Ct (∷n.m)∷BD.BT .
+
+Vel detur y=z+v−x , et erit n=(l+r−m=) (m×CE+Et−Ct)/(Ct) . Adeoque CE+Et−Ct.Ct (∷n.m)∷BD.BT .
+
+Vel denique detur a⁢y⁢y=v^3 , et erit 2⁢a⁢n⁢y=(3⁢l⁢v⁢v=) (3⁢m⁢v⁢v×CE)/(Ct) . Adeoque 3⁢v⁢v×CE.2⁢a⁢y×Ct∷BD.BT .
+
+Exemplum 7. Sit FC circulus quem tangat CS, sitque FD Curva quæ definitur assumendo quamvis relationem applicatæ DB ad FC arcum quem DA ad centrum ducta intercipit. Et demissa CE in circulo <54> applicata dic AC vel AF=1 , AB=x , BD=y , AE=z , [figure] CE=v , CF=t et ipsius t fluxionem k, et erit k⁢z (=(k×CE)/(CS))=l , et −k⁢v (=(k× −ES)/(CS))=r . Ubi pono r negativè, quòd AE diminuitur dum EC augetur. Est insuper AE.EC∷AB.BD , adeoque z⁢y=v⁢x et inde per Problema 1, r⁢y+n⁢z=l⁢x+m⁢v . Et hæc, exterminatis l, r, et v, faciunt n⁢x −k⁢y⁢y−k⁢x⁢x=m⁢y .
+
+Definiatur jam curva DF æquatione quavis a qua valor k hic substituendus deduci possit: puta sit t=y (æquatio ad primam Quadratricem,) et per Problema 1 erit k=n . Adeoque n⁢x−n⁢y⁢y−n⁢x⁢x=m⁢y . Unde y.x⁢x+y⁢y−x (∷n.−m)∷DB (y).BT . Quare BT=x⁢x+y⁢y−x . Et AT= x⁢x+y⁢y=(AD^q)/(AF) .
+
+Ad eundem modum si sit t⁢t=b⁢y , proveniet 2⁢k⁢t=b⁢n , et inde AT=(b×AD^q)/(z⁢t×AF) . Et sic in alijs.
+
+Exemplum 8. Quod si AD sumatur æqualis [figure] arcui FC, existente ADH spirali Archimedea, tum stantibus jàm positis linearum nominibus, est (propter angulum ABD rectum) x⁢x+y⁢y=t⁢t . Et inde per Problema 1 m⁢x+n⁢y=k⁢t . Est etiam AD.AC∷DB.CE , adeoque t⁢v=y et inde per Problema 1 k⁢v+t⁢l=n . Denique est fluxio arcus FC ad fluxionem rectæ CE ut AC ad AE sive ut AD ad AB hoc est k.l∷t.x , et inde k⁢x=t⁢l . Confer jam inventas æquationes et videbis esse k⁢v+k⁢x=n , et inde m⁢x+n⁢y (=k⁢t)=(n⁢t)/(v+x) . Atque adeo (completo parallelogrammo ABDQ) si fiat QD.QP (∷BD.BT∷n.−m)∷x.y−(t)/(v+x) , hoc est si capiatur AP=(t)/(v+x) , erit PD ad spiralem perpendicularis.
+
+Ex his opinor satis manifestum est quo pacto curvarum omnium tangentes ducendæ sunt. Attamen non abs re erit si præterea confectionem Problematis ubi curvæ alijs quibuscunque modis ad rectas referuntur ostendero, ut e pluribus Methodis facillima et simplicissima semper possit adhiberi.
+
+< text from p 45 resumes >
+
+Modus 2. Sit itaque D punctum in curva a quo subtensa DG ducitur ad datum punctum G ac DB in dato quovis angulo ordinatur ad Basin AB. [figure] Punctum verò D per infinitè parvum intervallum Dd in curva fluat, inque GD sumatur GK æqualis Gd et compleatur parallelogrammum dbBC. Et erunt DK ac DC contemporanea momenta ipsarum GD et BD quibus nempe diminuuntur dum D transfertur ad d. Jam <46> Dd rectà producatur donec cum AB conveniat in T et ab isto T ad subtensam GD demittatur perpendiculum TF et erunt Trapezia DCdK ac DBTF similia adeoque DB.DF∷DC.DK .
+
+Cùm itaque relatio BD ad GD in æquatione qualibet, pro curva definienda exponitur, quære relationem fluxionum et cape FD ad DB in ratione fluxionis GD ad fluxionem BD. Dein ab F erige perpendiculum FT quod cum AB concurrat in T et acta TD curvam tanget in D. Cape autem DF versus G si sit affirmativa; sin secus, cape ad contrarias partes{.}
+
+Exemplum 1. Dic GD=x et BD=y et esto earum relatio x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 Eritque fluxionum relatio 3⁢m⁢x⁢x−2⁢a⁢m⁢x+a⁢m⁢y+a⁢x⁢n−3⁢n⁢y⁢y=0 . Atque adeò 3⁢x⁢x−2⁢a⁢x +a⁢y.3⁢y⁢y−a⁢x (∷m.n)∷DB (y).DF . Est ergo DF=(3⁢y^3−a⁢x⁢y)/(3⁢x⁢x−2⁢a⁢x+a⁢y) . Adeoque dato quolibet in curva puncto D, et inde BD et GD sive y et x; dabitur punctum F: Unde si normalem FT erigas; ad ejus concursum cum basi AB ducta DT curvam tanget.
+
+Et hinc patet Regulam perinde ac in priori casu concinnari posse. Scilicet æquationis expositæ terminos omnes ad easdem partes dispone et sigillatim per dimensiones ordinatæ y multiplica et exitum colloca in Numeratore. Dein terminos ejus sigillatim per dimensiones subtensæ x multiplica, et exitum per subtensam illam x divisum colloca in Denominatore valoris DF. Illamque DF cape ad partes contra G si sit affirmativa, sin secus, cape ad easdem partes. Et nota quod nihil intersit quanto intervallo punctum G distat a Basi AB, si fortè distat, neque quinam sit angulus ordinationis ABD.
+
+Sic æquatio superior x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 prima fronte dat a⁢x⁢y−3⁢y^3 pro numeratore et 3⁢x⁢x−2⁢a⁢x+a⁢y pro Denominatore valoris DF.
+
+Sic etiam a+(b)/(a)⁢x−y=0 , (quæ æquatio est ad Conicam sectionem) dat −y pro numeratore et (b)/(a) pro denominatore valoris DF quæ ideo erit =(−a⁢y)/(b) .
+
+Et sic in Conchoide, (ubi res expeditiùs obsolvitur quàm <47> ante) posito GA=b , LD=c , GD=x , et BD=y , erit [BD | . | DL | ∷ | GA | . | GL; y | | c | | b | | x−c] . Adeoque x⁢y−c⁢y=c⁢b , sive x⁢y−c⁢y−c⁢b=0 Quæ æquatio juxta Regulam dat (x⁢y−c⁢y)/(y) hoc est x−c= DF. Produc ergo GD ad F ut sit DF=LG , et ad F erige normalem FT occurrentem Asymptoto AB in T, et acta DT Conchoidem tanget.
+
+Siquando compositæ quantitates in æquatione reperiantur ad methodum generalem recurrendum est, nisi ubi malueris æquationem reducere.
+
+Exemplum 2. Si detur æquatio (b+x)⁢sqrt()(c⁢c−y⁢y)=y⁢x pro relatione inter GD et BD determinanda, fluxionum relationem juxta Problema 1 quære. Utpote ficto sqrt()(c⁢c−y⁢y)=z , æquationes b⁢z+y⁢z=y⁢x et c⁢c−y⁢y=z⁢z habebis, et inde fluxionum m n et r relationes b⁢r+y⁢r+n⁢z=n⁢x+y⁢m , et −2⁢n⁢y=2⁢r⁢z . Et exterminatis r et z orietur n⁢sqrt()(c⁢c−y⁢y) (−b⁢n⁢y−n⁢y⁢y)/(sqrt()(c⁢c−y⁢y))−n⁢x=m⁢y . Est ergo y.sqrt()(c⁢c−y⁢y) (−b⁢y−y⁢y)/(sqrt()(c⁢c−y⁢y))−n⁢x (∷n.m)∷BD (y).DF .
+
+Modus 3. Præterea si Curva ad duas subtensas AD et BD referatur quæ a datis punctis A ac B ductæ ad Curvam conveniunt: concipe punctum illud D per infinitè parvum spatium Dd in curva profluere [figure] et in AD et BD cape AK=Ad et BC=Bd et erunt KD et CD contemporanea momenta linearum AD et BD. Cape jam DF ad BD in ratione momenti DK ad momentum DC (i.e. in ratione fluxionis Lineæ AD ad Fluxionem lineæ BD,) et erige perpendicula BT, FT concurrentia in T eruntque trapezia DTFB ac DKdC similia, et proinde diagonalis DT curvam tanget.
+
+Per æquationem itaque qua relatio inter AD et BD definitur, quære relationem fluxionum ope Problema 1, et cape <48> FD ad BD in eadem ratione{.}
+
+Exemplum. Posito AD=x et BD=y sit earum relatio a+(e⁢x)/(d)−y=0 (quæ æquatio est ad Ellipses secundi generis quarum proprietates ad Lucem refringendam Des-Cartes in Libro 2 Geometriæ docuit) et fluxionum relatio erit (e⁢m)/(d)−n=0 . Est itaque e.d (∷n.m)∷BD.DF .
+
+Et pari ratione si a−(e⁢x)/(d)−y=0 , [figure] erit e.−d∷BD.DF . In priori casu cape DF versus A, et ad contrarias partes in posteriori.
+
+Corollarium 1. Hinc si d=e (quo casu curva evadit conica sectio) erit DF=DB . et inde triangula DFT, DBT æqualia, angulusque FDB a tangente bisecabitur.
+
+Corollarium 2. Hinc etiam quæ Des-Cartes de his curvis circa refractiones haud absque circuitu demonstravit, per se manifesta sunt: siquidem DF ac DB (quæ sunt in data ratione d ad e) respectu sinus totius DT sint sinus angulorum DTF ac DTB. id est incidentiæ radij AD in superficiem curvæ, et reflectionis vel refractionis ejus DB. Estque par ratio de refractionibus Conicarum Sectionum si modo punctorum A vel B alterutrum infinitè distare concipiatur.
+
+Perfacile est hanc regulam pro more præcedentium concinnare et pluribus exemplis donare. Quinimò ubi curvæ alijs quibuscunque modis ad rectas referuntur, et ad præcedentes formas haud commodè reduci possunt; perfacile est alias Regulas ad harum exemplar pro re nata excogitare.
+
+Modus 4 Quemadmodum si rectæ BD circa datum punctum B volventis punctum D sit ad Curvam aliquam, et C sit intersectio ejus cum rectâ AC positione datâ; habeaturque relatio inter BC et BD quacunque æquatione designata; Age BF parallelam AC, eique occurrat DF normalis ad <49> BD. Et ad DF itidem erige [figure] normalem FT, et cape in ratione ad BC quam habet fluxio ipsius BD ad fluxionem ipsius BC: Actáque DT curvam tanget.
+
+Modus 5 Sin, dato puncto A, æquatio relationem inter AC et BD designat, duc CG parallelam DF, et cape FT in ratione ad BG quam habet fluxio BD ad fluxionem AC.
+
+Modus 6 Vel denique si æquatio relationem inter AC et CD definit: conveniant AC et FT in H, et cape HT in ratione ad BG quam habet fluxio CD ad fluxionem AC. Et sic in alijs.
+
+Modus 7. Haud secus absolvitur Problema ubi curvæ non ad rectas sed ad alias curvas lineas (uti solent Mechanicæ) referuntur. Sit BG circuli periferia in cujus semidiametro AG, dum circa centrum A convolvitur, moveatur utcunque punctum D et spiralem ADE describat. Et concipe [figure] Dd et partem curvæ infinitè parvam per quam D fluit, et in AD cape AC=Ad et erunt CD ac Gg contemporanea momenta rectæ AD et periferiæ BG. Duc ergo At parallelam CD, id est perpendicularem AD, et cum ea tangens DT conveniat in T, eritque CD.Cd∷AD.AT . Sit insuper Gt parallela tangenti, et erit Cd.Gg (∷Ad vel AD.AG)∷AT.At .
+
+Quare exposita quacunque æquatione quâ relatio BG ad AD definitur, quære relationem fluxionum per Problema 1, et cape At in illa ratione ad AD. eritue Gt tangenti parallela.
+
+Exemplum 1. Dictis BG=x et AD=y , sit earum relatio x^3−a⁢x⁢x+a⁢x⁢y−y^3=0 et ope Problema 1 emerget 3⁢x⁢x−2⁢a⁢x +a⁢y.3⁢y⁢y−a⁢x (∷n.m)∷AD.At∷AP.AG {.} Puncto t sic invento duc <50> Gt eique parallelam DT, et illa Curvam tanget.
+
+Exemplum 2. Si sit (a⁢x)/(b)=y (quæ æquatio est ad Spiralem Archimedeam) erit (a⁢m)/(b)=n . Adeoque a.b (∷n.m)∷AD.At . Unde obiter si TA producatur ad P ut sit AP.AB∷a.b , PD ad curvam recta erit.
+
+Exemplum 3. Si x⁢x=b⁢y , erit 2⁢m⁢x=b⁢n . Adeoque 2⁢x.b∷AD.At . Et sic tangentes ad quascunque spirales nullo negotio determinari possunt.
+
+Modus 8. Ad hæc si curva sit ejusmodi ut per centrum A ductâ utcunque AGD quæ circulo [figure] in G, curvæque in D occurrat, relatio inter arcum BG et rectam DH quæ in dato angulo ad Basin AB ordinata est, æquatione quavis definiatur: Concipe punctum D per infinitè parvum intervallum ad d in curva moveri et completo parallelogrammo dhHK productâque Ad ad C ut sit AC=AD ; erunt Gg arcûs BG et DK ordinatæ DH contemporanea momenta. Produc jam Dd rectà ad T ubi cum AB conveniat et demitte TF in DC perpendicularem, eruntque trapezia DKdc, DHTF similia; atque adeo DK.DC∷DH.DF . Et præterea si Gf ad AG normalis erigatur quæ cum AF concurrat in f propter parallelas DF, Gf erit DC.Gg∷DF.Gf . Quamobrem ex æquo est DK.Gg∷DH.Gf , hoc est, ut momenta sive fluxiones linearum DH et BG.
+
+Per æquationem itaque quâ relatio BG ad DH definitur quære rationem fluxionum per Problema 1 et in ea ratione cape Gf (tangentem circuli BG) ad DH. Age DF parallelam Gf quæ cum Af producta conveniat in F Et ad F erige normalem FT occurrentem AB in T et acta DT Quadratricem tanget.
+
+Exemplum 1. Nominatis BG=x , ac DH=y , esto x⁢x=b⁢y et (per Problema 1) erit 2⁢m⁢x=b⁢n . Adeoque 2⁢x.b (∷n.m)∷DH.Gf . Et invento f, cætera ut præscriptum est determinabis.
+
+<51>
+Cæterum hæc Regula forte sic elegantior evadet. Fac m.n∷AB.AL . Dein AL.AD∷ AD.AT et DT curvam tanget. Nam propter æqualia triangula AFD, ATD, est AD×DF=AT×DH . Adeoque AT.AD (∷DF.DH , sive (n)/(m)⁢Gf)∷AD.(n)/(m)⁢AG , sive AL .
+
+Exemplum 2. Esto x=y (quæ æquatio est ad simplicem veterum Quadratricem) et erit m=n . Adeoque AB.AD∷AD.AT .
+
+Exemplum 3. Esto a⁢x⁢x=y^3 , et erit 2⁢a⁢m⁢x=3⁢n⁢y⁢y . Fac ergo 3⁢y⁢y.2⁢a⁢x (∷m.n)∷AB.AL . Dein AL.AD∷AD.AT .
+
+Et sic tangentes ad alias utcunque compositas Quadratrices possis expeditè determinare; et hujusmodi Regulas pro alijs quibuscunque Mechanicarum Curvarum generibus excogitare.
+
+Siquando in æquationibus Mechanicæ quantitates involvantur earum fluxiones ut in exemplo 5 Problemate 1 quærere oportet cæteraque ut supra peragere{.}.
+
+< insertion from p 52 > Exemplum 1. Sunto AC et AD duæ curvæ quibus recta BCD ad Basin AB in dato angulo ordinata occurrit in C et D. Et appelletur AB=x , BD=y , et (area ACB)/(1)=z et per Problema 1 Præparationem ad Exemplum 5 erit r=m×BC .
+
+Jam sit AC circulus aut curva quævis nota et ad alteram curvam AD definiendam exponatur quævis æquatio cui z intexta est: veluti z⁢z+a⁢x⁢z=y^4 . Et per Problema 1 erit 2⁢r⁢z +a⁢x⁢r+a⁢m⁢z=4⁢n⁢y^3 . Et inscripto m×BC pro r, fiet 2⁢m⁢z×BC+a⁢m⁢x×BC +a⁢m⁢z=4⁢n⁢y^3 , Adeoque 2⁢z×BC+a⁢x×BC+a⁢z.4⁢y^3 (∷n.m) ∷BD.BT sicut in primo præcedentium casuum. Quamobrem si ex natura curvæ AC detur ordinata BC et area ACB sive z dabitur punctum T per quod tangens DT transibit.
+
+Ad eundem modum si 3⁢z=2⁢y sit æquatio ad curvam AD, erit 3⁢r (3⁢m×BC)=2⁢n . Adeoque 3⁢BC.2 (∷n.m)∷BD.BT . Et sic in alijs.
+
+< text from p 51 resumes >
+
+Exemplum 2. Sit AB=x , BD=y (ut ante) et [figure] curvæ cujusvis AC longitudo sit z, ductaque ad eam tangente Ct erit Bt.Ct∷m.r sive r=(m×Ct)/(Bt) .
+
+Jam ad aliam curvam AD cujus tangens ducenda est detur <52> quælibet æquatio in qua z involvitur, puta si z=y r=n Adeoque Ct.Bt (∷n.m)∷BD.BT , ut in primo casu. Invento autem T age tangentem DT.
+
+Sic posito x⁢z=y⁢y , erit m⁢z+r⁢x=2⁢n⁢y , et pro r scripto (m×Ct)/(Bt) emerget m⁢z+(m⁢x×Ct)/(Bt)=2⁢n⁢y Quare z+(x×Ct)/(Bt).2⁢y { ∷ } BD.DT .
+
+Exemplum 3{.} Sic AC circulus aut alia quævis nota curva quam tangat Ct, et sit AD alia curva cujus tangentem DT ducere oportet, et quæ definitur assumendo AB= arcui AC, et (CE, BD in dato angulo ad AB ordinatis) referendo BD ad CE vel AE in æquatione aliqua. Dic ergo AB, vel AC=x . BD=y . AE=z et CE=v , et patet l, m, et r (fluxiones ipsarum CE, AC, et AE) esse inter se ut sunt CE, Ct et Et. Adeóque (m×CE)/(Ct)=l , [figure] et (m×Et)/(Ct)=r .
+
+Detur jam quælibet æquatio ad curvam AD determinandam veluti y=z et erit n=r=(m×Et)/(Ct) . Adeoque Et.Ct (∷n.m)∷BD.BT .
+
+< insertion from the left margin of p 52 > Vel detur y=v−z+x , et erit n=(l−r+m=)(m×CE+Et+Ct)/(Ct) . Adeoque CE+Et+Ct .Ct (∷n.m)∷BD.BT .
+
+Vel denique detur a⁢y⁢y=v^3 et erit 2⁢a⁢n⁢y=(3⁢l⁢v⁢v)(3⁢m⁢v⁢v×CE)/(Ct) . Adeoque 3⁢v⁢v×CE.2⁢a⁢y×Ct∷BD.BT .
+
+Quemadmodum in primo præcedentium octo casuum his exemplis illustrato sic etiam in quovis alio hujusmodi æquationibus adhibitis tangentes duci possunt{.}
+
+Et hæc in explicationem hujus methodi generalis qua curvarum omnium tangentes absque solitâ calculi molestiâ prompte et concinnè determinantur, adduxisse sufficiat.
+
+< text from p 52 resumes >
+
+<55>
+
+Cæterum hæc Regula forte sic elegantior evadet, Fac m.n∷AB.AL . Dein AL.AD∷AD.AT , et DT curvam tanget. Nam propter æqualia triangula AFD, ATD, est AD×DF=AT×DH . Adeoque AT.AD (∷DF.DH , sive (n)/(m)⁢Gf) ∷AD.(n)/(m)⁢AG , sive AL .
+
+Exemplum 2. Esto x=y (quæ æquatio est ad Veterum Quadratricem per Problema 1 erit m=n . Adeoque AB.AD∷AD.AT .
+
+Exemplum 3. Esto a⁢x⁢x=y^3 et erit 2⁢a⁢m⁢x=3⁢n⁢y⁢y . Fac ergo 3⁢y⁢y.2⁢a⁢x (∷m.n)∷AB.AL . Dein AL.AD∷AD.AT .
+
+Atque ita tangentes aliarum Quadratricum utcunque compositarum possis expeditè determinare.
+
+Modus 9. Si denique ABF sit curva quævis data quam tangat recta Bt, et rectæ BC in dato [figure] angulo ad basin AC applicatæ pars BD inter hanc et aliam curvam DE intercepta relationem ad curvæ portionem AB in æquatione quacunque definitam habeat: alterius curvæ tangentem DT duces capiendo in hujus tangente, BT in ea relatione ad BD, quam habet fluxio curvæ AB ad fluxionem rectæ BD.
+
+Exemplum 1. Dictis AB=x et BD=y , esto a⁢x=y⁢y et per Problema 1, erit a⁢m=2⁢n⁢y , adeoque a.2⁢y (∷n.m)∷BD.BT .
+
+Exemplum 2. Sit (a)/(b)⁢x=y (æquatio ad Trochoidem si modò ABF sit circulus) et erit (a)/(b)⁢m=n . Adeoque a.b∷BD.BT .
+
+Et nihilo difficiliùs tangentes, ubi ipsius BD ad AC vel ad BC relatio in æquatione quavis exprimitur, vel ubi curvæ alijs quibuscunque modis ad rectas aliasve curvas referuntur, possis ducere.
+
+Sunt etiam alia non pauca Problemata quorum solutiones ex hisce fluunt. Cujusmodi sunt; 1{.} Invenire punctum Curvæ ubi tangens est ad Basin (vel quamvis positione datam rectam) parallela vel perpendicularis vel in alio quovis angulo inclinata.
+
+2{.} Invenire punctum ubi tangens maxime minimève ad Basin aut aliam positione datam rectam inclinatur. Hoc est invenire <56> confinium flexûs contrarij. Hujus autem specimen in Conchoide jam ante exhibui{.}
+
+3. A dato quovis extra curvæ perimetrum puncto rectam ducere quæ cum perimetro aut angulum contactûs aut rectum angulum, aut alium quemvis datum conficiet. Hoc est tangentes vel perpendiculares vel aliter ad curvam >inclinatas rectas a dato quovis puncto ducere{.}
+
+4{.} A dato quovis intra Parabolam puncto rectam ducere quæ maximum minimumve quem potest angulum cum perimetro ejus conficiet. Et idem de alijs curvis intellige.
+
+5. Rectam ducere quæ duas positione datas curvas, vel eandem curvam (si potest) in duobus punctis tangat.
+
+6. Curvam quamvis sub datis conditionibus ducere quæ aliam positione datam curvam in dato puncto tanget.
+
+7{.} Luce in quamlibet curvam superficiem incidente, cujusvis radij fractionem determinare.
+
+Horum et similium Problematum confectiones, ubi non obstat computandi tædium, non sunt ita difficiles ut ijs explicandis immorari opus sit. Et Geometris, credo, magis gratum erit sic tantùm recensuisse.

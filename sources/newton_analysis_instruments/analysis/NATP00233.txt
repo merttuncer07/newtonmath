@@ -1,0 +1,34 @@
+<10r>
+Sept 27 1670.
+
+Sir
+
+The receipt of your last letter staying mee from sending back your Kinck-Huysens Introduction, I have hitherto deferred writing to you, waiting for D Barrows returne from London that I might consult his Library about what you propounded in your last letter but one to mee concerning the solutions of Cubick æquations, before I sent you my thoughts upon it. And yesterday veiwing Hugenius de Quadratura circuli & Lalovera de Elementis Tetragonismicis I can not by that instance you gave mee out of those two compared together bee convinced that two meane proportionalls may bee found by trisecting an arch, or contrarily. Hugenius indeed divides a sphære in a given ratio by trisection & Lalover divides a certaine Parabolicall segment in a given ratio by two meane proportionalls prop 8 lib 4, but then the division of that segment & the sphære are not analogous. For suppose akd the parabola touched at its vertex by ae & [figure] that ik, ed are parallell to its diameter, then are aik aed such segments as hee divides by 2 meanes, but these segments are as the cubes of the lines ai, ae whereas the segments of a sphære are not as the cubes of their respective axes. If indeed ake (fig 2) bee a [figure] Parabola insisting on the base ae & cut by ik parallely to its axis, the segments of this will be analogous to those of a sphære, but this Lalover divides otherways then by 2 meanes prop 9 lib: 4.
+
+I cannot therefore yet bee convinced that anyone problem can be solved both those ways, which if it could, it would bee noe hard matter to take away both the two middle termes of any cubick æquation. Which whoever performes I shall esteem <10v> as a great Apollo & admire as much as if hee had squared the circle, because I judg both impossible. And my reason is this that æquations to what termes soever they are reduced their reall roots never becom imaginary nor their imaginary roots reall (though indeed their true roots may become false & false ones true). But could a cubick æquation which hath 3 reall roots (and consequently is solvible by trisection) have its two middle termes taken away (& consequently become soluble by 3 meanes) two of its reall roots must bee transformed into imaginary ones, for all simple cubick æquations can have but one root reall & two imaginary.
+
+I thank you for your intimation about the limits of æquations, & differencing their homogeneall termes, but though the speculation bee pritty I much suspect it will never becom usefull for the solving of æquations. If I chance to meet with any thing that may improve it you shall have notice thereof.
+
+Upon the receipt of your last letter I sometimes thought to have set upon writing a compleate introduction to Algebra, being cheifely moved to it by this that some things I had inserted into Kinck-Huysen were not so congruous as I could have wished to his manner of writing. Thus having composed somthing pretty largely about reducing problems to an æquation when I came to consider his examples (which make the 4th part of his booke) I found most of them solved not by any generall Analyticall method but by particular & contingent inventions, which though many times more concise then a generall method would allow, yet in my judgment are lesse propper to instruct a learner; as Acrostick's & such kind of artificiall Poetry though never soe excellent would bee but impropper examples to instruct one that aimes at Ovidian Poetry. But considering that by reason of severall divertisements I should bee so long in doing it as to tire you patience with expectation, & also that there being severall Introductions to Algebra already published I might thereby gain the esteeme of one ambitious among the croud to have my scribbles printed, I have chosen rather to let it passe without much altering what I sent you before. Yet because you seeme to bee most sollicitous about the doctrine of surds delivered in it, I desire that when your leisure will permit you to write you would intimate the particulars in which you think it most defective. For at my reveiwing the papers, I judged it not so imperfect as I thought it had beene when I sent for them back againe & soe have hitherto added two or three examples onely more then was done before.
+
+< insertion from the left margin >
+I have sent back your Humes, Van Ceulen, Fergusons Labyrinthus Algebræ both parts of it, & Kinck-Huysen on the Conic-sections. But his Algebra I presume to keepe by me till you have occasion for it. So thanking you for the said Books, with other favours & desiring to bee excused for troubling you thus amongst the midst of your buisinesse I rest
+
+Your humble Servitor            Is: Newton
+
+< text from f 10v resumes >
+
+<10av>
+Mr Newton a Sphere and a Parabola not divided in ratione data by meane Proportionalls
+
+These
+
+To Mr John Collins at his
+house the next doore to the
+Crowne in Bloomsbury
+
+in
+
+London.
+
+with a Packet.

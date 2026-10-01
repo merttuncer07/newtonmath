@@ -1,0 +1,301 @@
+<1r>
+Sent by Dr. Barrow to Mr. Collins in a Letter dated July 31. 1669.
+
+<2r>
+De Analysi per æquationes numero terminorum infinitas.
+
+Methodum generalem quam de curvarum quantitate per infinitam terminorum seriem mensuranda olim excogitaveram, in sequentibus brevitèr explicatam potiùs quàm accuratè demonstratam habes.
+
+Basi AB, curvæ alicujus AD, sit applicata [figure] BD perpendicularis: & vocetur AB=x , & BD=y ; & sint a, b, c &c quantitates datæ; & m, n numeri integri. Deinde
+
+Reg: I. Si ax^((m)/(n))=y , erit (na)/(m+n)x^((m+n)/(n))=Area ABD . [figure] Res exemplo patebit. Exemp 1. Si x^2(=1×x^((2)/(1)))=y ; hoc est si a=1=n , & m=2 ; erit (1)/(3)x^3=ABD . Exempl 2. Si 4sqrt()x(=4x^((1)/(2)))=y erit (8)/(3)x^((3)/(2))(=(8)/(3)sqrt()x^3)=ABD . Exemp 3. Si sqrt()3:x^5(=x^((5)/(3)))=y , erit (3)/(8)x^((8)/(3))(=(3)/(8)sqrt()3:x^8)=ABD . Exemp 4. Si (1)/(x^2)(=x^(−2))=y , id est si a=1=n & m=−2 , erit ((1)/(−1)x^((−1)/(1))
+=)−x^(−1)(=(−1)/(x)) =αBD infinitè versus α protensæ; quam calculus ponit negativam propterea quòd jacet ex altera parte lineæ BD. Exemp: 5. Si (2)/(3sqrt()x^3)(=(2)/(3)x^((−3)/(2)))=y , erit (2)/(−1)x^((−1)/(2))=−(2)/(sqrt()x)=BDα . Exemp 6. Si (1)/(x)(=x^(−1)) =y
+, erit (1)/(0)x^((0)/(1))=(1)/(0)x^0=(1)/(0)×1=(1)/(0)=infinitæ , qualis est area Hyperbolæ utraque parte linea BD.
+
+Reg II. Si valor ipsius y ex pluribus istius modi terminis componitur, area etiam componetur ex areis quaæ a singulis terminis emanant.
+
+Hujus Exempla prima sunto. Si x^2+x^((3)/(2))=y [figure] erit (1)/(3)x^3+(2)/(5)x^((5)/(2))=ABD . Etenim si semper sit x^2=BF , & x^((3)/(2))=FD ; erit ex præcedenti Regula (x^3)/(3)= superficiei AFB descriptæ per lineam BF, & (2)/(5)x^((5)/(2))=AFD descriptæ per DF; Quare (x^3)/(3)+(2)/(5)x^((5)/(2))= totæ ABD. Sic si x^2−x^((3)/(2))=y erit (1)/(3)x^3−(2)/(5)x^((5)/(2))=ABD . Et si 3 x−2x^2+x^3−5x^4=y , erit (3)/(2)x^2−(2)/(3)x^3+(1)/(4)x^4−x^5=ABD .
+
+Exempla secunda. Si x^(−2)+x^((−3)/(2))=y
+, erit [figure] −x^(−1)−2x^((−1)/(2))=αBD . Vel si x^(−2)−x^((−3)/(2))=y , erit −x^(−1)+2x^((−1)/(2))=αBD . Quarum signa si mutaveris habebis affirmativum valorem ( x^(−1)+2x^((−1)/(2)) vel x^(−1)−2x^((−1)/(2)) ) <2v> Superficiei αBD, modò tota cadat supra Basin [figure] ABα; sin aliqua pars cadat infra, (quod fit cùm curva decussat suam Basin inter B & α, ut hic vides in δ,) istâ parte a parte superiori subductâ, habebis valorem differentiæ. Earum verò summam si cupis, quære utramque superficiem seorsim, & adde. Quod idem in reliquis hujus regulæ exemplis notandum volo.
+
+Exempla tertia. Si x^2+x^(−2)=y , erit (1)/(3)x^3−x^(−1)= superficiei descriptæ. Sed hic notandum est quod dictæ superficiei {partes} sic inventæ jacent ex diverso latere lineæ [figure] BD: nempe, posito x^2=BF & x^(−2)=FD , erit (1)/(3)x^3=ABF superficiei per BF descriptæ, & −x^(−1)=DFα descriptæ per DF. Et hoc semper accidit cum indices ((m+n)/(n)) rationum basis x in valore superficiei quæsitæ sint varijs signis affectæ. In hujus modi casibus pars aliqua BDδβ superficiei media (quæ sola dari poterit, cùm superficies sit utrinque infinita) sic invenitur. Subtrahe superficiem ad minorem basin Aβ pertinentem a Superficie ad majorem basin AB pertinente & habebis βBDδ superficiem differentiæ basium insistentem. Sic in hoc exemplo, Si AB=2 & Aβ=1 , erit βBDδ=(17)/(6) . Enim superficies ad AB pertinens (viz ABF−DFα ) erit (8)/(3)−(1)/(2) , sive (13)/(6) ; Et superficies ad Aβ pertinens (viz Aφβ−δφα ) erit (1)/(3)−1 , sive −(2)/(3) : Et earum differentia (viz ABF−DFα−Aφβ +δφα=βBDδ ) erit (13)/(6)+(2)/(3) sive (17)/(6) . Eodem modo si Aβ=1 , & AB=x erit βBDδ=(2)/(3)+(1)/(3)x^3−x^(−1) . Sic si 2x^3−3x^5−(2)/(3)x^(−4) +x^((−3)/(5))=y , & Aβ=1 ; Erit βBDδ=(1)/(2)x^4−(1)/(2)x^6+(2)/(9)x^(−3)+(5)/(2)x^((2)/(5))−(49)/(18) .
+
+Denique notari poterit quòd si quantitas x^(−1) in valore ipsius y reperiatur, iste terminus (cùm hyperbolicam superficiem generat) seorsim a reliquis considerandus est. Ut si x^2+x^(−3)+x^(−1) =y : Sit x^(−1)=BF , & x^2+x^(−3)=FD , ac Aβ=1 ; [figure] Et erit δφFD=(1)/(6)+(x^3)/(3)−(x^(−2))/(2) , utpote quæ ex terminis x^2+x^(−3) generatur: quare si reliqua superficies φβFB, quæ Hyperbolica est, ex calculo aliqua sit data, dabitur tota βBDδ.
+
+<3r>
+Reg III. Sin valor ipsius y vel aliquis ejus terminus sit præcedentibus magis compositus, in terminos simpliciores reducentus est, operando in literis ad eundem modum quo Arithmetici in numeris decimalibus dividunt, radices extrahunt, vel affectas Æquationes solvunt. Et ex istis terminis quæsitam curvæ superficiem per præcedentes regulas dinceps elicies.
+
+Exempla dividendo.
+
+Sit (aa)/(b+x)=y , curvâ nempe exist ente Hyperbolâ: Iam ut æquatio ista a denominatore suo liberetur divisionem sic instituo [b | + | x | ) | aa | + | 0 | ( | (aa)/(b) | − | (aax)/(bb) | + | (aax^2)/(b^3) | − | (aax^3)/(b^4) | &c; b | + | x | ___ | aa | + | (aax)/(b); | | | | ___ | ___ | ___ | ; | | | | 0 | − | (aax)/(b) | + | 0; | | | | | − | (aax)/(b) | − | (aax^2)/(bb); | | | | | ___ | ___ | ___ | ___ | ; | | | | | | 0 | + | (aax^2)/(bb) | + | 0; | | | | | | | + | (aax^2)/(b^2) | + | (aax^3)/(b^3); | | | | | | | ___ | ___ | ___ | ___ | ; | | | | | | | | 0 | − | (aax^3)/(b^3) | + | 0; | | | | | | | | | − | (aax^3)/(b^3) | − | (aax^4)/(b^4); | | | | | | | | | ___ | ___ | ___ | ___ | ; | | | | | | | | | | 0 | + | (aax^4)/(b^4) | | &c] Et sic vice hujus y=(aa)/(b+x) nova prodit y=(aa)/(b)−(a^2x)/(b^2)+(a^2x^2)/(b^3)−(a^2x^3)/(b^4) &c serie {istûc}{istâc} infinitè continuatâ. Adeoque per Reg secundam erit area [figure] ABDC=(a^2x)/(b)−(a^2x^2)/(2b^2)+(a^2x^3)/(3b^3)−(a^2x^4)/(4b^4) &c infinitæ etiam seriei, tamen cujus termini pauci initiales erunt in usum aliquem satis exacti cùm x sit aliquoties minor quam b.
+
+Eodem modo si (1)/(1+xx)=y , dividendo prodibit y=1−xx+x^4−x^6+x^8 &c: Unde per Reg 2 erit ABDC=x−(x^3)/(3)+(x^5)/(5)−(x^7)/(7) &c Vel si terminus xx ponatur in divisore primus, hoc modo xx+1)1 : prodibit x^(−2)−x^(−4)+x^(−6)−x^(−8) &c pro valore ipsius y. Unde per Reg 2 erit BDα=−x^(−1)+(x^(−3))/(3)−(x^(−5))/(5)+(x^(−7))/(7) &c. Priori modo procede cum x sit satis parva, posteriori cùm satis magna supponitur.
+
+Denique si (2x^((1)/(2))−x^((3)/(2)))/(1+x^((1)/(2))−3x)=y , dividendo prodit 2x^((1)/(2))−2x+7x^((3)/(2))−13x^2+34x^((5)/(2)) &c: Unde erit ABDC=(4)/(3)x^((3)/(2))−x^2+(14)/(5)x^((5)/(2))−(13)/(3)x^3 &c.
+
+Exempla Radicem extrahendo.
+
+Si sqrt():aa+xx=y , radicem sic extraho [aa | + | xx | ( | a | + | (x^2)/(2a) | − | (x^4)/(8a^3) | + | (x^6)/(16a^5) | − | (5x^8)/(128a^7) | + | (7x^10)/(256a^9) | − | (21x^12)/(1024a^11) | + | &c; aa; ___; 0 | + | xx; | | xx | + | (x^4)/(4aa); | | ___ | ___ | ___; | | 0 | − | (x^4)/(4aa); | | | − | (x^4)/(4aa) | − | (x^6)/(8a^4) | + | (x^8)/(64a^6); | | | | ___ | ___ | ___ | ___ | ___; | | | | 0 | + | (x^6)/(8a^4) | − | (x^8)/(64a^6); | | | | | + | (x^6)/(8a^4) | + | (x^8)/(16a^6) | − | (x^10)/(64a^8) | + | (x^12)/(256a^10); | | | | | | ___ | ___ | ___ | ___ | ___ | ___ | ___; | | | | | | 0 | − | (5x^8)/(64a^6) | + | (x^10)/(64a^8) | − | (x^12)/(256a^10) | | &c.] Unde pro sqrt():aa+xx=y , nova producitur, viz: y=a+(xx)/(2a)−(x^4)/(8a^3) &c: Et area Hyperbolæ quæsita erit [figure] ABDC=ax+(x^3)/(6a)−(x^5)/(40a^3)+(x^7)/(112a^5)−(5x^9)/(1152a^7) &c.
+
+Eodem modo si sqrt():aa−xx=y <4r> ejus radix erit a−(x^2)/(2a)−(x^4)/(8a^3)−(x^6)/(16a^5)−(5x^8)/(128a^7) &c: Adeóque area circuli [figure] quæsita ABDC= ax−(x^3)/(6a)−(x^5)/(40a^3)−(x^7)/(112a^5)−(5x^9)/(1152a^7) &c. Vel si ponas sqrt():x−xx=y , erit radix x^((1)/(2))−(1)/(2)x^((3)/(2))−(1)/(8)x^((5)/(2))−(1)/(16)x^((7)/(2))−(5)/(128)x^((9)/(2)) &c [figure] Et area quæsita ABD= (2)/(3)x^((3)/(2))−(1)/(5)x^((5)/(2))−(1)/(28)x^((7)/(2))−(1)/(72)x^((9)/(2))−(5)/(704)x^((11)/(2)) &c: Sive x^((1)/(2))in(2)/(3)x−(1)/(5)x^2−(1)/(28)x^3−−(1)/(72)x^4−(5)/(704)x^5 &c.
+
+Si (sqrt():1+ax^2)/(sqrt():1−bx^2)=y , (cujus quadratura dat longitudinem curvæ ellipticæ,) extrahendo radicem utramque, prodit (1+(1)/(2)ax^2−(a^2)/(8)x^4+(a^3)/(16)x^6−(5a^4)/(128)x^8)/(1−(1)/(2)bx^2−(bb)/(8)x^4−(b^3)/(16)x^6−(5b^4)/(128)x^8) &c. Et dividendo sicut fit in
+fractionibus decimalibus, habes [1 | + | (1)/(2)b | x^2 | + | (3)/(8)bb | x^4 | + | (5)/(16)b^3 | x^6 | + | (35)/(128)b^4 | x^8; | + | (1)/(2)a | | + | (1)/(2)ab | | + | (3)/(16)abb | | + | (5)/(32)ab^3; | | | | − | (1)/(8)aa | | − | (1)/(16)aab | | − | (3)/(64)aabb; | | | | | | | + | (1)/(16)a^3 | | + | (1)/(32)a^3b | ; | | | | | | | | | | − | (5)/(128)a^4][&c; 000000; 000000] Adeóque unam quæsitam [x | + | (1)/(6)b | x^3 | + | (3)/(40)b^2 | x^5; | + | (1)/(6)a | | + | (1)/(20)ab; | | | | − | (1)/(40)aa][&c; 000000]
+
+Sed observandum est quod operatio non rarò abbreviatur per debitam Æquationis præparationem. Ut in allato exemplo (sqrt():1+ax^2)/(sqrt():1−bx^2)=y Si utremque partem fractionis per sqrt():1−bx^2 multiplices prodibit (sqrt():1(+a)/(−b)x^2−abx^4)/(1−bx^2)=y , & reliquum opus perficitur extrahendo radicem numeratoris tantum & dividendo per denominatorem.
+
+Ex hisce credo satis patebit modus reducendi quemlibet valorem ipsius y (quibuscunque) radicibus vel denominatoribus sit perplexus, ut hic videre est x^3+(sqrt(x−sqrt():1−x^2))/(sqrt()3: ax^2+x^3)−(sqrt()5: x^3+2x^5−x^((3)/(2)):)/(sqrt()3: (x+x^2)−sqrt(): (2x−x^((2)/(3))))=y ) in series infinitas simplicium terminorum, ex quibus, per Reg 2, quæsita superficies cognoscetur.
+
+Exempla per resolutionem Æquationum affectarum.
+
+Quia tota difficultas in Resolutione latet, modum quo ego utor in æquatione numerali primùm illustrabo. Sit y^3−2y−5=0 resolvenda: Et sit 2 numerus qui minùs quàm decimâ sui parte differt a radice quæsitâ. Tum pono 2+p=y , & substituo hunc sibi valorem in Æquationem; & inde nova prodit p^3+6p^2+10p−1=0 , cujus radix p exquirenda est ut quotienti addatur: Nempe (neglectis p^3+6p^2 ob parvitatem) 10p−1=0 , sive p=0,1 veritatem 2 prope 1 est; itaque scribo 0,1 in quotiente, & suppono 0,1+q=p & hunc ejus valorem, ut priùs, substituo, <4v> [[[] | [( | [+ | 2, | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0; − | 0, | 0 | 0 | 5 | 4 | 4 | 8 | 5 | 3]; ( | [+ | 2, | 0 | 9 | 4 | 5 | 5 | 1 | 4 | 7]]; [[[2+p=y); | 2y; | 5]; p^3S] | [[+ | y^3; − | 2y; − | 5]; p^3Summa]] | [[+ | 8 | + | 12p | + | 6pp | + | p^3; − | 4 | − | 2p; − | 5]; [− | 1 | + | 10p | + | 6p^20 | + | p^3]]; [[[0,1+q=p); | p^2; | 2y; | 5]; p^3S] | [[+ | p^3; + | 6p^2; − | 10p; − | 1]; p^3Summa]] | [[+ | 0,001 | + | 00,03q | + | 0,3q^2 | + | q^3; + | 0,06 | + | 01,2 | + | 6,0; + | 1, | + | 10, | p; − | 1,]; [+ | 0,061 | + | 11,23q | + | 6,3q^2 | + | q^3]]; [[[−0,0054+r=q); | q^2; | q]; p^3S] | [[+ | 6,3q^2; − | 11,23q; − | 0,061]; p^3Summa]] | [[+ | 0,000183708 | − | 00,06804r | + | 6,3r^2; − | 0,060642 | + | 11,23 | q; + | 0,061]; [+ | 0,000541708 | + | 11,16196r | + | 6,3rr]]; ]; [−0,00004853)]] unde prodit q^3+6,3q^2+11,23q+0,061 =0
+. Et cùm 11,23q+0,061 ad veritatem prope accedit, sive ferè sit q=
+−0,0054 (dividendo nempe donec tot eliciantur figuræ quot locis primæ figuræ hujus & principalis quotientis exclusivè distant,) scribo −0,0054 in inferiori parte quotientis, cùm negativa sit. Et operationem sic produco quosque placuerit. Verùm si ad bis tot figuras tantùm quot in quotiente jam reperiuntur, unâ dempta, operam continuare cupio, pro q substituo −0,0054+r in hanc 6,3qq+11,23q+0,061
+, primo ejus termino (q^3) propter exilitatem suam neglecto: Et prodit 6,3rr+11,16196r+0,000541708=0 ferè sive (rejecto 6,3rr ,)
+r=(−0,000541708)/(11,16196)=−0,00004853
+ferè, quam scribo in negativa parte quotientis. Denique negativam partem quotientis ab affirmativa subducens, habeo
+2,09455147
+quotientiem quæsitam.
+
+Æquationes plurium dimensionum nihilo seciùs resolvuntur, & operam sub fine, ut hic factum fuit, levabis, si primos ejus terminos gradatim omiseris.
+
+Præterea notandum est qùod in hoc exemplo si dubitarem an 0,1=p ad veritatem satis accederet, pro 10p − 1=0 finxissem 6pp+10p−1=0 & ejus radicis primam figuram in quotiente scripsissem. Et secundam vel etiam tertiam quotientis figuram sic explorare convenit ubi in æquatione ista ultimò resultante quadratum coefficientis penultimi termini non sit decies major quàm factus ex ultimo termino ducto in coefficientem termini antepenultimi. Imò laborem plerumque minues præsertim in æquationibus plurimarum dimensionum, si figuras omnes quotienti addendas dicto modo (hoc est extrahendo minorem {radicem}{radicum} ex tribus ultimis terminis æquationis novissimè resultantis ) exquiras. Isto enim modo figuras duplo plures qualibet 2 vice in quotiente 1 lucraberis.
+
+<5r>
+Hæc methodus de resolvendis Æquationibus pervulgata an sit nescio, certè mihi videtur præ reliquis simplex & usui accommodata. Demonstratio ejus ex ipso modo operandi putet, unde cum opus sit in memoriam facilè revocatur. Aequationes in quibus vel aliqui vel nulli termini desint eadem fere facilitate perficit. Et æquatio semper relinquitur cujus radix una cum acquisita quotiente adæquat radicem æquationis primò propositæ: unde examinatio operis hic æque poterit institui ac in reliqua Arithmetica, auferendo nempe quotientem a radice primæ æquationis (sicut Analistis notum est *) ut æquatio ultima vel termini ejus duo tresve ultimi producantur inde. Quicquid laboris hic est in substituendo quantitates unas pro alijs reperietur. Id quod variè possis perficere, at sequentem modum maximè expeditum puto, præsertim cum numeri 2 coefficientes 1 constant ex pluribus figuris. Sit p+3 substituenda pro y in hanc y^4−4y^3+5y^2−12y+17=0 : cum ista potest resolvi in hanc formam (((y−4)×y:+5)×y:−12)×y:+17=0 . Æquatio nova sic generabitur (p−1)×(p+3) =pp+2p−3 . & pp+2p+2inp+3=p^3+5p^2+8p+6 . & p^3+5p^2+8p−6in p+3=p^4+8p^3+23pp+18p−18 . & p^4+8p^3+23p^2+18p−1=0 , quæ quærebatur.
+
+His in numeris sic ostensis: Sit æquatio literalis, y^3+aay −2a^3+axy−x^3=0 , resolvenda. Primùm inquiro valorem ipsius
+y
+cùm
+x
+sit nulla, hoc est, elicio radicem hujus æquationis y^3+aay−2a^3=0 ; & invenio esse +a
+. Itaque scribo +a
+in quotiente & supposito +a+p=y , pro
+y substituo valorem istum, & terminos inde resultantes ( p^3+3ap^2+4aap &c) margini appono: Ex quibus assumo +4aap+aax
+ubi p
+&
+x
+seorsim sunt minimarum dimensionum & eas nihilo ferè æquales suppono, sive p=(−x)/(4) ferè, sive p=(−x)/(4)+q . Et scribens −(x)/(4) in quotiente, substituo (−x)/(4)+q
+pro p
+. Et terminos inde resultantes iterum in margines scribo, ut vides in annexo schemate. Et inde assumo quantitates +4aaq −(1)/(16)axx , in quibus
+q &
+x
+seorsim sunt minimarum dimensionum & fingo q=(xx)/(64a) ferè, sive q=(+xx)/(64a)+r ; & adnectens (+xx)/(64a) quotienti, substituo (xx)/(64a)+r pro
+q
+; & sic procedo quousque placuerit. <5v> [[ | [( | a | − | (x)/(4) | + | (x^2)/(64a) | + | (131x^3)/(512a^2) | + | (509x^4)/(16384a^3) | &c]; [+a+p=y.) | + | y^3; | + | aay; | + | axy; | − | 2a^3; | − | x^3] | [+ | a^3 | + | 3aap | + | 3app | + | p^3; + | a^3 | + | aap; + | aax | + | axp; − | 2a^3; − | x^3]; [−(1)/(4)x+q=p.) | + | p^3; (0)/(0) | + | 3ap^2; 2 | + | 4aap; (0)/(0)1(0)/(0) | + | axp; 2 | + | aax; 1 | − | x^3] | [− | (1)/(64)x^3 | + | (3)/(16)xxq | − | (3)/(4)xqq | + | q^3; + | (3)/(16)ax^2 | − | (3)/(2)axq | + | 3aqq; − | aax | + | 4aaq; − | (1)/(4)axx | + | axq; + | aax; − | x^3]; [+(xx)/(64a)+r=q.) | + | 3aqq; (0)/(0) | + | 4aaq; 2 | − | (1)/(2)axq; 1 | + | (3)/(16)xxq; 2 | − | (1)/(16)axx; 1 | − | (65)/(64)x^3] | [+ | (3x^4)/(4096a) | + | (3)/(32)xxr | + | 3arr; + | (1)/(16)axx | + | 4aar; − | (1)/(128)x^3 | − | (1)/(2)axr; + | (3x^4)/(1024a) | + | (3)/(16)xxr; − | (1)/(16)aax; − | (65)/(64)x^3]]; [+ | 4aa | − | (1)/(2)ax | + | (9)/(32)x^2 | (0)/(0)) | + | (131)/(128)x^3 | − | (15x^4)/(4096a) | (0)/(0)( | (131x^3)/(512aa) | + | (509x^4)/(16384a^3) | .]]
+
+* Sin duplo tantùm plures quotienti terminos, uno dempto, jungendos adhuc vellem: primo termino (q^3) æquationis novissimè resultantis misso, & ista etiam parte ((−3)/(4)xqq) secundi ubi
+x
+est tot dimensionum quot in penultimo termino quotientis; in reliquos terminos (3aqq+4aaq &c ). margini adscriptos, ut vides, substituo (xx)/(64a)+r pro q. Et ex ultimis duobus terminis ((15x^4)/(4096a)−(131)/(128)x^3+(9)/(32)xxr−(1)/(2)axr+ +4aar) æquationis inde resultantis, facta divisione 4aa−(1)/(2)ax+(9)/(32)xx)+(131)/(128)x^3−(15x^4)/(4096a) , Elicio (+131x^3)/(512aa)+(509x^4)/(16384a^3) quotienti adnectendas.
+
+Denique quotiens ista
+(a−(x)/(4)+(xx)/(64a) &c)
+per Reg secundam dabit ax−(xx)/(8)+(x^3)/(192a)+(131x^4)/(2048a^2)+(509x^5)/(81920a^3) &c pro area quæsita, quæ ad veritatem tanto magis accedit quanto
+x
+sit minor. Sin velis ut valor areæ tanto magis veritati accedat quanto
+x
+sit major, exemplum esto y^3+axy+xxy−a^3−2x^3=0 ; Itaque hanc resoluturus excerpo terminos y^3+xxy−2x^3 in quibus
+x &
+y vel seorsim vel simul multiplicatæ sunt & plurimarum & æqualium. ubique dimensionum. Et ex ijs quasi nihilo æqualibus radicem elicio, quam invenio esse
+x
+, & hanc in quotiente scribo. Vel quod eodem recidit, ex y^3+y−2
+(unitate pro
+x
+substitutâ) radicem
+(1)
+extraho & eam per
+x
+multiplico, & factum
+(x)
+in quotiente scribo. Deinde pono x+p=y
+, & sic procedo ut in priori exemplo donec habeo quotientem x−(a)/(4)+(aa)/(64x)+(131a^3)/(512xx)+(509a^4)/(16384x^3) &c, Adeóque aream (x^2)/(2)−(ax)/(4)+[(aa)/(64x)]−(131a^3)/(512x)−(509a^4)/(32768x^2) de qua vide exempla tertia Reg secunda. Lucis gratia dedi hoc exemplum in omnibus idem cum priori, modò
+x
+&
+a
+sibi invicem ibi substituantur, ut non opus esset aliud resolutionis paradigma hic adjungere.
+
+<6r>
+Nota quod area ((x^2)/(2)−(ax)/(4)+[(aa)/(64x)] &c) limitatur a curva quæ juxta asymptoton aliquam in infinitum serpit; & termini initiales (x−(a)/(4)) valoris extracti de y
+, in asymptoton istam semper terminantur: Unde positionem asymptoti facile invenias. Idem semper notandum est cùm area designatur terminis plus plusque divisis per x continuò: præterquam quòd asymptoti rectæ quandóque habeatur Parabola Conica vel alia magis composita.
+
+Sed hunc modum missum faciens, utpote particularem quia non applicabilem curvis in orbem ad instar Ellipsium flexis; de altero modo per exemplum y^3+aay+aax−2a^3−x^3=0 supra ostenso (scilicet quo dimensiones de
+x
+in numeratoribus quotientis perpetuò fiunt plures) annotabo sequentia.
+
+1. Si quando accidit quòd valor ipsius y, cùm nullum esse {fingitur}{fingitum} , sit quantitas surda vel penitus ignota, licebit illam litera aliqua^ designare. Ut in exemplo y^3+aay+aax−2a^3−x^3=0 , si radix hujus y^3+aay−2a^3 fuisset surda vel ignota, finxissem [[ | [( | b | − | (abx)/(aa+3bb) | &c] | ; [[b+p=y) ] | [+ | y^3]; | [+ | aay3]; | [+ | axy]; | [− | 2a^3]; | [− | x^3]] | [+ | b^3 | + | 3bbp | + | 3bpp | + | p^3; + | aab | + | aap; + | axb | + | axp; − | 2a^3; − | x^3]; [[(−abx)/([(aa+3bb){͝}; =; cc])+q=p) ] | [ | p^3(0^0)/(0^0); _; + | 3bpp; + | 3bbp; + | aap; + | axp; + | abx; − | x^3]] | [− | (a^3b^3x^3)/([c^6]) | &c; + | (3a^2b^3x^2)/(c^4) | − | (6ab^2x)/(c^2)q | &c; − | (a^2bx^2)/(c^2) | + | axq; − | (0)/(0)]]; ] quamlibet (b) pro ea ponendam, et resolutionem ut sequitur perfecissem.
+Scribens b
+in quotiente, suppono b+p=y
+, & istum pro y
+substituo, ut vides; unde nova p^3+3bpp &c resultat, rejectis terminis b^3+aab −2a^3 , qui nihilo sunt æquales propterea quod b supponitur radix hujus y^3+aay−2a^3=0 . Deinde termini 3bbp+aap+abx dant (−abx)/(3bb+aa) quotienti apponendum & (−abx)/(3bb+aa)+q substituendum pro p. &c. Completo opere sumo numerum aliquem pro
+a
+, & hanc y^3+aay−2a^3=0 , sicut de numerali æquatione ostensum supra, resolvo; &radicem ejus pro
+b
+substituo.
+
+2. Si dictus valor sit nihil, hoc est si in æquatione resolvenda nullus sit terminus nisi qui per
+x
+vel
+y
+sit multiplicatus, ut in hac y^3−axy+x^3=0 ; tum terminos
+(−axy+x^3) selego in quibus
+x
+seorsim &
+y
+etiam seorsim si fieri potest , alias per
+x
+multiplicata sit minimarum dimensionum. Et illi dant
++(x^2)/(a)
+pro primo termino quotientis, &
+(x^2)/(a)+p
+pro
+y
+substituendam. In hâc y^3−aay+axy−x^3=0 , licebit primum terminum quotientis vel ex <6v> aay−x^3 , vel ex y^3−aay elicere.
+
+3 Si valor iste sit imaginarius ut in hoc y^4+yy −2y+6−xxyy−2x+xx+x^4=0 augeo vel imminuo quantitatem
+x
+donec dictus valor evadat realis. Sic in annexo schemate cum
+AC (x)
+nulla est tum
+CD (y)
+est imaginaria: [figure] Sin minuatur
+AC
+per datam
+AB
+ut
+BC
+fiat
+x
+; tum posito quod
+BC (x)
+sit nulla,
+CD (y)
+erit valore quadruplici (
+CE
+,
+CF
+,
+CG
+&
+CH
+) realis; quarum radicum (
+CE
+,
+CF
+,
+CG
+, vel
+CH
+) utravis esto primus terminus quotientis, prout superficies
+BEDC
+,
+BFDC
+,
+BGDC
+, vel
+BHDC
+desideratur. In alijs etiam easibus, si quando hæsitas, te hoc modo extricabis **.
+
+Et hæc de areis curvarum investigandis dicta sufficiant. Imò cùm Problemata de curvarum longitudine, de quantitate & superficie solida, deque centro gravitatis omnia possunt eò tandem reduci ut quǽratur quantitas superficiei planæ linea curva terminatæ, non opus est quicquam de ijs adjungere. In istis autem quo ego operor modo dicam brevissimè.
+
+Sit ABD curva quævis, & AHKB rectangulum [figure] cujus latus AH vel BK est unitas. Et cogita rectam DBK uniformitèr ab AH motam, areas ABD & AK describere; & quòd BK (1) est momentum quo AK (x) , & BD (y) momentum quo ABD gradatim augetur; et quo ex momento BD perpetim dato, possis, per prædictas regulas, aream ABD ipso descriptam investigare, sive cum AK (x) momento 1 descripta conferre. Iam qua ratione superficies ABD ex momento suo perpetim dato per præcedentes regulas elicitur, eâdem quælibet alia quantitas ex momento suo sic dato elicitur. Exemplo res fiet clarior. Sit circulus cujus arcûs AD longitudo [figure] est indaganda. Ducto tangente DHT, & completo indefinitè parvo rectangulo HGBK & posito AE=1=2AC : Erit ut BK sive GH momentum Basis AB, ad DH momentum árcus AD∷BT . DT∷BD (sqrt():x−xx:)sqrt() . DC ((1)/(2))∷1 (BK) . (1)/(2sqrt(): x−xx) (DH) . Adeóque (1)/(2sqrt(): x−xx) sive (sqrt(): x−xx)/(2x−xx) est momentum arcus AD. Quod reductum fit (1)/(2)x^(−(1)/(2))+(1)/(4)x^((1)/(2))+(3)/(16)x^((3)/(2)) +(5)/(32)x^((5)/(2))+(35)/(256)x^((7)/(2))+(63)/(512)x^((9)/(2)) &c. Quare per regulam secundam longitudo <7r> arcus AD est x^((1)/(2))+(1)/(6)x^((3)/(2))+(3)/(40)x^((5)/(2))+(5)/(112)x^((7)/(2))+(35)/(1152)x^((9)/(2))+(63)/(2816)x^((11)/(2)) &c. Sive x^((1)/(2))in1+(1)/(6)x+(3)/(40)x^2 &c. Non secus ponendo CB esse x, & radium CA esse 1, invenies arcum LD esse x+(x^3)/(6)+(3)/(40)x^5+(5)/(112)x^7 &c
+
+Sed notandum est quod unitas ista quæ pro momento ponitur est superficies cùm de solidis, & linea cum de superficiebus, & punctum cum de lineis (ut in hoc exemplo) agitur. Nec vereor loqui de unitate in punctis sive lineis infinitè parvis siquidem, proportiones ibi jam contemplantur Geometræ dum utuntur methodis Indivisibilium.
+
+Ex his fiat conjectura de superficiebus & quantitatibus solidorum ac de centris gravitatum. Verum si e contra ex area vel longitudine &c: curvæ alicujus datæ longitudo Basis AB desideratur, ex æquationibus per præcedentes regulas inventis extrahatur radix de x. Ut si ex area ABDC Hyperbolæ [figure] ((1)/(1+x)=y) datâ cupio basin AB cognoscere, areâ ista z nominatâ, radicem hujus z (ABCD)=x −(x^2)/(2)+(x^3)/(3)−(x^4)/(4) &c: extraho, neglectis illis terminis in quibus x est plurium dimensionum quam z in quotiente desideratur. Ut si vellem quod z ad quinque tantùm dimensiones in quotiente ascendat, negligo omnes −(x^6)/(6)+(x^7)/(7)−(x^8)/(8) &c, & radicem hujus tantùm (1)/(5)x^5−(1)/(4)x^4+(1)/(3)x^3−(1)/(2)x^2+x−z=0 extraho. [[ | [( | z | + | (1)/(2)z^2 | + | (1)/(6)z^3 | + | (1)/(24)z^4 | + | (1)/(120)z^5]; [z+p=x) | + | (1)/(5)x^5; | − | (1)/(4)x^4; | + | (1)/(3)x^3; | − | (1)/(2)x^2; | + | x; | − | z] | [+ | (1)/(5)z^5 | &c.; − | (1)/(4)z^4 | − | z^3p | &c.; + | (1)/(3)z^3 | + | z^2p | + | zpp | &c.; − | (1)/(2)z^2 | − | zp | − | (1)/(2)pp | .; + | z | + | p; − | z] | ; [(1)/(2)z^2+q=p) | + | zp^2; | − | (1)/(2)p^2; (0)/(0) | − | z^3p; (0)/(0) | + | z^2p; (0)/(0) | − | zp; (0)/(0) | + | p; | + | (1)/(5)z^5; | − | (1)/(4)z^4; | + | (1)/(3)z^3; | − | (1)/(2)z^2] | [+ | (1)/(4)z^5 | &c.; − | (1)/(8)z^4 | − | (1)/(2)z^2q | &c.; − | (1)/(2)z^5 | &c.; + | (1)/(2)z^4 | + | z^2q .; − | (1)/(2)z^3 | − | zq .; + | (1)/(2)z^2 | + | q .; + | (1)/(5)z^5 | .; − | (1)/(4)z^4 | .; + | (1)/(3)z^3 | .; − | (1)/(2)z^2 | ] | ]; [1 | − | z | + | (1)/(2)z^2 | (0)/(0)) | (1)/(6)z^3 | − | (1)/(8)z^4 | + | (1)/(20)z^5 | (0)/(0)( | (1)/(6)z^3 | + | (1)/(24)z^4 | + | (1)/(120)z^5]] Analysin ut vides exhibui propter adnotanda duo sequentia. 1 Quòd inter substituendum, istos terminos semper omitto quos nulli deinceps usui fore prævideam. Cujus rei regula esto, quòd post primum terminum ex qualibet quantitate sibi collaterali resultantem non addo plures terminos dextrorsum quàm istius primi termini index dimensionis ab indice dimensionis maximæ unitatibus distat. Ut in hoc exemplo ubi maxima dimensio est 5 <7v> omisi omnes terminos post z^5
+, post z^4
+posui unicum, & duos tantùm post z^3
+. Cùm radix extrahenda (x) sit parium ubique, vel imparium dimensionum; Hæc esto regula; Quod post primum terminum ex qualibet quantitate sibi collaterali resultantem non addo plures terminos dextrorsum, quàm istius primi termini index dimensionis ab indice dimensionis maximæ binis unitatibus distat; vel ternis unitatibus, si indices dimensionum ipsius x unitatibus ubique ternis a se invicem distant. & sic de reliquis.
+
+2 Cùm videam p q vel r &c: in æquatione novissimè resultante esse unius tantùm dimensionis, ejus valorem, hoc est, reliquos terminos quotienti addendos, per divisionem quæro. Ut hic vides factum.
+
+Si ex dato arcu αD sinus AB desideratur; [figure] æquationis z=x+(x^3)/(6)+(3x^5)/(40)+(5x^7)/(112) &c supra inventæ (posito nempe AB=x , αD=z & Aα=1 ,) radix extracta erit x=z−(1)/(6)z^3+(1)/(120)z^5−(1)/(5040)z^7+(1)/(362880)z^9 &c. Et præterea si cosinum Aβ ex isto arcu dato cupis, fac Aβ (=sqrt():1−xx:)=1−(1)/(2)z^2 +(z^4)/(24)−(z^6)/(720)+(z^8)/(40320)−(z^10)/(3628800) &c.
+
+Hic obiter notetur, qd 5 vel 6 terminis istarum radicum cognitis eas plerumque ex analogia observata poteris ad arbitrium producere. Sic hanc x=z+(1)/(2)z^2+(1)/(6)z^3+(1)/(24)z^4+(1)/(120)z^5 &c produces dividendo ultimum terminum per hos ordine numeros 2.3.4.5.6.7. &c., Et hanc x=z−(z^3)/(6)+(z^5)/(120)−(z^7)/(5040) &c per hos 2×3.4×5.6×7.8×9.10×11 &c & hanc x=1−(z^2)/(2)+(z^4)/(24)−(z^6)/(720) &c per. hos 1×2.3×4.5×6.7×8.9×10. &c Et hanc z=x+(1)/(6)x^3+(3x^5)/(40)+(5x^7)/(112) &c multiplicando per hos (1×1)/(2×3).(3×3)/(4×5). (5×5)/(6×7).(7×7)/(8×9) &c. Et sic de reliquis.
+
+Et hæc de curvis Geometricis dicta sufficiant. Quin etiam si curva mechanica est Methodum tamen nostram nequaquam respuit. Exemplo sit Trochoides, ADFG
+cujus [figure] vertex A & axis AH, & AKH rota qua describitur. Et quæratur superficies ABD. Iam posito AB=x , BD=y ut supra, & AH=1 ; primò quæro longitudinem ipsius BD. Nempe ex natura Trochoidis KD=arcui AK , quare tota BD=BK+arc AK . Sed est BK (=sqrt():x−x^2)= =x^((1)/(2))−(1)/(2)x^((3)/(2)) − (1)/(8)x^((5)/(2))−(1)/(16)x^((7)/(2)) &c, & (ex prædictis) arcus AK= <8r> =x^((1)/(2))+(1)/(6)x^((3)/(2))+(3)/(40)x^((5)/(2))+(5)/(112)x^((7)/(2)) &c. Ergo tota BD=2x^((1)/(2))−(1)/(3)x^((3)/(2))−(1)/(20)x^((5)/(2)) −(1)/(56)x^((7)/(2)) &c. Et (per Reg 2) area ABD=(4)/(3)x^((3)/(2))−(2)/(15)x^((5)/(2))−(1)/(70)x^((7)/(2))−(1)/(252)x^((9)/(2)) &c.
+
+Vel brevius sic: Cùm recta AK tangenti TD parallela sit erit AB ad BK sicut momentum linæ AB, momento linæ BD, hoc est x.sqrt():x−xx∷ 1.(1)/(x)sqrt():(x−xx):=x^(−(1)/(2))−(1)/(2)x^((1)/(2))−(1)/(8)x^((3)/(2))−(1)/(16)x^((5)/(2))−(5)/(128)x^((7)/(2)) &c. Quare (per Reg 2) BD=2x^((1)/(2))−(1)/(3)x^((3)/(2))−(1)/(20)x^((5)/(2))−(1)/(56)x^((7)/(2))−(5)/(576)x^((9)/(2)) &c Et superficies ABD= (4)/(3)x^((3)/(2))−(2)/(15)x^((5)/(2))−(1)/(70)x^((7)/(2))−(1)/(252)x^((9)/(2))−(5)/(3168)x^((11)/(2)) &c.
+
+Non dissimili modo (posito C
+centro circuli & CB=x ) obtinebis aream CBDF &c.
+
+Sit area ABDV Quadratricis VDE (cujus vertex [figure] est
+V
+, &
+A
+centrum circuli interioris
+VK
+cui aptatur) invenienda. Ducta qualibet
+AKD
+demitto perpendiculares
+DB
+,
+DC
+,
+KG
+. Eritque KG.AG∷AB (x).BD (y) . sive (x×AG)/(KG)=y . Verum ex natura Quadratricis erit BA (=DC)= arcui VK; sive VK=x . Quare posito AV=1 erit GK=x−(1)/(6)x^3+(1)/(120)x^5 &c ex supra ostensis, & GA=1−(1)/(2)x^2+(1)/(24)x^4−(1)/(720)x^6 &c. Adeóque
+y (=(x×AG)/(KG))
+=(1−(1)/(2)x^2+(1)/(24)x^4−(1)/(720)x^6)/(1−(1)/(6)xx+(1)/(120)x^4−(1)/(5040)x^6) Sive, divisione facta, y=1−(1)/(3)x^2−(1)/(45)x^4−(2)/(945)x^6 &c & (per Reg 2) area AVDB=x−(1)/(9)x^3−(1)/(225)x^5−(2)/(6615)x^7 &c.
+
+Sic longitudo Quadratricis VD, licet calculo difficiliori, determinabilis est. Nec quicquam hujus modi scio ad quod hæc methodus idque varijs modis, sese non extendit. Imo tangentes ad curvas Mechanicas (si quando id non alias fiat) hujus ope ducantur. Et quicquid Vulgaris Analysis per æquationes ex finito terminorum numero constantes (quando id sit possibile) perficit, hæc per æquationes infinitas semper perficiat: Ut nil dubitaverim nomen Analysis etiam huic tribuere. Ratiocinia nempe in hâc non minùs certa sunt quàm in illâ, nec æquationes minùs exactæ; licet omnes earum terminos nos homines & rationis finitæ nec designare neque ita concipere possumus, ut quantitates inde desideratas exactè cognoscamus: Sicut radices surdæ finitarum æquationum nec numeris nec quavis arte Analytica ita possunt exhiberi ut alicujus quantitas a reliquis distincta & exactè cognoscatur. Geometricè quidem exhiberi possunt, quòd hisce non conceditur: Imò et istis dimensionum duabus tribúsve plurium, ante curvas in Geometriam super inductas, constructio nulla fuit habita. Denique ad Analyticam <8v> merito pertinere censeatur cujus beneficio curvarum areæ & longitudines &c (id modò fiat) exactè & Geometricè determinentur. Sed ista narrandi non est locus.
+
+Respicienti, duo præ reliquis demonstranda occurrunt.
+
+1 Quadratura curvarum simplicium in Reg 1. Sit itaque [figure] curva alicujus ADδ Basis AB=x , perpendiculariter applicata BD=y & area ABD=z ut prius. Idem sit Bβ=o BK=v , et rectangulum BβHK(ov) æquale spatio BβδD. Est ergo Aβ=x+o & Aδβ=z+ov . His præmissis, ex relatione inter
+x
+&
+z
+ad arbitrium assumptâ quæro
+y
+isto quem sequentem vides modo.
+
+Pro lubitu sumatur (2)/(3)x^((3)/(2))=z sive
+(4)/(9)x^3=zz
+. Tum x+o(Aβ)
+pro x
+, & z+ov(Aδβ)
+pro z
+substitutis prodibit (4)/(9)inx^3+3xxo+3xoo+o^3 = (ex natura curvæ) zz+2zov+oovv . Et sublatis ( (4)/(9)x^3 & zz ) æqualibus, reliquisque per
+o
+divisis, restat (4)/(9)in3xx+3xo+oo=2zv+ovv . Si jam supponamus
+Bβ esse infinite parvam, sive
+o
+esse nihil, erunt
+v
+& y
+æquales & termini per o multiplicati evanescent; quare restabit (4)/(9)×3xx=2zv , sive (2)/(3)xx(=zy)=(2)/(3)x^((3)/(2))y , sive x^((1)/(2))(=(x^2)/(x^((3)/(2))))=y . Quare e contra si x^((1)/(2))=y erit (2)/(3)x^((3)/(2))=z .
+
+Vel in genere si (n)/(m+n)×ax^((m+n)/(n))=z ; sive, ponendo (na)/(m+n) =c & m+n=p , si cx^((p)/(n))= z, sive c^nx^p=z^n : tum x+o pro x & z+ov (sive, quod perinde est, z+oy ) pro
+z
+substitutis prodit c^ninx^p+pox^(p−1) &c =z^n+noyz^(n−1) &c, reliquis nempe terminis qui tandem evanescerent omissis. Iam sublatis c^nx^p
+& z^n
+æqualibus, reliquisque per o
+divisis, restat c^npx^(p−1)=nyz^(n−1) (=(nyz^n)/(n))=(nyc^nx^p)/(cx^((p)/(n))) . Sive, dividendo per c^nx^p , erit px^(−1)=(ny)/(cx^((p)/(n))) . sive pcx^((p−n)/(n))=ny ; vel restituendo (na)/(m+n) pro
+c
+& m+n pro p
+, hoc est m
+pro p−n & na pro pc , fiet ax^((m)/(n))=y . Quare e contra si ax^((m)/(n))=y erit (n)/(m+n)ax^((m+n)/(n)) =z . Q.E.D.
+
+Hic in transitu notetur modus quo curvæ tot quot placuerit, quarum areæ sunt cognitæ, possunt inveniri; sumendo nempe quamlibet æquationem pro relatione inter aream z & basin x ut inde quæratur applicata y. Ut si supponas sqrt():aa+xx:=z , ex calculo invenies (x)/(sqrt() aa+xx)=y . Et sic de reliquis.
+
+Alterum demonstrandum, est literalis æquationum affectarum resolutio. Nempe quòd quòtiens, cum x sit salis parva quo magis producitur eo magis veritati accedit, ut distantia sua (p, q, vel r &c) ab exacto valore ipsius y, tandem evadat minor <9r> quavis data quantitate; Et in infinitum producta sit ipsi y æqualis. Quod sic patebit [1: Quoniam ex ultimo termino æquationum quarum p, q, r &c sunt radices, ista quantitas in qua x est minimæ dimensionis (hoc est, plusquam dimidium istius ultimi termini, si supponis x satis parvam) in qualibet operatione perpetuò tollitur; iste ultimus terminus (per 1.10 Elem) tandem evadet minor quavis data quantitate; et prorsus evanescet si opus infinite continuatur. . [Nempe si x=(1)/(2) , erit
+x
+dimidium omnium x+x^2+x^3+x^4 &c & x^2 dimidium omnium x^2+x^3+x^4+x^5 &c. Itaque si x<(1)/(2) erit
+x
+plusquam [figure] dimidium omnium x+x^2+x^3 &c: & x^2 plusquam dimidium omnium x^2+x^3+x^4 &c. Sic si (x)/(b)<(1)/(2) erit x plusquam dimidium omnium x+(x^2)/(b)+(x^3)/(bb) &c et sic de reliquis. Et numeros coefficientes quod attinet, illi plerumque decrescent perpetuò, vel si quando increscant, tantum opus est ut
+x
+aliquo {ties}ad huc minor supponatur.
+
+2 Si ultimus terminus alicujus æquationis continuò diminuatur donec tandem evanescat, una ex ejus radicibus etiam diminuetur donec cum ultimo termino simul evanescit{.}
+
+3 Quare quantitates p, q, r &c unus valor continuo decrescit donec tandem, cùm opus in infinitum producitur, penitus evanescat.
+
+4 Sed valores istarum p q vel r &c unà cum quotiente eatenus extractâ adæquant radices æquationis propositæ. (Sic in resolutione æquationis y^3+aay+axy−2a^3−x^3=0 . supra ostensâ percipies y=a+p=a−(1)/(4)x+q=a−(1)/(4)x+(xx)/(64a)+r &c :) Unde satis liquet propositum quod quotiens infinite producta est una ex valoribus de y.
+
+Idem patebit substituendo quotientem pro
+y
+in æquationem propositam. Videbis enim terminos illos sese perpetuò destruere in quibus
+x
+est minimarum dimensionum.

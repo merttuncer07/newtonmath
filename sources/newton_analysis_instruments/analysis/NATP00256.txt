@@ -1,0 +1,43 @@
+<37r>
+Sir
+
+I thank you for your kind present. Mr Andersons book is very ingenious, & may prove as usefull if his principles be true. But I suspect one of them, namely that the bullet moves in a Parabola. This would be so indeed were the horizontal celerity of the bullet uniform, but I should think its motion decays considerably in the flight. Suppose for instance a bullet shot horizontally from A moves in the [figure] line AE, & AI being perpendicular to the horizon in it take AF
+AG, AH, AI, &c in proportion as the square numbers 1, 4, 9, 16 &c: & its certain that if in one moment of time the bullet descend as low as F, in the next moment it shall descend as low as G, in the 3d as low as H &c. And therefore drawing the horizontall lines FB, GC, HD, IE; the bullet at the end of the first moment will be somewhere in the line FB suppose at B, & at the end of the 2d moment it will be somewhere in the line GC suppose at C &c. But that FB, GC, HD & IE are in Arithmeticall progression (which is the condition of the Parabola) seems not probable; for if it were so, the celerity of the bullet would increas becaus the spaces AB, BC, CD, DE described in equall times are the latter bigger than the former: whereas I should rather think that the celerity decreases very considerably. And perhaps this rule for its decreasing may pretty nearly approach the truth, viz: Letting fall the perpendiculars BK, CL, DM &c to make IK, KL, LM &c, a decreasing Geometricall progression. If you should have occasion to speak of this to the Author, I desire you would not mention me becaus I have no mind to concern my self further about it.
+
+As for the method of extracting the roots of literal equations, the root of this y^3+a⁢a⁢y−b^3=0 (which may be a form for all cubic equations) may be thus extracted. Suppose l pretty nearly equal to the desired root & put l in the quotient for the first term. Then proceed as follows.
+
+[[[[________________ | __________] | (l−(m)/(n)−(3⁢l⁢m⁢m)/(n^3)+(m^3)/(n^4); .] | ]; [[.; l+p=y | y^3 | l^3+3⁢l⁢l⁢p+3⁢l⁢p⁢p+p^3 .; | +a⁢a⁢y | +a^2⁢l+a⁢a⁢p .; | −b^3 | −b^3 .; ________________ | __________] | [For brevities sake I have put l^3+a⁢a⁢l−b^3=m; & 3⁢l⁢l+a⁢a=n .]]; [[.; −(m)/(n)+q=p | p^3 | −(m^3)/(n^3)+(3⁢m⁢m⁢q)/(n⁢n)−(3⁢m⁢q⁢q)/(n)+q^3 .; | +3⁢l⁢p⁢p | +(3⁢l⁢m⁢m)/(n⁢n)+(6⁢l⁢m)/(n)⁢q+3⁢l⁢q⁢q .; | +n⁢p | −m+n⁢q .; | +m | +m .; ________________ | __________] | ]; [[.; −(3⁢l⁢m⁢m)/(n^3)+r=q | q^3 | −(27⁢l^3⁢m^6)/(n^9)+(27⁢l⁢l⁢m^4)/(n^6)⁢r−(9⁢l⁢m⁢m)/(n^3)⁢r⁢r+r^3 .; | −(3⁢m)/(n)⁢q⁢q | −(27⁢l⁢l⁢m^5)/(n^7)+(18⁢l⁢m^3)/(n^4)⁢r−(3⁢m)/(n)⁢r⁢r; | +3⁢l⁢q⁢q | +(27⁢l^3⁢m^4)/(n^6)−(18⁢l⁢l⁢m⁢m)/(n^3)⁢r+3⁢l⁢r⁢r; | +(3⁢m⁢m)/(n⁢n)⁢q | −(9⁢l⁢m^4)/(n^5)+(3⁢m⁢m)/(n⁢n)⁢r; | −(6⁢l⁢m)/(n)⁢q | +(18⁢l⁢l⁢m^3)/(n^4)−(6⁢l⁢m)/(n)⁢r; | +n⁢q | −(3⁢l⁢m⁢m)/(n⁢n)+n⁢r; | −(m^3)/(n^3) | −(m^3)/(n^3) .; | +(3⁢l⁢m⁢m)/(n⁢n) | +(3⁢l⁢m⁢m)/(n⁢n) .; ________________ | __________] | ]]
+
+<37v>
+There may be other ways of extracting the root of this equation: as for instance if b be greater then a, the root may be thus exprest y=b^3−(a⁢a)/(3⁢b)+(a^6)/(81⁢b^5) +(a^8)/(243⁢b^7) &c . Or thus y=(b^3)/(a⁢a)−(b^9)/(a^8)+(3⁢b^15)/(a^14)−(12⁢b^21)/(a^20) &c if a be considerably greater then b.
+
+The extraction of the simple cube root may be done after the same manner omitting only the 2d terme a⁢a⁢y . Or els it may be done as in numerall Arithmetic. Suppose y^3=a^3+b^3 , & that a is bigger then b, & let the divisor for finding the terms of the Quotient be always triple the square of the first term, that is 3⁢a⁢a . And the form of the work will be this.
+
+[[a^3 | + | b^3 | | (a+(b^3)/(3⁢a⁢a)−(b^6)/(9⁢a^5)+(5⁢b^9)/(81⁢a^8) &c]; [a^3 | | ; 0 | + | b^3]; [0^0 | + | [b^3 | + | (b^6)/(3⁢a^3) | + | (b^9)/(27⁢a^6); 0 | − | (b^6)/(3⁢a^3) | − | (b^9)/(27⁢a^6)]]; [0^0 | + | 0^0 | [− | (b^6)/(3⁢a^3) | − | (2⁢b^9)/(9⁢a^6) | | ∗ | + | (b^15)/(81⁢a^12) | + | (b^18)/(729⁢a^15); | 0 | − | (5⁢b^9)/(27⁢a^6) | | ∗ | − | (b^15)/(81⁢a^12) | − | (b^18)/(729⁢a^15)]]]
+
+So if y^3=c , suppose any letter as a to be pretty nearly equall to the cube root of c, & putting c−a^3=b or a^3+b=c extract the cube root out of a^3+b as in the former example; which root (viz: a+(b^3)/(3⁢a⁢a)−(b^6)/(9⁢a^5) +(5⁢b^9)/(81⁢a^8) &c) being once extracted may be kept as a rule for extracting numeral cube roots. But yet (as you suggest) these infinite series are only usefull where the roots of equations cannot be attained accurately. For when they can be accurately attaind recours must be had to other methods, this only performing it by approximation.
+
+Sir I am
+
+Your obliged humble Servant
+
+Is. Newton
+
+Cambridge. June 20.
+1674.
+
+<37av>
+
+These
+
+For Mr John Collins at the
+Farthing Office in Fenchurch
+Street in
+
+London.
+
+2
+
+Mr Newton about Andersons
+Parabola and extracting of
+rootes in Species

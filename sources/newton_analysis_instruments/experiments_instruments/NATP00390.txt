@@ -1,0 +1,46 @@
+<8r>
+
+Cambridge, Apr 13 1672. A letter of Mr Newtons, referring to the next precedent, and giving withall an account of some Experiments, proposed to Mr Newton, for the clearing of his new doctrine of Light.
+
+Sir
+
+I herewith send you an answer to the Iesuite Pardies considerations, in the conclusion of which you may possibly apprehend me a little too positive, but I speake onely for my selfe. I am highly sensible of your good will in communicating to me such observations as occur concerning my Theories or Catadioptricall instruments, & I desire you to continue that favour to me. I shall immediately proceed to add what I promised to my answer to Mr Hooks Observations, & then send it you. Monsieur Hugenius has very observed the confusion of refractions neare the edges of a Lens where its two superficies are inclined, much like the planes of Prism whose refractions are in like manner confused. But it is not from the inclination of those superficies so much as from the htereogeneity of light that that confusion is caused. For by illuminating an object with homogeneall light, I have seen it far distincter through a Prism then I could by light that was heterogeneall.
+
+I suppose the designe of Sir Robert Morays Experiments is to have their events expressed, with such observations as may occur concerning them.
+
+1. Touching the first I have observed that the solar image falling on a paper placed at the focus of the Lens, was by the interposed Prism drawn out in length proportionall to the Prisms refraction or distance from that focus. And the cheife observable here which I remember was that the streight edges of the oblong image were distincter then they would have been without the lens.
+
+Considering that the rays comeing from the Planet Venus are much lesse inclined one to another then those which come from the opposite parts of the suns disque, I once tryed an experiment or two with her light. And to make it sufficiently strong I found it necessary to collect it first by a broade lens, & then interposing a Prism between the Lens & its focus at such distance that all the light might passe through the Prism, I found the focus which before appeared like a lucid point, to be drawn out into a long splendid line by the Prisms refraction.
+
+I have sometimes designed to try how a fixt starr seen through a long Telescope would appeare by interposing a Prism between the Telescope & my eye. But by the appearance of Venus viewed with my naked eye through a Prism I presage the event.
+
+2. Concerning the second Experiment I have occasionally observed that by covering both ends of the Prism with paper at severall distances from the middle, the breadth of the solar image will be increased or diminished as much as is the aperture of the Prism without any variation of the length. Or if so much & no more augmented.
+
+3. Of the third experiment I have occasion to speake in my answer to Mr Hook, where you will find the effects of two Prisms in all crosse positions of one to another described. But if one Prism alone be turned about, <8v> the coloured image will onely be translated from place to places, describing a circle or some other conick section on the wall on which it is projected, without suffering any alteration in its shape, unlesse such as may arrise from the obliquity of the wall, or casuall change of the Prisms obliquity to the sun's rays.
+
+4. The effect of the fourth Experiment I have already insinuated telling you (in pag 3076 of the Transactions) that light passing through parts of the Prism of divers thickcnesses did still exhibit the same Phænomena.
+
+[figure] The long axes of the two Prisms in the experiment described in the said pag 3076 of the Transactions were parallel one to another. And for the rest of their position you will best apprehend it by this scheme, where let EG designe the window, F the hole in it through which the light arrives at the Prisms, ABC the first Prism which refracts the light towards PT, painting there the colours in an [figure] oblong forme, & αβγ the second Prism which refracts back againe the rays to Q, where the long image PT is contracted into a round one. The plane αγ to BC, & βγ to AC I suppose parallell, that the rays may be equally refracted contrary ways in both Prisms. And the Prisms must be placed very neare to one another. For if their distance be so great that colours begin to appeare in the light before its incidence on the second Prism, those colours will not be destroyed by the contrary refractions of that Prism.
+
+These things being observed the round image Q will appeare of the same bignesse which it doth when both the Prisms are taken away that the light may passe directly towards Q from the hole without any refraction at all. And its diameter will equall the breadth of the long image PT if those images be equally distant from the Prisms.
+
+If an accurate consideration of these refractions be designed, it is convenient that a Lens be placed in the hole F, or immediately after the Prisms, so that its focus be at the image Q or PT. For thereby the perimeter of the image Q & the streight sides of the image PT will become much better defined then otherwise.
+
+Thus far concerning Sir Robert Morays proposalls. I have nothing more at present unlesse to desire you that in the letter wherein I sent you the Table of Apertures & Charges you would change an expression concerning the six foot Tube where I intimated that it was none of the best in its kind. For least the freind of whome it was borrowed should think I depreciate it, I had rather that the expression should be a little extenuated somthing after this manner, that I am not very well assure <9r> of its goodnesse & therefore desire that the other experiment of reading at 100 foot distances should rather be confided in. You will do me a favour to peruse the rest of that letter also before you commit it to the presse. For I writ it in so much hast that I had no time to review it. And by rendering any expressions more perspicuous or lesse ambiguous you will still oblige
+
+Your Faithfull Servant.
+
+I. Newton.
+
+<9v>
+These
+
+To the honoured Henry Oldenburg Es at his house about the middle of the Old Pall-mail in Westminster.
+
+London
+
+with care
+
+Rec. Apr. 15. 72.
+
+4

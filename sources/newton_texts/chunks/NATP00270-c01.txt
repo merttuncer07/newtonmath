@@ -1,0 +1,23 @@
+# NATP00270 part 1/1: Letter from Newton to Henry Oldenburg, dated 24 October 1676 (24 October 1676)
+
+<56r>
+
+Octob. 24. 1676.
+
+Sir
+
+I doubt you have thought it long that I have not yet answered yours. Your letter out of the Cider Countrey I have communicated here. I know not yet what effect it will have. To Mr Leibnitz's ingenious letter I have returned an answer which I doubt is too tedious. I could wish I had left out some things since to avoid greater tediousness I left out something else on which they have some dependance. But I had rather you should have it any way, then write it over again being at present otherwise incumbred. Sr I am in great hast
+
+Yours
+
+Is. Newton.
+
+I hope this will so far satisfy M. Leibnitz
+that it will not be necessary for me to write
+any more about this subject. For having other
+things in my head, it proves an unwelcome interruption to me to be at this time put upon
+considering these things.
+
+<56v>
+
+[[1,8 | [[8,00; 7,20]; [0,80]] | 4,4444]; [1(4)/(5); 0(9)/(5) | (5)/(9) | (8)/(1) | (40)/(9)]; [(6)/(3); [[(4)/(5) | (8)/(1)] | [(5)/(4) | (8)/(1)]; ] | (40)/(4)=(10; [[1,8; 0,0]) | [[8,00; 7,20]; [0,80]] | 4,4444]]; [1(4)/(5) | (9)/(5) | (8)/(1); | (5)/(9) | (8)/(1) | (0(40)/(9)0( | 4,4444; | | | 40; | | (8)/(1)]]

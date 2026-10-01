@@ -1,0 +1,479 @@
+<68r>
+De Solutione Problematum per Motum
+
+Ne hujusmodi operationes obscuræ nimis evadant, Lemmata 6 sequentia brevitèr ideoque non demonstrata præmittam.
+
+Lemma 1. Si corpus A in circumferentiâ circuli vel sphæræ ADCE moveatur [figure] versus ejus centrum B: velocitas ejus ad unaquæque circumferentiæ puncta D, C, E, est ut cordæ AD, AC, AE, ductæ a Corpore A ad ista puncta D, C, E.
+
+Lemma 2. Sit △ ADC similis △AEC, etsi non sunt in eodem plano. Inquam, [figure] Si tria Corpora a puncto A, primum ad D, secundum ad E, tertium ad C, uniformiter et in æqualibus temporibus moveantur: Motus tertij componetur ex motibus primi et secondi.
+
+Notetur, quòd hic per corpus intelligitur ejus centrum gravitatis, vel aliquod ejus punctum.
+
+Lemma 3. Omnia puncta corporis parallelismum servantis æqualiter moventur.
+
+Lemma 4. Si corpus solo motu circulari circa axim quemvis rotetur; motus omnium ejus punctorum sunt ut distantiæ ab isto axi. Et hi duo motus simplices vocentur.
+
+Lemma 5. Si motus corporis consideretur ut mixtus e motibus simplicibus: motus omnium ejus punctorum componetur ex motibus eorum simplicibus, eo modo quo motus ab A ad C, in Lemmate 2do componitur ex motibus ab A ad D et E.
+
+Nota. quod motus quilibet ad unum horum 3um casuum reduci poterit. Et in casu tertio, linea quævis pro axe, (vel si linea aut plana superficies moveatur in plano, quodvis punctum istius plani pro centro) motus assumi potest.
+
+Lemma 6. Sint AE, AH, lineæ motæ et continuò [figure] secantes; Ducantur AB, AD, AC, CB, CD. Dico quòd, datis quæ requirantur ad proportiones et positiones harum quinque linearum AB, AD, AC, CB, DC, determinandas; illæ designent proportiones et positiones h{o}rum quinque motu{um}, viz: puncti A in lineâ AE fixi et versus B moventis, puncti A in lineâ AH fixi et versus D moventis, Puncti intersectionis A in plano ABCD moventis versus C, (lineæ enim 5 istæ semper sunt in eodem plano etsi AE AH non sunt), Puncti intersectionis A in lineâ AE moventis secundum ordinem literarum C, B, et Puncti intersectionis A in lineâ AH moventis secundum ordinem C. D.
+
+Nota. Quòd linea recta tangens curvam motu descriptam (ut AB, AD, AC) [figure] vel istæ tangenti parallela (ut CB, CD,), dicitur designare positionem istius motûs in puncto contactûs.
+
+Nota etiam quod lineâ AH quiescente (ut in Fig 1, et 4), punctum D et A coincident et punctum C in lineâ AH, modò sit recta (Fig 1,), alitèr in ejus tangente AC (fig 4) reperietur.
+
+Prop 1. Ducere Tangentem ad Ellipsin.
+
+Sit ACB filum per quod ellipsis describi solet, et CE Tangens. Cùm filum AC augetur eâdem [figure] velocitate quâ BC diminuitur, i:e: C habet eandem velocitatem versus D et B; erit <DCE=ECB.Per Lem 1. Idem de reliquis Conicis intelligatur.
+
+Prop 2. Ducere Tangentem ad Conchoïden
+
+Sint GLC, ALF, GAE, regulæ quibus concha describi solet: fiat [figure] GT∥AF⊥CB=∥MN: et NG=CL⊥TN∥RL. Et, Cùm æqualitas proportionalitate simplicior est, ponatur lineam CB=NM esse æqualem velocitati puncti C versus B, vel puncti N versus M. Erit NT=motui circulari puncti N circa G rotantis versus T, (Lem 1): et LR=Motui circulari puncti L in lineâ GL fixi, circa G (Lem 4): et LG = motui puncti intersectionis L (i:e: velocitati puncti C) a puncto G, sive versus punctum D in lineâ C G moventis, (Lem 6). Iam cum habeatur duplex velocitas puncti C viz CB versus B et LG versus D, fiat FD⊥DC=LG: Et motus puncti C erit in lineâ FC, Diametro nempe circuli transientis per puncta CDBF, (Lem 1): Quæ proinde Concham tangit in puncto C.
+
+<68v>
+Prop 3. Invenire punctum C distinguens concavam a convexâ Conchæ portione.
+
+Iis in priori propositione suppositis: Fiat triangulus GFH similis triangulo GNT sive LBC: et DF⊥FR∥=HK=2GL; Iungantur F, K, et fiat KP∥FD. Si Linea DF solum motum Parallelum per CD vel FR directum haberet, (quia CD=GL) motus omnium ejus punctorum esset FR, (Lem 3): Et si solum motum circularem circa centrum G haberet, motus puncti F, in istâ lineâ DF fixi, esset FH, (Lem 4). At motus [figure] istius F ex istis duobus componitur, proinde erit FK, (Lem 5., 2.) et motus puncti intersectionis F per lineas AF, DF, facti, et in AF moventis, erit FP (Lem 6). Iam si linea CF Concham tangit in puncto quæsito C, facilè deprehendatur motum puncti intersectionis F esse nullum; proinde P et F coincidere; sive DF et FK in directum jacere; et △GDF, FKH esse similes.
+
+Quæ ut calculo subjiciantur, fiat AG=b. CL=c. CB=y. tum,
+BL=sqrt(cc−yy)
+.
+2GL=(2bc)/(y)=HK
+.
+LD=(cb+cy)/(y)
+.
+DF=(cb+cy)/(sqrt(cc−yy))
+. Etc.
+sqrt(cc−yy)∶y∷BL∶CB∷GF∶FH∷DF∶KH∷(cb+cy)/(sqrt(cc−yy))∶(2bc)/(y)∷by+yy∶2bsqrt(cc−yy)
+. Quare,
+2bcc−2byy=byy+y^3
+. sive
+y^3+3byy∗−2bcc=0
+. < insertion from f 69r > Equatio
+y^3+3byy∗−2bcc=0
+, priùs inventa, ita resolve, fac
+Ao=(8c^4)/(27b^3)
+.
+af=c=AE
+[figure] duc {of} et cum diametro of describe circulum fmao, in quo inscribe fm=b=AG. et cum radio om, fac circulum mv, et a puncto intersectionis v duc vd⊥ad. erit 3b∶2c∷VD∶Gl. unde datur punctum c. < text from f 68v resumes >
+
+Vsus autem hujus methodi (ut intelligo) præcipuus est in lineis Mechanicis, ubi deficit Algebraica calculatio. Exempli , Tangens Quadratrici ità ducetur.
+
+Sint AG, MC regulæ quibus uniformitèr motis Quadratrix describi intelligitur. Et CB [figure] vocetur motus puncti C in lineâ CM fixi et versus B moventis; tum arcus GK erit motus puncti G circa A rotantis, (sup) et arcus CL erit motus puncti C in lineâ AG fixi et circa G rotantis, (lem 4). Quare ( si fiat CL=CD⊥AG∥DF, et BF∥CM.) motus puncti intersectionis C in planò AEK erit CF (Lem 6), quæ proinde Quadratricem tangit in C.
+
+<69r>
+<70r> [figure] If vce is a Conchoïdes, g its pole, &c: ga=b. ae=lc=vb=c. ma=y & c the point betwixt its convexity & concavity, then is
+y^3+3byy∗−2bcc=0
+. (see pag: 259. lin: 10.). Which Equation hath one affirmative roote (ma) referred to the point c. and two negative rootes whereof the greater is referred to the lower Conchoïdes, & the lesser (I thinke) uselesse to this question.
+
+The rootes of this Equation may bee thus found by the helpe of the described Conchoïdes & a circle. viz: Suppose ga=b, ae=lc=vb=c. ma=y. (as before) a{o}=s. oc=r. And thereby may bee found this Equation
+(y^3(+rr−ss+bb−cc)×yy−2bccy−bbcc)/(2s+2b)=0
+, to bee compared with the former, (see pag 261 lin 20). But their rootes cannot become equall by reason of their third termes. Therefore I alter the rootes of the first equation, as, suppose I make y=z−b. Then is z3∗−3bbz+2b3−2bcc=0. To bee compared with the 2d equation: which cannot yet bee done without a contradiction, there being but two unknowne quantitys, r & s to bee found by three Equations resulting from the comparison of their 2d 3d & 4th termes. But if I make
+z=(4ccx−4bbx)/(3bb)
+, & substitute this valor into its place in the precedent Equation, the result is
+x^3∗(−27b^6x)/(16c^4−32bbcc+16b^4)(−27b^7)/(32c^4−64bbcc+32b^4)=0
+. The termes of which being compared with the termes of the 2d Equation the 3d or 4th give
+(2bbc)/(2s+2b)=(27b^6)/(16c^4−32bbcc+16b^4)
+. Or 16c6−32bbc4+16b4cc=27b6+27b5 s. &
+s=(16c^6)/(27b^5)−(32c^4)/(27b^3)+(16cc)/(27b)−b=ao
+. Their second termes give
+(rr−ss+bb−cc)/(2s+2b)=0
+. Or
+r=sqrt(ss+cc−bb)=ov
+. Therefore from the intersection point v (made by the Conchoïdes & a circle whose radius is ov & center o) let fall vd⊥ad; & ar=x=vd, is the roote of the 2d & last equation. Which being found make
+y=(4ccx−4bbx)/(3bb)−b=am
+. Which was to bee done.
+
+[figure] Prop 1. Suppose ab=x. bd=y⊥ab. And that the nature of the line addc is such that the valor of y is rationall & consists of no fractions in whose denominator x is, or else wholy of such fractions in whose denominators x is, but not of divers dimensions: If I then multiply the valor of y by x, & divide each terme of that valor by so many units as it hath dimensions in that terme; the result shall signifie the area abd of the afforesaide line addc.
+
+As for example. If y=1, or y=x, or y=xx, or x3, or x4 &c then the area abd is
+(1xx)/(1)
+, or
+(xxx)/(2)
+, or
+(xxxx)/(3)
+, or
+(x^3xx)/(4)
+, or
+(x^4xx)/(5)
+&c: so if
+y=(a)/(b)
+, or
+y=(ax)/(b)
+, or
+(axx)/(b)
+&c: then the area abd is
+(ax)/(b)
+,
+(axx)/(2b)
+,
+(ax^3)/(3b)
+&c. In like manner if
+y=(a)/(xx)
+, or
+y=(a)/(x^3)
+, or
+y=(a)/(x^4)
+&c then
+(a)/(±x)=(−a)/(x)
+, or
+(a)/(−2xx)=
+, or
+(a)/(−3x^3)
+, &c: is the area abd (as is by others demonstrated). [so if
+(a)/(x)=y
+. then
+(a)/(0)=(ax^0)/(0)
+is the area abd; viz: tis infinite.]. Lastly if
+y=1+x+axx−bx^3−(x^4)/(d)+(cx^15)/(e+f)
+&c. the area abd is
+x+(1)/(2)xx+(ax^3)/(3)−(bx^4)/(4)−(x^5)/(5d)+(cx^6)/(16e+16f)
+&c. For the area abd is compounded of those areas which are related to & generated by those quantitys of which the valor of y is compounded. & what those areas are appeare by the former example. (Note that Parabolicall & Hyperbolicall (i:e: (in respect of bd,) affirmative & negative) areas (thus considered) cannot compound any 3d area, because they are not on the same side of the line bd.)
+
+Prop 2. (aa)/(b+x)= (aa)/(b)−(aax)/(bb)+(aaxx)/(b^3)−(aax^3)/(b^4)+(aax^4)/(b^5)−(aax^5)/(b^6)+(aax^6)/(b^7)
+&c. For these termes
+(aa)/(b+x)
+. aa. aab+aax. aabb+2aabx+aaxx. aab3+3aabbx+3aabxx+aax3, & which termes may bee thus ordered This lest appeares by multiplying both parts by b+x
+
+<70v>
+
+[(aa)/(b+x). | aa. | aab. | aabb. | aab^3. | aab^4. | ; | | aax. | 2aabx. | 3aabbx. | 4aab^3x. | &c:; | | | aaxx. | 3aabxx. | 6aabbxx. | ; | | | | aax^3. | 4aabx^3. | ; | | | | | aax^4. | ]
+
+Or by supplying the vacant places
+
+[(aa)/(b+x). | 1×aa. | 1×aab. | 1×aabb. | 1×aab^3. | 1×aab^4.; | 0×(aax)/(b). | 1×aax. | 2×aabx. | 3×aabbx. | 4×aab^3x.; | 0×(aaxx)/(bb). | 0×(aax^2)/(b). | 1×aaxx. | 3×aabxx. | 6×aabbxx.; | 0×(aax^3)/(b). | 0×(aax^3)/(bb). | 0×(aax^3)/(b). | 1×aax^3. | 4×aabx^3.; | 0×(aax^4)/(b^4). | 0×(aax^4)/(b^3). | 0×(aax^4)/(bb). | 0×(aax^4)/(b). | 1×aax^4.]
+
+Now to reduce the first terme
+(aa)/(b+x)
+to the same forme with the rest, I consider in what progressions the numbers prefixed to these termes proceede, & find them to bee such that any number added to the number above it is equall to the number following it. Whence any termes may bee found which are wanting, as in the annexed Table. Also any terme, to which these numbers are prefixed, being multiplyed by b produceth the following litterall terme. Or the higher terme multiplyed by
+(x)/(b)
+, producceth the lower terme. As in the following table
+
+[1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | ; −4. | −3. | −2. | −1. | 0. | 1. | 2. | 3. | 4. | 5. | 6. | 7. | ; 10. | 6. | 3. | 1. | 0. | 0. | 1. | 3. | 6. | 10. | 15. | 21. | ; −20. | −10. | −4. | −1. | 0. | 0. | 0. | 1. | 4. | 10. | 20. | 35. | &c; 35. | 15. | 5. | 1. | 0. | 0. | 0. | 0. | 1. | 5. | 15. | 35. | ; −56. | −21. | −6. | −1. | 0. | 0. | 0. | 0. | 0. | 1. | 6. | 21. | ; 84. | 28. | 7. | 1. | 0. | 0. | 0. | 0. | 0. | 0. | 1. | 7. | ]
+
+[[(aa)/((b+x))^3) | . | (aa)/((b+x))^2) | . | (aa)/(b+x) | . | aa | . | aa×b+x | . | a^2×(b+x^2) | . | a^2×(b+x^3) | . | a^2×(b+x^4) | . | ; = | | = | | = | | = | | = | | = | | = | | = | | ; +(aa)/(b^3) | . | +(aa)/(bb) | . | +(aa)/(b) | . | +aa | . | +aab | . | +aabb | . | +aab^3 | . | +aab^4 | .; −(3aax)/(b^4) | . | (−2aax)/(b^3) | . | (−aax)/(bb) | . | (0×aax)/(b) | . | +aax | . | +2aabx | . | +3aabbx | . | +4aab^3x | . | ; (+6aax^2)/(b^5) | . | (+3aax^2)/(b^4) | . | (+aaxx)/(b^3) | . | (0×aax^2)/(b^2) | . | (0×aaxx)/(b) | . | +aaxx | . | +3aabxx | . | +6aabbx^2 | . | &c; (−10aax^3)/(b^6) | . | (−4aax^3)/(b^5) | . | (−aax^3)/(b^4) | . | (0×aax^3)/(b^3) | . | (0×aax^3)/(bb) | . | (0×aax^3)/(b) | . | +aax^3 | . | +4aabx^3 | . | ; (+15aax^4)/(b^7) | . | (+5aax^4)/(b^6) | . | (+aax^4)/(b^5) | . | (0×aax^4)/(b^4) | . | (0×aax^4)/(b^3) | . | (0×aax^4)/(bb) | . | (0×aax^4)/(b) | . | +aax^4 | . | ; &c | . | &c | . | &c | . | &c | . | &c | . | &c | . | &c | . | &c | . | ] | [Whence it appearesy^t; (aa)/(b+x)=(aa)/(b)−(aax)/(bb)+(aaxx)/(b^3)−(aax^3)/(b^4) | &c. Ory^t; (aa)/(b−x)=(aa)/(b)+(aax)/(bb)+(aaxx)/(b^3)+(aax^3)/(b^4) | &c. Ory^t; (aa)/(b+x)=(aa)/(x)−(aab)/(xx)+(aabb)/(x^3)−(aab^3)/(x^4) | &c. Ory^t; (aa)/(bb+2bx+xx)=(aa)/(bb)−(2a2x)/(b^3)+(3aaxx)/(b^4) | &c.; ; ; ; ]]
+
+Prop: 3d. If ab=x. y=db⊥ab⊥ac. (fa=b) & [figure]
+(aa)/(b+x)=y=(prop2)(aa)/(b)−(aax)/(bb)+(aaxx)/(b^3)−(aax^3)/(b^4)+(aax^4)/(b^5)
+&c. Then (by prop 1),
+(aax)/(b)−(aaxx)/(2bb)+(aax^3)/(3b^3)−(aax^4)/(4b^4)+(aax^5)/(5b^5)−(aax^6)/(6b^6)
+&c: is abde, the area of the Hyperbola. So if
+(aa)/(b−x)=y
+: &c. In like manner if
+(aa)/(bb+2bx+xx)=y=(prop2)(aa)/(bb)−(2aax)/(b^3)+(3aaxx)/(b^4)−(4aax^3)/(b^5)
+&c. Then (by prop 1)
+(aax)/(bb)−(aaxx)/(b^3)+(aax^3)/(b^4)−(aax^4)/(b^5)&c=(prop2)(aa)/(b)−(aa)/(b+x)
+is the area abde. (which may also thus appeare viz: if fb=b+x=z. then
+(aa)/(bb+2bx+xx)=(aa)/(zz)=y
+. Therefore (prop 1) the area
+dbm=(aa)/(z)=(aa)/(b+x)
+. &
+eam=(aa)/(b)
+. so that
+eadb=(aa)/(b)−(aa)/(b+x)
+). And so of the rest. As if
+(x^3)/(aa+bx+x^2)=y=(prop2^d)(x^3)/(aa)(−bx^4−x^5)/(a^4)+(bbx^5+2bx^6+x^7)/(a^6)(−bbbx^6−3bbx^7−3bx^8−x^9)/(a8)
+&c. The area abde is
+(4x^4)/(aa)−(5bx^5−6x^6)/(a^4)(+6bbx^6+14bx^7+8x^8)/(a^6)(−7b^3x^7−24bbx^8−27bx^9−10x^10)/(a^8)
+&c.
+
+Prop 4th. To find two or three intermediate termes in the above mentioned table of numerall
+
+progressions, I observe that those progressions are of this nature viza.a.aa.a.
+
+b.b+c.b+2c.b+3c.b+4c.
+
+And that the summe of any terme & the terme above it is equall tod.d+e.d+2e+f.d+3e+ef.d+4e+6f.
+
+the terme following it at the distance of the termes in the sd numerallg.g+h.g+2h+i.g+3h+3i+k.g+4h+6i+4k.
+
+table. Suppose I would find the meane l.l+m.l+2m+n.l+3m+3n+p.l+4m+6n+4p+q.
+
+r.r+s.r+2s+t.r+3s+3t+v.r+4s+6t+4v+w.
+
+<71r>
+termes in the 3d progression
+
+3.*.1.*.0.*.0.*.1.*.3.
+
+d−4e+10f.d−3e+6f.d−2e+3f.d−e+fd.d+ed+2e+f.d+3e+fd+4e+6f.d+5e+10f.d+6e+15f.
+
+I compare the termes of that progression & of the correspondent litterall progression & find d=0=2e+f. 4e+6f=1. subduct 4e+2f=0, Or 12e+6f=0 from 4e+6f=1. & the rest is 4f=1. Or −8e=1. which termes being found viz d=0.
+e=(−1)/(8)
+.
+f=(1)/(4)
+. the progression must be
+3·(9)/(8)·1·(3)/(8)·0·(−1)/(8)·0·(3)/(8)·1·(15)/(8)·3·
+&c. Hence may be deduced this table viz
+[1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1 | 1. | ; −3. | (−5)/(2). | −2. | (−3)/(2). | −1. | (−1)/(2). | 0. | (1)/(2). | 1. | (3)/(2). | 2. | (5)/(2). | 3. | (7)/(2). | 4. | (9)/(2). | 5. | ; 6. | (35)/(8). | 3. | (15)/(8). | 1. | (3)/(8). | 0. | (−1)/(8). | 0. | (3)/(8). | 1. | (15)/(8). | 3. | (35)/(8). | 6. | (63)/(8). | 10. | ; −10. | (−105)/(16). | −4. | (−35)/(16). | −1. | (−5)/(16). | 0. | (1)/(16). | 0. | (−1)/(16). | 0. | (5)/(16). | 1. | (35)/(16). | 4. | (105)/(16). | 10. | &c; 15. | (1155)/(128). | 5. | (315)/(128). | 1. | (35)/(128). | 0. | (−5)/(128). | 0. | (3)/(128). | 0. | (−5)/(128). | 0. | (35)/(128). | 1. | (315)/(16). | 5. | ; −21. | (−3003)/(256). | −6. | (−693)/(256). | −1. | (−63)/(256). | 0. | (7)/(256). | 0. | (−3)/(256). | 0. | (3)/(256). | 0. | (−7)/(256). | 0. | (63)/(256). | 1. | ; +28. | (15015)/(1024). | 7. | (3003)/(1024). | 1. | (231)/(1024). | 0. | (−21)/(1024). | 0. | (7)/(1024). | 0. | (−5)/(1024). | 0. | (7)/(1024). | 0. | (−21)/(1024). | 0. | ; &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | &c: | ]
+
+Note that the progression
+[1. | (1)/(2). | (−1)/(8). | (1)/(16). | (−5)/(128). | (7)/(256) | &c:]
+may bee deduced from hence
+[1 | × | 1 | × | −1 | × | −3 | × | −5 | × | −7 | × | −9 | × | −11; 1 | × | 2 | × | 4 | × | 6 | × | 8 | × | 10 | × | 12 | × | 14]
+&c & one intermediate terme given the rest are easily deduced thence.
+
+In like manner if I would find two meanes twixt every terme of that numerall progression I compare the numerall & correspondent litterall progressions, suppose in the 3d progression.
+
+1·*·*·0·*·*·0·*·*·1·
+
+d−3e+6f.d−2e+3f.d−e+f.d.d+ed+2e+f.d+3e+3f.d+4e+6f.d+5e+10f.d+63+15f.&c.
+
+And find that d=0=3e+3f. & 6f−3e=1. To which adding 3e+3f=0, or −6f−6e=0. the result is 9f=1, or −9e=1. So that the progression must bee
+[1. | (5)/(9). | (2)/(9). | 0. | (−1)/(9). | (−1)/(9). | 0. | (2)/(9). | (5)/(9). | 1. | (14)/(9). | (20)/(9). | 3.]
+&c. Hence may bee composed this
+[Table | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1.; | 0. | (1)/(3). | (2)/(3). | 1. | (4)/(3). | (5)/(3). | 2. | (7)/(3). | (8)/(3). | 3. | (10)/(3). | (11)/(3). | 4.; | 0. | (−1)/(9). | (−1)/(9). | 0. | (2)/(9). | (5)/(9). | 1. | (14)/(9). | (20)/(9). | 3. | (35)/(9). | (44)/(9). | 6.; | 0. | (5)/(81). | (4)/(81). | 0. | (−4)/(81). | (−5)/(81). | 0. | (14)/(81). | (40)/(81). | 1. | (140)/(81). | (220)/(81). | 4.; | 0. | (−10)/(243). | (−7)/(243). | 0. | (+5)/(243). | (+5)/(243). | 0. | (−7)/(243). | (−10)/(243). | 0. | (25)/(243). | (110)/(243). | 1.]
+Note that this progression viz
+[1 | × | 1 | × | −2 | × | −5 | × | −8 | × | −11 | × | −14; 1 | × | 3 | × | 6 | × | 9 | × | 12 | × | 15 | × | 18]
+&c gives the second term
+1+(1)/(3)−(1)/(9)+(5)/(81)−(10)/(243)+(22)/(729)
+&c. & this
+[1 | × | 2 | × | −1 | × | −4 | × | −7 | × | −10 | × | −13; 1 | × | 3 | × | 6 | × | 9 | × | 12 | × | 15 | × | 18]
+&c gives the third terme. Also this progression
+[1 | × | 4 | × | 1 | × | −2 | × | −5 | × | −8 | × | −11 | × | −14; 1 | × | 3 | × | 6 | × | 9 | × | 12 | × | 15 | × | 18 | × | 21]
+&c. gives the 4th.
+
+And in Generall if the 2d quantity of any terme is
+(x)/(y)
+, this progression gives all the rest viz
+[1 | × | x | × | (x−y) | × | (x−2y) | × | (x−3y) | × | (x−4y) | × | (x−5y) | × | (x−6y); 1 | × | y | × | 2y | × | 3y | × | 4y | × | 5y | × | 6y | × | 7y]
+&c. And
+(x)/(y)
+is ever given by supposition for it signifieth the distance of the terme from 1.0.0.0.
+
+[[Note alsoy^tany; of these progressions; w^ththeir intermediate; termes] | [1. | 1. | 1. | 1. | 1. | 1. | ; 0. | 1. | 2. | 3. | 4. | 5. | ; 0. | 0. | 1. | 3. | 6. | 10. | &c.; 0. | 0. | 0. | 1. | 4. | 10. | ; 0. | 0. | 0. | 0. | 1. | 5. | ; 0. | 0. | 0. | 0. | 0. | 1. | ; 0. | 0. | 0. | 0. | 0. | 0. | ] | [may bee designed; by Geometricall; lines] | [1=y.; x=y.; xx−x=2y.; x^3−3xx+2x=6y.; x^4−6x^3+11xx−6x=24y.; x^5−10x^4+35x^3−50x^2+24x=120y.; x^6−15x^5+85x^4−225x^3+274xx−120x=720y.]]
+In which x signifieth the distance of any terme from the first 1.0.0.0.0.0. & y is the quantity of that terme.
+
+Prop 5t.
+
+<72r>
+[figure] If lab is an Hyperbola; cde, ck its Asymptotes, a its vertex, & cag its axis; if adef is a square & he∥ad & cd=1, &, de=x. then
+be=(1)/(1+x)
+. If also, ef=1. eg=1+x. eh=1+2x+x &c: (the progression continued is 1+3x+3xx+x3. 1+4x+6x2+4x3+x4. 1+5x+10x2+10x3+5x4+x5 &c). Then, shall the areas of those lines proceede in this progression. *=adeb. x=adef.
+x+(xx)/(2)=adeg
+.
+adeh=x+(2xx)/(2)+(x^3)/(3)
+.
+x+(3xx)/(2)+(3x^3)/(3)+(x^4)/(4)
+.
+x+(4xx)/(2)+(6x^3)/(3)+(4x^4)/(4)+(x^5)/(5)
+&c. As in this table. In which the first area is also inserted. The composition of which table may be
+[[x | × | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1.; (xx)/(2) | × | −1. | 0. | 1. | 2. | 3. | 4. | 5. | 6. | 7.; (x^3)/(3) | × | 1. | 0. | 0. | 1. | 3. | 6. | 10. | 15. | 21.; (x^4)/(4) | × | −1. | 0. | 0. | 0. | 1. | 4. | 10. | 20. | 35.; (x^5)/(5) | × | 1. | 0. | 0. | 0. | 0. | 1. | 5. | 15. | 35.; (x^6)/(6) | × | −1. | 0. | 0. | 0. | 0. | 0. | 1. | 6. | 21.; (1)/(7)x^7 | × | 1. | 0. | 0. | 0. | 0. | 0. | 0. | 1. | 7.; | | = | = | = | = | | | | | ; | | adeb. | adef. | adeg. | adeh. | &c] | [ | deduced from hence; viz: The sume of any figure &y^e; | figure above it is equall toy^efigure following; & | it. Byw^chtable it may appeary^ty^earea; | ofy^eHyperbola adeb is; | x−(xx)/(2)+(x^3)/(3)−(x^4)/(4)+(x^5)/(5)−(x^6)/(6)+(x^7)/(7)−(x^8)/(8)+(x^9)/(9)−(x^10)/(10)]]
+
+Suppose that adck is a Square [figure] abc a circle agc a Parabola. &c. & that de=x. ad∥fe=1=bd. & that the progression in which the lines fe, be, ge, he, ie, ne &c proceedes is
+1.sqrt(1−xx) . 1−xx . (1−xx)sqrt(1−xx) .
+1−2xx+x^4
+.
+(1−2xx+x^4)sqrt(1−xx) .
+1−3xx+3x^4−x^6 . &c. Then will their areas fade, bade, gade, hade, iade, &c be in this progression.
+x.∗.x−(xxx)/(3).∗.x−(2)/(3)x^3+(1)/(5)x^5.∗.
+x−(3x^3)/(3)+(3x^5)/(5)−(x^7)/(7).∗.x−(4x^3)/(3)+(6x^5)/(5)−(4x^7)/(7)+(x^9)/(9) . &c: as in this table following in which the intermediate termes are inserted. The property of which table is that the
+[x | × | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1. | 1.; −(x^3)/(3) | × | −1. | −(1)/(2). | 0. | (1)/(2). | 1. | (3)/(2). | 2. | (5)/(2). | 3. | (7)/(2). | 4. | (9)/(2). | 5. | (11)/(2). | 6.; (x^5)/(5) | × | 1. | (3)/(8). | 0. | −(1)/(8). | 0. | (3)/(8). | 1. | (15)/(8). | 3. | (35)/(8). | 6. | (63)/(8). | 10. | (99)/(8). | 15.; −(x^7)/(7) | × | −1. | −(5)/(16). | 0. | (3)/(48). | 0. | −(1)/(16). | 0. | (5)/(16). | 1. | (35)/(16). | 4. | (105)/(16). | 10. | (231)/(16). | 20.; (x^9)/(9) | × | 1. | +(35)/(128). | 0. | −(15)/(384). | 0. | (3)/(128). | 0. | −(5)/(128). | 0. | (35)/(128) | 1. | (315)/(128). | 5. | (1155)/(128). | 15.]
+summe of any figure & the figure above it is equall to the figure next after it save one. Also the numerall progressions are of these formes.
+
+a.a.a.a.
+
+b.a+b.2a+b.3a+b.
+
+c.b+c.a+2b+c.3a+3b+c.&
+
+d.c+d.b+2c+d.a+3b+3c+d.
+
+e.d+ec+2d+e.b+3c+3d+e.
+
+Where the calculation of the intermediate termes may bee easily performed. The area abed depends upon the 4th Collume
+1.(1)/(2).−(1)/(8).(3)/(48)
+&c: (which progression may bee continued at pleasure by the helpe of this rule
+[0 | × | 1 | × | −1 | × | 3 | × | −5 | × | 7 | × | −9 | × | 11 | × | −13 | × | 15; 0 | × | 2 | × | −4 | × | 6 | × | −8 | × | 10 | × | −12 | × | −14 | × | 16 | × | −18]
+&c.) Whereby it may appeare that, what ever the sine de=x is, the area abed is
+x−(x^3)/(6)−(x^5)/(40)−(x^7)/(112)−(5x^9)/(1152)−(7x^11)/(2816)−(21x^13)/(13312)−(11x^15)/(10240)
+&c. (& the area afb is
+(x^3)/(6)+(x^5)/(40)+(x^7)/(112)
+&c.) Whereby also the area & angle adb may bee found. The same may bee done thus. the areas afd, abd, agd, ahd &c are in this progression
+(x)/(2).∗.(x)/(2)+(x^3)/(3).∗.(x)/(2)+(2x^3)/(6)−(3x^5)/(10).∗.(x)/(2)+(3x^3)/(6)−(9x^5)/(10)+(5x^7)/(14).∗.(x)/(2)+(4x^3)/(6)−(18x^5)/(10)+(40x^7)/(14)−(7x^9)/(18)
+. &c As in this following Table
+[(1)/(2)x | × | 1. | 1. | 1. | 1. | 1. | 1; (1)/(6)x^3 | × | (1)/(2) | 1. | (3)/(2). | 2. | (5)/(2). | 3; −(3)/(10)x^5 | × | −(1)/(8). | 0. | (3)/(8). | 1. | (15)/(8). | 3; (5)/(14)x^7 | × | (1)/(16). | 0. | −(1)/(16). | 0. | (5)/(16). | 1; −(7)/(18)x^9 | × | −(5)/(128). | 0. | (3)/(128). | 0. | −(5)/(128). | 0; | | = | = | = | = | = | ; | | abd | agd | ahd | aid | and | ]
+By which it may bee perceived that
+abd=(1)/(2)x+(1)/(12)x^3+(3)/(80)x^5+(5)/(224)x^7+(35x^9)/(2304)+(63x^11)/(5632)
+. &c. And by this meanes haveing the area abd, (which the angle adb gives) de the sine of the angle adb may bee found. Corol: If de=x. &
+sqrt(1+xx)=eb
+. then abc is an Hyperbola. & its area dabe is
+x+(x^3)/(6)−(x^5)/(40)+(x^7)/(112)−(5x^9)/(1152)+(7x^11)/(2816)
+. &c.
+
+<73r>
+[figure]
+
+1. Fiat bd∥ad, et ducantur rectæ ab, gd, ag, bd: Conicarum portiones bas, gdt, erunt æquales, item et gasb, bdtg. (fig 1.2) Bisectis enim bg, ad, in punctis r, et e; et ducto cre; erunt brg aed ordinatim applicatæ ad diametrum cure: proinde portiones reasb=redtg, et trapezia reab=redg. Ergo eorum differentiæ bas=gdt. Deinde △abg=dgb (per 37.1. Elem), Ergo portiones gasbv=bdtgv.
+
+Coroll. Hinc pateat modus ducendi tangentes ad Conicas, ignoratis eorum diametris: A dato enim (fig 3) puncto a, duc ac, ab, et ijs parallelas bd, cf: linea df erit parallela tangenti ah. Si non, fiat ae∥df, et duc de, ad, af, cg; et erit portio ecd=abf=bac=aecd, quod est impos:
+
+Porro fiat dn=nf, et duc ank; fiat am=mk, et duc pmq. Erunt ak, pq diametri.
+
+Diametro av describatur circulus abcdv. Et centro a, [figure] describantur circuli cr, dm, gn, hq. et a punctis c, d, g, h, duc ce, df, gk, hp, perpendiculares ad diametrum av; & duc abe, acf, adk, agp. In triangulis gqh, pqh &c: angulus hgp=hpq & ∠gqh=∠pqh=recto. Ergo, si ponantur trianguli qgh, qph esse infinitè parvi, ut latera hg, hq sit rectæ; erunt similes et æquales, proinde gq=pq. Hinc omnes lineæ gp, dk, cf, be, sunt duplices linearum gq, dn cm, br, &c. hoc est longitudo Trochoid: an est duplex longit: rectæ ag.
+
+<74r>
+De Gravitate Conicarum.
+
+[figure] Sit λvf Ellipsis, et λwf Parabola. Ita nempe, ut λd vocatâ x; ordinatim applicata sit
+dr=sqrt(rx−(rxx)/(q))
+, &
+dp=(rx)/(2)−(rxx)/(2q)
+. Fiat λc=cf=
+(1)/(2)q
+. & d{illeg}w∥hfz∥kb∥kb∥rp, & vh∥wz∥γg∥βt, tangentes vel sec{illeg} sese aut curvas in punctis v, l, k, h, r, γ, s, g, c, d, e, f, β, q, t, p, w, a, b, z.
+
+Dico quòd, posito λf axe gravitatis, pondus parallelogrammi vkec est ad pondus portionis vsec, sicut parallelogrammi vbec ad portionem wqec.
+
+Ponatur enim pondus lineæ dr esse
+(1)/(2)dr×dr
+sive
+(rx)/(2)−(rxx)/(2q)
+, hoc uest dp. Erit pondus omnium linearum dr in superficie vsec contentarum, hoc est pondus superficiei vsec, æquali superficiei wqec. Et eâdem ratione pondus parallelogrami vkec erit parallelogramum wbec. Q.E.D.
+
+Coroll. Pondus portionis vks est wbq, est portionis vsγ est wqβ, et portionis esf est eqf, & portionis fsg est fqt &c. Quæ omnia dat quadratura Parabolæ, est enim 3βwq=2βwbq, &c.
+
+Eâdem ratione gravitas cujuslibet portionis Hyperbolæ cognoscatur, modò axis gravitatis transeat per centrum Hyperbolæ. Et si quævis plana superficies conicis sectionibus ità terminetur, ut omnia conicarum centra sint in eâdem rectâ lineâ: gravitas istius superficiei inveniri potest, positâ rectâ gravitatis axi. Denique, centrum gravitatis cujusvis planæ & finitæ superficiei conicis sectionibus ita terminatæ inveniri potest, datâ quantitate istius superficiei, & vice versâ, modò centrum gravitatis axi gravitatis non coïncidat.
+
+Sint ac, af Asymptota Hyperbolæ gc, in infinitum [figure] versus c continuatæ. Duc de=ab=af. &
+eb=ad=sqrt(af×fg)
+. & fg∥ac. Dico quod. Parallelogramum ae, & superficies afgc æquiponderant circa axim abc: Etsi superficies afgc versus c sit longitudine & quantitate infinita, & non habet centrum gravitatis.
+
+fiat enim ar=ap. & duc pq∥ab. & vr∥ad. et sit pq× (1)/(2) ap gravitas lineæ pq, erit vr× (1)/(2) vr gravitas lineæ vr (nom ∠vrb=∠apq). sed
+pq×(1)/(2)pq=(af×fg)/(2)= =(ad×ad)/(2)=vr×(1)/(2)vr
+. æquiponderant ergo lineæ pq, vr. Sed numerus linearum pq in superficie acgf est æqualis numero linearum vr in parallelogrammo ae nam af=ab, ergo ae & ag æquiponderant.
+
+Add to the end of the Paragraph. See the mystery. In the first instance from the series
+1+(1)/(2)+(1)/(3)
+&c subduct
+(1)/(2)+(1)/(3)+
+&c. & then will remain
+1+(1)/(2)+(1)/(3)+(1)/(4)+(1)/(5)
+&c
+−(1)/(2)−(1)/(3)−(1)/(4)−(1)/(5)
+&c=1=
+1−(1)/(2)+(1)/(2)−(1)/(3)+(1)/(3)−(1)/(4)+(1)/(4)−(1)/(5)&c=(1)/(1×2)+(1)/(2×3)+(1)/(3×4)+(1)/(4×5)
+&c. And so of the rest Or take all the terms but the three first & there will remain
+(11)/(6)=(3)/(1×4)+(3)/(2×5)+(3)/(3×6)
+&c Or from this series
+(1)/(1)+(1)/(3)+(1)/(5)+(1)/(7)+(1)/(9)
+&c take all the termes but the first & there will remain
+1=(2)/(1×3)+(2)/(3×5)+(2)/(5×7)+(2)/(7×9)
+&c.
+
+[[23883.12 | 107474 | 19902.6; 214948.08 | | 1791234; | | 895617] | [3654×76 | 21924; | 25578; | 277704]]
+
+<75r>
+Problems of Curves.
+
+Probl. 1.
+
+To draw Tangents or Perpendiculars to any given point of a given Curve (V B) (Sup. VA=x, AB=y)
+
+Put the equation of the Curve=0, multip. by this Progression.
++.0.(y)/(x).(2y)/(x).(3y)/(x)
+&c. according to the dimensions of x for a numerator, change [figure] the signs and multip. by this Progression
+0.(1)/(y).(2)/(y).(3)/(y)
+&c for a Denominator, which shall make the Fraction designing AD to be taken forwards from A, if affirmative, otherwise, backwards.
+
+Examp. 1. If a+bxy−xxy+y3=0, then
+(byy−2xyy)/(bx−xx+3yy)=AD=v (the Subperpendicular.
+
+Coroll.
+
+Hence for AF (the Subtangent) multiply by the Dimensions of y for a Numerator & by this Progr. 0.(1)/(x). (2)/(x).(3)/(x)
+&c according to the Dimension of x for a Denominator; thus results
+(bx−xx+3yy)/(−b+2x)=AF=t
+.
+
+Prob. 2d..
+
+From a given point H to draw a Tangent (HB) to any Curve (VB)
+
+Sup. VG=p, GH=q and AF=t and it is y−q∶x+p∷y∶ t. Th.
+(pq^y+xy)/(y−q)=t
+, or ty−tq [figure] =xy+py. If into this you substitute the value of t (found per Prob. 1.) you will have the nature of a Line which described will cut the propounded Curve in the desired Tangent points.
+
+Exa. Thus substituting
+(bx−ax+3yy)/(−b+xx)
+for t, there comes bxy−xxy+3y3−bqx+qx2−3qy2=2x2y+2pxy −bx4+bpy=0, the Curve to be described ** But note that this may be reduced to a simpler line by adding or substracting the nature of the given line, viz. ordering this results, it is 3y3−3x2y+2bxy−2pay+qxx−3qyy−bqx+bpy=0. from whence substracting y3−xxy +bxy+athrice there rests −bxy−2pxy+qx2−3qyy−bqx+bqy −3a=0, a Conic section which described will cut the Curve in the desired tangent points.
+
+Thus if
+ax+(b)/(a)xx−yy=0
+, then
+(2yy)/(a+(2b)/(a)x)=t=(py+xy)/(y−q)
+<75v> or
+2yy−2qy=(2b)/(a)xx+ax+(2b)/(a)px+ap
+& substracting
+ax+(b)/(a)xx−yy=0
+twice (viz so often as the Curve has dimensions) there comes
+(2bpx)/(a)−ax+2qy+ap=0
+, a strait line which drawn will cut the Curve in the points desired & so of the rest.
+
+Where note that this Problem in any Curve is ever solvable by a line of an inferior degree. And also that a line drawn from a given point may touch a Curve of two Dimensions in 1×2 points, of three in 2×3 points of 4, in 3×4 points &c unless it be polar &c.
+
+Probl. 3.
+
+From a given point (C) to draw a Perpendicular (CB) to any Curve (VB)
+
+Make VE=r, EC=s and AD=v so is y−s∶r−x ∷ y∶v. or
+(ry−xy)/(y−s)=v
+put this valor [figure] of v in the room of v found per Prob. 1. and you have a Curve which described will cut the propounded Curve in the points to which the perpendicular may be drawn [but ever try if by means of the nature of the given Curve you can reduce this resulting to any simpler form or degree.
+
+Exa. If ax+ (b)/(a) xx−yy=0, then (1)/(2) a+ (b)/(a) x=v, or ry−xy= (1)/(2) y− (1)/(2) as+ (b)/(a) xy− (b)/(a) sx, which appears not reducible to a simpler form.
+
+Yet it may be worth while to try if it may be solved by a Circle by assuming d+ex+fy=xx+yy and comparing these 3 equations of the given Conick, found Hyperbola and assum'd Circle to find d, e & f which if they be found by plane Geometry that Circle described will cut the Curve in the defined points. This, I say, might be tried but it would be found impossible (unless the Conic be a Parabola) because there are 4 given points thró which the Circle must pass, which make the Probl. contradicting, since 3 are {now} to determine a Circle.
+
+This might be done by the Parabola, but the Hyperbola falling in so naturally, and being as easily described, 'tis not worth the while.
+
+What is said of the Conics may be applied to any other Curves.
+
+From hence it appears that this Probl. is ever solvable by a Curve of the same degree and sometimes ꝑhaps by a Curve of an inferior Degree.
+
+<76r>
+Also from a given point may be drawn so many perpendicular, as the square of the Curves Dimensions, unless some part extraordinary sum out to infinity, or two parts come together to make it polar.
+
+Probl. 4.
+
+To find the Points where the Curve has a given inclination to the Basis.
+
+Supp. FA∶AB or AB∶AD∷m∶n. [figure]
+
+Then
+(my)/(n)=t
+. Put this equal to the value of t found by Prob. 1. & you have a Curve which describ'd will cut the given Curve in the desired points.
+
+But (if you can) reduce it thus if
+ax+(b)/(a)xx−yy=0
+, then
+(2yy)/(a+(2b)/(a)x)=t=(my)/(n)
+, or
+2ny=am+(2mb)/(a)x
+. the like in other cases.
+
+Hence Conics have 1×2 points, those of 3 Dimensions 2×3 points, of 4 Dimens. 3×4. &c. will satisfy this Probl, & its ever soluble by a line of an inferior Degree.
+
+Probl. 5.
+
+From a given point (C) to draw a line CB which shall cut any given Curve in a given Angle.
+
+Supp. BD the perpendicular to the desir'd [figure] point B & from the point D raise the perpendicular DH & let fall HF⊥ AE, producing BC & AE to G. Let AD=v, VE=r, EC=s and (the ∠ CBD being given) supp. BD∶DH∷m∶n.
+
+Now the triangles BHD & DFH being alike, 'tis m∶n∷AB∶ DF∷AD∶FH. Th.
+DF=(ny)/(m)
+&
+(rs−xs)/(y−s)=EG
+&
+(rm−2nv)/(my−ms)=FG . Lastely since VE+EG=VG=VA+AD+DF +FG there results
+r+(rs−xs)/(y−s)=x+v+(ny)/(m)+(rnv−xnv)/(my−ms) which reduced is
+(mry−mxy+nsy−nyy)/(my−ms+nr−nx)=v ( put mr+ns =k & nr−ms=l to shorten the terms) this I put equal to the valor of v found as before, and there results a Curve which described cuts the given Curve in the points desired, to which lines are to be drawn from C that may cut it in the Angles desired.
+
+Exa. If dd+ (a)/(b) xx−yy=0, then is (a)/(b) x= v, and so mry −mxy+nsy−nyy=
+(ma)/(b)xy−(mas)/(b)x+(nar)/(b)x−(na)/(b)xx
+, which is a Conic section passing thrò the Centre of the given Curve. And <76v> it may be made an Hyperbola constantly by substituting dd for yy− (a)/(b) 2x. For the result will be
+dd+(nar)/(b)x−(mas)/(b)x−mry−nsy+nxy−(ma)/(b)2y=0 .
+
+Hence it appears that this Problem may ever be solved by a Curve of the same sort, and sometimes perhaps by one of an inferior.
+
+And also that from a given point to any Curve so many lines may be drawn in a given Angle as the square of its Dimensions abating those that are imaginary, or coincident to the Pole, or should be drawn where some parts of the Curve vanishes ad infinitum.

@@ -1,0 +1,29 @@
+<55r>
+
+Cambridge.
+Sept. 5. 1676.
+
+Sir
+
+I received the Packet you sent & return you the manuscript papers with my thanks for them & for Mr Frenicle's book. In your paper about Mr Gregory I have presumed to race out two things as you will perceive; the first because though about 5 years agoe I wrote a discourse in which I explained the doctrine of infinite æquations, yet I have not hitherto read it but keep it by me: the last because in my generall method mentioned in your 4th section, I have occasion to make use of no other way of extracting the roots of affected æquations then that you are already acquainted with. If you should have occasion to see Dr Pell or (if he be not in London) to write to him at any time, pray present my service to him & let him know that though I know not how far Mr Gregory has improved the Method of infinite series yet so far as I know any thing of it I account it of no great advantage for resolving affected æquations in numbers. Some use it may have sometimes this way but I neither invented it nor recommend it much for this end, but for extending Algebra to such sorts of Problems as the common ways of computing extend not to. And therefore his method for resolving æquations interfering so little with mine, I could wish (even though they interfered much more) that he would not stay to expect the publishing of mine, as I perceive by one of the papers you sent me he does: For I would not be an instrument of hindring the publick so long from enjoying a thing so valuable. I have nothing in the press, only Kinckhuysens Algebra I would have got printed here to satisfy the expectation of some friends in London, but our Press cannot do it. This I suppose is the book Dr Lloyd means. It is now in the hands of a Bookseller here to get it printed: but if it doe come out I shall ad nothing to it. As for my paper I sent about infinite series, I know not whether it will be proper to print it. I leave it to your discretion. In my apprehension it may do as well to suppress it, but if you think otherwise I desire you would give me notice before it go into the Press, because of altering an expression or two. Mr Baker's patience as well as his skill I admire. His method I see is to find first X the summ of the 4 quantities & then the quantities severally, which I think is the method you were suggesting to me at London. The other Problem <55v> I think I told you required no art but much calculation to resolve it, & therefore I have never thought of it since I saw you. There is nothing requisite to the solution but this: To find two equations expressing the nature of the two curve lines, supposing their bases coincident & their ordinates parallel; & putting the same letter suppose x for the bases in both æquations, & another letter suppose y for the ordinates, to exterminate one of those letters. For the resulting equation will give you the several valors of the other letter, which valors limit all the intersection points of the two curves. I doubt I shal put you to too much trouble to transcribe Mr Leibnitz's whole letter if it be so long, & therefore I shall desire you to send me only a general account of it, with such passages as you think may concern me, if there be any thing that concerns me.
+
+Sir
+
+I am
+
+Your humble Servant
+
+Is. Newton.
+
+<55av>
+
+For Mr John Collins at
+the Farthing Office
+in Fanchurch
+Street in
+
+London
+
+send by Stiles at the green dragon in bishopes gate on thursday
+
+Mr Newton about finding the Æquation to a chance Construction

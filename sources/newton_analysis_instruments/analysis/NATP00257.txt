@@ -1,0 +1,37 @@
+<38r>
+Novemb 17th 1674. Cambridge.
+
+Sir
+
+Hearing that Mr Kersies book is out of Press, I desire you would send me the Fourth part. I have ordered John Stiles to satisfy you for it. Mr Dary is very sollicitous about Mathematiques. The rules which I lately sent him for resolving æquations by Logarithms to be communicated to you, he applys to quadratic equations: whereas they are only to be applied to æquations which have many intermediate terms wanting, four or five at least. And the more intermediate terms are wanting, the sooner they approach to truth. He is desirous of the best way of determining Logarithms by the Hyperbola & the solution of another Probleme of the same kind, but I have nothing valuable to communicate therein which you are not already acquainted with. So with my thanks to you for all your kindnesses I rest
+
+Your obliged &
+humble Servant
+
+Is. Newton
+
+<38v>
+As 36500 Is to 10 times the Number of Dayes so is any Principall to the Interest
+
+[[30 | ; 31; 30; 8]; [[21; 28; 31; 10]; 90]] [1 | 3650 | ; 2 | 7300; 3 | 10950; 4 | 14600; 5 | 18250; 6 | 21900; 7 | 25500; 8 | 29200; 9 | 32850] [198000 | 54(|246); (182500); 0155000 | | 21; (0146000) | | 22; 00090000; (00073000); 00017000; (00014600); 00024000]
+
+[053,4140; (000000400); [2136,560; (1825,000)] | ([.; ,584; .]; [0311,560; 0(292,000)]; [0019,560]]
+[[00003500; (00003100); 00035000; (01050000); [10850; (73000)] | ([.; 2,975; .]; [035500; (032850)]; [0026500; (0024500)]; [000020000]]; [1600000; (24000000); 0048750; (0000040); [[195000; (182500)] | ([.; 53(|414); .]]; [012500; (010950)]; [00015500; (00014600)]; [000009000; (000007300)]; [00000017000]]] [[[002300000; 0; 0054,24600; (0054,23300); 01627380; (1627380); [[1790118; (1466000)] | ([.; 490; .]]; [033011; (032850)]; [000161000]]]; [[0; 053,41400; (054,21500); 2670700; (5341400); [[801210; (730000)] | ([.; (|247); .]]; [17121; (14600)]; [02521000]]]] [[00004600; (00000430); 000013800; (0001840000); [00019780; (00018250)] | ([.; 5(|191); .]; [0000015300; (0000014600)]; [00000070000; (00000036500)]; [000000335000; (000000328500)]; [000000006500]]; [[21; 31; 31; 22; (105)] | ; | [9; 30; 31; 26; (96)]]]
+[[0; 016,60200; (054,29000); [[1494180; (1460000)] | ([.; ,409; .]]; [0034180]]] [[0; 083,79500; (054,10500); [[0418,975; (8379,500)]]; [[8798,475; (7300,000)] | ([.; 2,410; .]]; [[1498,4; (1460,0)]]; [[0038,40; (0036,50)]]; [[00019,00]]]] [[0; 081,01400; (054,09600); [[486,084; (7291,2600)]]; [[7777,344; (7300,000)] | ([.; 2(|130); .]]; [[0477,3; (0365,0)]]; [[0011,230; (0010,950)]]; [[0000,2800]]]]
+
+<39r>
+
+[[054: | 04: | 11(1)/(2) | | 125:0:0; | 09 | 10(0)/(0) | 33 dayes; 053: | 08: | 03(1)/(2) | ; 000: | 04: | 11(1)/(2) | 15 Dayes]; [108: | 07: | 11(1)/(2) | ; 016: | 12: | 00(1)/(2) | ]]
+
+[[Jan 10 | | Over | | 0016:12:00(1)/(2); Carried downe 83:15:11 | | [Interest to the 10 of Ap^ll; being 90 dayes] | | 0000:08:02(1)/(2); | | By Cash then p^d | | 0066:15:08(1)/(2); _______________________________________ | | _______________________________________ | | [; 0083:15:11(1)/(2)]]; [ | | Brought downe | | 0083:15:11(1)/(2); [Aug 22 05:03:(1)/(2)10; 81:00:03(1)/(2)] | | [Interest thereof to 22; Aug being 105 dayes(0)/(0)]} | | 0000:02:02(1)/(2); _______________________________________ | | _______________________________________ | | [; 0086:04:01(1)/(2)]]; [_______________________________________ | | Brought downe | | 0081:00:03(1)/(2); | | Cash then paid | | 0064:14:01(1)/(2); | | [Interest the to 26 Nov^r being; 96 dayes(0)/(0)] | | 0022:04:10(1)/(2); Carried downe 880:14:05(1)/(2) | | _______________________________________ | | [; 0867:19:03(1)/(2)]; _____________________________________ | | By Cash p^d 26 Nov | | 0012:15:02(1)/(2); | | _______________________________________ | | [; 0880:14:05(1)/(2)]; [99:04:08(3)/(4); (0)/(0)] | | [Interest to 18 May; 1667 being 173 dayes(0)/(0)]} | | 0041:15:06(1)/(2); [Interest from; 5 feb to 18 May; being 102 dayes]} | | May 18 Paid | | [0350:00:00(1)/(2)]; | | _______________________________________ | | [; 1272:09:11(1)/(2)]]]
+
+<39v>
+These
+
+For Mr John Collins at the
+Farthing Office in Fenchurch
+Street in
+
+London.
+
+send by Stiles at the green dragon in bishope gate on thursday

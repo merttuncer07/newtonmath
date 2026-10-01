@@ -1,0 +1,30 @@
+<8r>
+July 16th 1670.
+
+Worthy Sir
+
+I sometimes thought to have altered & enlarged Kinkhuysen his discourse upon surds but judging those examples I added would in some measure supply his defects I contented my selfe with doing that onely. But since you would have it more fully done, if the booke goe not immediately into the presse I desire you'le send it back with those notes I have made (since you are resolved to print them also) & I will doe something more to it or if you please to send all but the first sheete or two, while that is printing, Ile reveiw the rest & not only supply the wants about surds but that about Æquations soluble by trisection, & somthing more I would say in the chapter [Quomodò quæstio aliqua ad æquationem redigatur.] that being the most requisite & desirable doctrine to a Tyro & scarce touched upon by any writer unles in generall circumstances bidding them onely Nota ab ignotis non discernere & adhibere debitum ratiocionium.
+
+As to Fergusons rendering the roots of Æquations soluble by trisection, his defect will appeare by example. Let us take his 2d x^3=6⁢x+4 , in pag 12. In order to solve this hee bidds extract the cubick root of these binomiums 2+sqrt()−4 , & 2−sqrt()−4 To doe this his rule pag 4 is: " Multiply the binomium by 1000, put in pure numbers &c: Now 2+sqrt()−4in1000 makes 2000+sqrt()−4000000 , but to put this in pure numbers is impossible for sqrt()−4000000 is an impossible quantity & hath noe pure number answering to it. His rule therefore failes & The like difficulty is in his 3d example & in all other such cases. In generall I see not what hee hath done more then in Cardans rules. For in this instance Cardans rule will give you x= =sqrt()c:(2+sqrt()−4)+sqrt()c:(2−sqrt()−4) . in which the only difficulty as before is to extract the rootes of the binomiums 2+sqrt()−4 & 2−sqrt()−4 . Which roots indeed are −1+sqrt()−1 & −1−sqrt()−1 , as he assignes them, but tells not how to extract them. Nor doe I see what hee hath done more then Descartes in his Solution of biquadratick Equations: for both goe the same way to worke in reducing them first to Cubick & then to quadratick æquation. Lastly I see not in what case his rules will render the roots of cubick or biquadratick Æquations in proprio genere where those of Cardan or Descartes will not. But in hast I must take my leave remaining
+
+Your most obliged servant
+
+I. Newton
+
+< insertion from lower down the page >
+I thank you for your two last bookes.
+
+< text from f 8r resumes >
+
+<8av>
+Mr Newton about Fergusons Booke
+
+These
+
+To Mr John Collins at
+his house neare the three Crownes
+in Bloomsbury in
+
+London.
+
+2

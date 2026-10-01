@@ -1,0 +1,39 @@
+<11r>
+July 20th 1671.
+
+Sir
+
+I purposed to have given you a visit at the late solemnity of our Chancellors creation; but I was prevented in that Journey by the suddain surprisall of a fit of sicknesse, which not long after (God be thanked) I again recovered of. And since I am prevented from making a verball acknowledgment of your undeserved favours, I must bee yet contented to do it in writing. In which respect I find by your last letter, that I am still become more your debtor both for the care you take about my concernes, & for Borellius de motionibus. But for Borrellius I beg that I may bee accomptable to you at our next meeting, & that you would not for the future put your selfe to the like trouble in sending any more books. I shall take it for a great favour if in your letters you will onely inform mee of the names of the best of those bookes which newly come forth.
+
+The last winter I reveiwed the Introduction & made some few additions to it: And partly upon Dr Barrows instigation, I began to new methodiz the discourse of infinite series, designing to illustrate it with such problems as may (some of them perhaps) be more acceptable then the invention it selfe of working by such series. But being suddainly diverted by some buisinesse in the Country, I have not yet had leisure to return to those thoughts, & I feare I shall not before winter. But since you informe me there needs no hast, I hope I may get into the humour of completing them before the impression of the introduction, because if I must helpe to fill up its title page, I had rather annex somthing which I may call my owne, & which may bee acceptable to Artists as well as the other to Tyros.
+
+There having some things past between us concerning musicall progressions, & as I remember you desiring mee to communicate somthing which I had hinted to you about it, which I then had not (nor have yet) adjusted to practise: I shall in its stead offer you somthing else which I think more to the purpose. Any musicall progression (a)/(b).(a)/(b+c). (a)/(b+2⁢c).(a)/(b+3⁢c).(a)/(b+4⁢c) &c being propounded whose last terme is (a)/(d) : for the following operation choose any convenient number e (whither whole broken or surd) which intercedes these limits (2⁢m⁢n)/(b+d) & sqrt()m⁢n ; supposing b−(1)/(2)⁢c to bee m, & d+(1)/(2)⁢c to bee n. And this proportion will give you the aggregate of the termes very neare the truth.
+
+As the Logarithm (e+(1)/(2)⁢c)/(e−(1)/(2)⁢c)
+to the Logarithm of (n)/(m) , so is (a)/(e) to the desired summe.
+
+Example. Suppose the progression bee (100)/(5).(100)/(6).(100)/(7).(100)/(8).(100)/(9).(100)/(10) . That is a=100 . b=5 . c=1 . d=10 . m=4,5 . n=10,5 . (2⁢m⁢n)/(b+d)=6,3 . sqrt()m⁢n=6,9 , & e=6,6 the number equally interceding those limits 6,3 & 6,9. And the operation will bee as follows.
+
+[(e+(1)/(2)⁢c)/(e−(1)/(2)⁢c)=(7,1)/(6,1); its Log: is 0,065929 . & the Log: of that Logarithm is | 4,819076; 0(n)/(m)=(10,5)/(4,5); its Log: is 0,367976 . & y^e Log: of y^t Logarithm is | 5,565819; 0(a)/(e)=(100)/(6,6); its Logarithm is __________________________________________ | 1,180456; | ___________; And hence the fourth proportionall its Logarithm is | 1,927199 | which]
+indicates 84,566
+to bee the desired aggregate. The same by adding the severall termes together will bee found more justly to bee 84,5636
+. But note that if there were more termes inserted into the progression, (as suppose it was (100)/(5).(100)/(5(1)/(2)). (100)/(6).(100)/(6(1)/(2)).(100)/(7) &c) the rule would still more approach to truth. And so it will in the examples of usury (100)/(106).(100)/(112).(100)/(118).(100)/(124) &c or (100)/(108).(100)/(116).(100)/(124).(100)/(132) &c. Or in any < insertion from the left margin > other where the difference of the denominators beares a lesse proportion to the denominator of the first terme. The ground of this rule I beleive you will easily apprehend by contemplating the Hyperbola, what relation its area beares to musicall progressions. Farewell
+
+Your much obliged Servitour
+
+I. Newton.
+
+< text from f 11r resumes >
+
+<11av>
+Mr Newtons second Letter about a Musicall Progression
+
+To Mr John Collins at
+
+Mr William Austins house over
+against the Adam & Eve in
+Petty France in Westminster.
+
+Westminster.
+
+2

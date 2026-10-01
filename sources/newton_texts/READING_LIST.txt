@@ -1,0 +1,13 @@
+chunk	date	title
+NATP00101-c01	October 1666	De Solutione Problematum per Motum
+NATP00128-c10	c. 1664 - c. 1665	Mathematical Notebook
+NATP00225-c01	6 February 1669/70	Letter from Newton to John Collins, dated 6 February 1669/70
+NATP00247-c01	30 July 1672	Letter from Newton to John Collins, dated 30 July 1672
+NATP00295-c01	c. 1671	Unpublished Appendix to 'methodus': Problem IX
+NATP00002-c01	1675	Hypothesis explaining the properties of light
+NATP00002-c08	1675	Hypothesis explaining the properties of light
+NATP00180-c01	24 October 1676	Copy of a Letter from Newton to Henry Oldenburg, dated 24 October 1676
+NATP00258-c01	5 December 1674	Letter from Newton to Henry Oldenburg, dated 5 December 1674
+NATP00270-c01	24 October 1676	Letter from Newton to Henry Oldenburg, dated 24 October 1676
+NATP00089-c01	Late 1684	'De motu corporum in gyrum'
+NATP00305-c01	c. 1687	De motu Corporum Liber Secundus

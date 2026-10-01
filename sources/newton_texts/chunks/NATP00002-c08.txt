@@ -1,0 +1,97 @@
+# NATP00002 part 8/12: Hypothesis explaining the properties of light (1675)
+
+But, it may be, he means, that I have made use of his observations, and of some I did; as, that of the inflection of rays, for which I quoted him; that of opacity, arising from the interstices of the parts of bodies, which I insist not on; and that of plated bodies exhibiting colours, a phænomenon, for the notice of which I thank him. But he left me to find out and make such experiments about it, as might inform me of the manner of the production of those colours, to ground an hypothesis on; he having given no further insight to it than this, that the colour depended on some certain thickness of the plate; though what that thickness was at every colour, he confesses in his Micrography, he had attempted in vain to learn; and therefore, seeing I was left to measure it myself, I suppose he will allow me to make use of what I took the pains to find out. And this I hope may vindicate me from what Mr. HOOKE has been pleased to charge me with.
+
+The reading of the rest of Mr. NEWTON'S discourse was referred to the next meeting.
+
+<280>
+January 27. Mr. OLDENBURG produced from his highness prince RUPERT a piece of marble, having several pictures of boys and trees painted upon it in such a manner, that all the out-lines of the pictures were exactly defined without any flowing of the colours abroad, and the colours fixed by the fire, and afterwards so polished, that they would be permanent, and last as long as the marble.
+
+This was acknowledged by the members to be a very great improvement of what had been done at Oxford by a certain stone-cutter there; and that all, that had been performed before in this art, was not comparable to this degree of improvement.
+
+Mr. HOOKE remarked, that he conceived, that there were but two colours in this piece; and that he had a method of doing it with most colours, and to paint with them upon marble almost as curiously as with a pencil.
+
+Mr. NEWTON'S letter of January 25, 167 (5)/(6) c , in which he acknowledged the favour of the Society in their kind acceptance of his late papers; and declared, that he knew not how to deny any thing, which they desired should be done: but he requested, that the printing of his observations about colours might be suspended for a time, because he had some thoughts of writing such another set of observations for determining the manner of the production of colours by the prism: which observations, he said, ought to precede those now in the Society's possession, and would be most proper to be joined with them.
+
+There was also read a letter of Mr. PASCALL of Somersetshire to Mr. AUBREY, dated 18 January 167 (5)/(6) , containing some natural observations of that county, viz. concerning the nature of the lead-mines in Mendip-Hills; a well resembling the sulphur-well near the Spaw in Yorkshire; a spring petrifying far more than the dropping-well at Knaresborough in the north; the motion of some underground waters in the parishes of ZOLANDE, formerly recovered from the sea &c.
+
+It was ordered, that the reading of Mr. NEWTON'S observations about colours be continued at the next meeting.
+
+February 3. There was presented from Dr. WALLIS his edition of ARCHIMEDES'S Arenarius, with a new translation of his and notes, printed at Oxford, in 1676.
+
+The reading of Mr. NEWTON'S observations on colours was continued, viz. that part, wherein he explains by the simplest of colours the most recompounded; as follows:
+
+Obs. 16. The squares of the diameters of these rings, made by prismatic colour, were in arithmetical progression, as in the fifth observation. And the diameter of the sixth circle, when made by the yellow, and viewed almost perpendicularly, was about (58)/(100) parts of an inch, agreeable to the sixth observation.
+
+<281>
+The precedent observations were made with a rarer thin medium terminated by a denser, such as was air or water compressed betwixt two glasses. In those, that follow, are set down the appearances of a denser medium thinned within a rarer; such as are the plates of Muscovy-glass, bubbles of water, and some others thin substances terminated on all sides with air.
+
+Obs. 17. If a bubble be blown with water, first made tenacious by dissolving a little soap in it, it is a common observation, that after a while it will appear tinged with a great variety of colours. To defend these bubbles from being agitated by the external air (whereby their colours are irregularly moved one among another, so that no accurate observation can be made of them) as soon as I had blown any of them, I covered it with a clear glass, and by that means its colours emerged in a very regular order, like so many concentric rings incompassing the top of the bubble. And as the bubble grew thinner by the continual subsiding of the water, these rings dilated slowly, and overspread the whole bubble, descending in order to the bottom of it, where they vanished successively. In the mean while, after all the colours were emerged at the top, there grew in the center of the rings a small, round, black spot, like that in the first observation, which continually dilated itself, till it became sometimes more than one half or three fourths of an inch in breadth, before the bubble broke. At first I thought there had been no light reflected from the water in that place; but observing it more curiously, I saw within it several smaller, round spots, which appeared much blacker and darker than the rest, whereby I knew, that there was some reflection at the other places, which were not so dark as those spots. And by further trial I found, that I could see the images (as of a candle or the sun) very faintly reflected, not only from the great black spot, but also from the little darker spots, which were within it.
+
+Besides the aforesaid coloured rings, there would often appear small spots of colours ascending and descending up and down the side of the bubble, by reason of some inequalities in the subsiding of the water; and sometimes small black spots generated at the sides, would ascend up to the larger black spot at the top of the bubble, and unite with it.
+
+Obs. 18. Because the colours of these bubbles were more extended and lively than those of air thinned between two glasses, and so more easy to be distinguished, I shall here give you a further description of their order, as they were observed in viewing them by reflection of the skies, when of a white colour, whilst a black substance was placed behind the bubble: and they were these; red, blue, red, blue; red, blue; red, green; red, yellow; green, blue, purple; red, yellow, green, blue, violet; red, yellow, white, blue, black.
+
+The three first successions of red and blue were very dilute and dirty, especially the first, where the red seemed in a manner to be white. Amongst these there was scarcely any other colour sensible, only the blues (and principally the second blue) inclined a little to green.
+
+<282>
+The fourth red was also dilute and dirty, but not so much as the former three: after that succeeded little or no yellow, but a copious green, which at first was inclined a little to yellow, and then became a pretty brisk and good willow green, and afterwards changed to a blueish colour; but there succeded neither blue nor violet.
+
+The fifth red at first was very much inclined to purple, and afterwards became more bright and brisk, but yet not very pure. This was succeeded with a very bright and intense yellow, which was but little in quantity, and soon changed to green; but that green was copious, and something more pure, deep, and lively, than the former green. After that followed an excellent blue of a bright sky colour; and then a purple, which was less in quantity than the blue, and much inclined to red.
+
+The sixth red was at first of a very fair and lively scarlet, and soon after of a brighter colour, being very pure and brisk, and the best of all the reds. Then, after a lively orange, followed an intense, bright, and copious yellow, which was also the best of all the yellows; and this changed, first to a greenish yellow, and then to a greenish blue; but the green between the yellow and blue was very little and dilute, seeming rather a greenish white than a green. The blue, which succeeded, became very good, and of a fair, bright, sky colour; but yet something inferior to the former blue: and the violet was intense and deep, with little or no redness in it, and less in quantity than the blue.
+
+In the last red appeared a tincture of scarlet next the violet, which soon changed to a brighter colour, inclining to an orange: and the yellow, which followed, was at first pretty good and lively, but afterwards it grew more and more dilute, until by degrees it ended in perfect whiteness: and this whiteness, if the water was very tenacious and well tempered, would slowly spread and dilate itself over the greatest part of the bubble, continually growing paler at the top, where at length it would crack, and those cracks, as they dilated, would appear of a pretty good, but yet obscure and dark, sky-colour; the white between the blue spots diminishing, until it resembled the threads of an irregular net-work, and soon after vanished and left all the upper part of the bubble of the said dark blue colour; and this colour, after the aforesaid manner, dilated itself downwards, until sometimes it hath overspread the whole bubble. In the mean while, at the top, which was of a darker blue than the bottom, and appeared also of many round blue spots, something darker than the rest, there would emerge one or more very black spots, and within those, other spots of an intenser blackness, which I mentioned in the former observation; and those continually dilated themselves until the bubble broke.
+
+If the water was not very tenacious, the black spots would break forth in the white, without any sensible intervention of the blue: and sometimes they would break forth within the precedent yellow, or red, or perhaps within the blue of the second order, before the intermediate colours had time to display themselves.
+
+<283>
+By this description you may perceive, how great an affinity these colours have with those of air, described in the fourth observation, although set down in a contrary order, by reason that they begin to appear, when the bubble is thickest, and are most conveniently reckoned from the lowest and thickest part of the bubble upwards.
+
+Obs. 19. Viewing, at several oblique positions of my eye, the rings of colours emerging on the top of the bubble, I found, that they were sensibly dilated by increasing the obliquity, but yet not so much by far, as those made by thinned air in the seventh observation. For there they distended so much, as, when viewed most obliquely, to arrive at a part of the plate more than twelve lines thicker than that where they appeared, when viewed perpendicularly; whereas in this case the thickness of the water, at which they arrived when viewed most obliquely, was, to that thickness, which exhibited them by perpendicular rays, something less than eight to five. By the best of my observations, it was between fifteen and fifteen and a half to ten, an increase about twenty-four times less than in the other case.
+
+Sometimes the bubble would become of an uniform thickness all over, except at the top of it near the black spot, as I knew, because it would exhibit the same appearance of colours in all positions of the eye; and then the colours, which were seen at its apparent circumference by the obliquest rays, would be different from those, that were seen in other places by rays less oblique to it. And divers spectators might see the same part of it by differing colours, by viewing it at very differing obliquities. Now, observing how much the colours at the same place of the bubble, or at divers places of equal thickness, were varied by the several obliquities of the rays, by assistance of the fourth, fourteenth, sixteenth, and eighteenth onservations, as they are hereafter explained, I collected the thickness of the water, requisite to exhibit any one the same colour at several obliquities, to be very nearly in the proportion expressed in this table.
+
+Incidence
+on the water.
+Refraction
+into the water.
+Thickness
+of the water.
+
+degr. min.
+degr. min.
+
+00 00
+00 00
+10
+
+15 00
+11 11
+10 (1)/(4)
+
+30 00
+22 1
+10 (4)/(5)
+
+45 00
+32 2
+11 (4)/(5)
+
+60 00
+40 30
+13
+
+75 00
+46 25
+14 (1)/(2)
+
+90 00
+48 35
+15 (1)/(5)
+
+In the two first columns are expressed the obliquities of the rays to the superficies of the water; that is, their angles of incidence and refraction; where, I suppose, that the lines, which measure them, are in round numbers, as three to four, though probably the dissolution of soap in the water may a little alter its refractive virtue. In the third column the thickness of the bubble, <284> at which any one colour is exhibited in those several obliquities, is exprest in parts, of which ten constitute that thickness, when the rays are perpendicular.
+
+I have sometimes observed of the colours, which arise on polished steel by heating it, or on bell metal and some other metalline substances, when melted and poured on the ground, where it may cool in the open air, that they have, like those of water-bubbles, been a little changed by viewing them at divers obliquities; and particularly, that a deep blue or violet, when viewed very obliquely, hath been changed to a deep red. But the changes of these colours are not so sensible as of those made by water; for the scoria, or vitrified part of the metal, which most metals, when heated or melted, continually protrude to their surface, where, by covering them in form of a thin glassy skin, it causes these colours, is much denser than water, and I find, that the change made by the obliquation of the eye, is least in colours of the densest thin substances.
+
+Obs. 20. As in the ninth observation, so here, the bubble, by transmitted light appeared of a contrary colour to that, which it exhibited by reflection.Thus, when the bubbles, being looked on by the light of the clouds reflected from it, seemed red at its apparent circumference, if the clouds at the same time, or very suddenly, were viewed through it, the colour at its circumference would be blue. And, on the contrary, when by reflected light it appeared blue, it would appear red by transmitted light.

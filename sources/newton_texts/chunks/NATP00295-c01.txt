@@ -1,0 +1,117 @@
+# NATP00295 part 1/1: Unpublished Appendix to 'methodus': Problem IX (c. 1671)
+
+<33>
+
+innititur: quæque magis perspicua et ornata evadet si fundamenta quædam pro more methodi syntheticæ præsternantur; qualia sunt haec.
+
+< insertion from between the lines > Axiomata.
+
+< text from p 33 resumes >
+Axioma 1. Quæ fluxionibus æqualibus simul generantur sunt æqualia.
+
+Axioma 2. Quæ fluxionibus in data ratione simul generantur, sunt in ratione fluxionum.
+
+Nota , simul generari intelligo quæ tota eodem tempore generantur.
+
+Axioma 3. Fluxio totius æquatur fluxionibus partium simul sumptis.
+
+Ubi nota quod profluxiones affirmativè ac defluxiones negativè ponendæ sint.
+
+< insertion from lower down the right margin > < text from p 33 resumes >
+< insertion from higher up the right margin > Axioma 4. Fluxiones sunt ut momenta contemporanea fluxionibus istis generata.
+
+< text from p 33 resumes >
+< insertion from lower down the right margin > Axioma 4. Momenta contemporanea sunt ut fluxiones.
+
+< text from p 33 resumes >
+Theoremata.
+
+Theorema 1. Positis quatuor perpetuò proportionalibus fluentibus quantitatibus: summa extremarum reciprocè ductarum in suas fluxiones æquatur summæ mediarum reciprocè ductarum in suas fluxiones. <34> /> {.} Sit AB.AD∷AE.AC , et [figure] erit AB×fl:AC+AC×fl:AB=AD×fl:AE +AE×fl:AD . Nam augeantur hæ lineæ momentis suis Bb, Dd, Ee, Cc fluendo, & propter perpetuam earum proportionalitatem, adeoque rectangula ab extremis et medijs constituta perpetuo æqualia nempe AF=AG & Af=Ag ; augmenta rectangulorum istorum BFCf & DGEg æqualia erunt: hoc est Ab×Cc (Cf) +AC×Bb (bF)=Ad×Ee (Eg)+AE×Dd (dG) . * < insertion from the left margin > * sive Ab+AC×(Bb)/(Cc)=Ad×(Ee)/(Cc)+AE×(Dd)/(Cc) . Adeoque cùm fluxiones sint ut momenta quantitatum ab istis continuò generata, hoc est (Bb)/(Cc)=(fl AB)/(fl AC) {,} (Ee)/(Cc)=(fl AE)/(fl AC) & (Dd)/(Cc)=(fl AD)/(fl AC) , erit Ab+AC×(fl AB)/(fl AC)=Ad×(fl AE)/(fl AC)+AE×(fl AD)/(fl AC) . Sive Ab×flAC+AC×flAB=Ad×flAE+AE×flAD . < text from p 34 resumes > Decrescant jam rectangula Af et Ag donec in prima rectangula AF & AG redierint, & tunc Ab evadet AB atque Ad evadet AD. Quare in ultimo istius infinitè parvæ defluxionis momento, hoc est in primo momento fluxionis quadrangulorum AF et AG quando incipiunt augeri vel diminui, erit AB×fl:AC+AC×flAB= AD×flAE+AE×flAD . Q.E.D.
+
+Corollarium 1. Positis tribus continuè proportionalibus, summa extremarum reciproce ductarum in suas fluxiones æquatur duplo mediæ ductæ in suam fluxionem. Sit A.B∷B.C et erit A×fl:C+C×fl:A (= * B×fl:B+B×flB) =2⁢B×flB .
+
+Corollarium 2. Positis tribus continuè proportionalibus A.B.C si summa extremarum sit data quantitas, fluxio minoris extremæ erit ad fluxionem mediæ ut duplum mediæ ad differentiam extremarum. 2⁢B.C−A∷flA.flB . Nam cùm A+C ex Hypothesi non fluat, * erit fl:A+fl:C=0 , sive <35> /> flC=−flA . adeoque A×fl:C=−A×flA . Quare (C−A)×flA (=A×fl:C+C×flA) * =2⁢B×flB , hoc est 2⁢B.C−A∷flA.flB .
+
+Corollarium 3{.} Sin differentia extremarum detur, fluxio alterutrius extremæ erit ad fluxionem mediæ, ut duplum mediæ ad summam extremarum. 2⁢B.A+C∷flA.flB . Demonstratur ut Corollarium 2.
+
+Corollarium 4. Quod si summa primæ et secundæ quantitatis detur, erit fluxio secundæ ad fluxionem tertiæ ut prima ad duplum secundæ auctum tertia. A.2⁢B+C∷flB.flC . Nam cùm ex Hypothesi A+B non fluat, * erit flA+flB=0 sive flB=−flA , adeoque C×flB=−C×flA . Quare A×flC (=2⁢B×flB−C×flA)=2⁢(B+C)×flB ; hoc est A.2⁢B+C∷fl:B { . } fl:C .
+
+Corollarium 5. Si denique differentia primæ et secundæ datur erit fluxio alterutrius ad fluxionem tertiæ ut prima ad duplum secundæ diminutum tertia. A.2⁢B−C ∷flB.flC . Demonstratur ut Corollarium 4.
+
+Corollarium 6. Positis quotcuncue continuè proportionalibus, quarum una sit data quantitas & cæteræ fluentes: fluxiones fluentium erunt inter se ut fluentes illæ ductæ in numerum terminorum quibus distant a dato illo termino. Sint A.B.C.D.E.F. continuè proportionales et si datur C, erit −2⁢A.−B.D.2⁢E.3⁢F∷flA.fl:B.flD.flE { . } flF . Nam propter C.D.E ∺ , est C×flE+E×flC= 2⁢D×flD , per Corollarium 1. At ex Hypothesi flC=0 . Ergo C×fl:E=2⁢D×flD . hoc est flD.flE (∷C.2⁢D)∷D.2⁢E .
+
+Iterum quia D.E.F ∺ , erit D×fl:F+F×fl:D= E×2⁢flE . sive D×flF= E×2⁢fl:E−F×fl:D . Sed e jam ostensis est flD.flE (∷D.2⁢E) ∷E.2⁢F . Ergo F×flD=(1)/(2)⁢E×flE . adeoque D×flF= (3)/(2)⁢E×flE . Et fl:E.fl:F (∷2⁢D.3⁢E)∷2⁢E.3⁢F . Atque ita in cæteris.
+
+<36>
+Corollarium 7. Si fluentes duæ quantitates se multiplicant fluxio Facti componitur ex fluxionibus factorum alterne ductis in factores. Fl:A⁢B=B×flA+A×flB {.} Nam 1.A∷B.A⁢B . Ergo per Theorema 1.
+
+Corollarium 8. Si fluens quantitas per fluentem quantitatem dividitur: fluxio Quoti prodit auferendo fluxionem divisoris multiplicatam per dividuum, a fluxione dividui multiplicata per divisorem & dividendo residuum per quadratum divisoris. Fl:(B)/(A)=(A×fl:B−B×fl:A)/(A⁢A) . Nam A.1∷B.(B)/(A) . Ergo per Theorema 1, A×fl(B)/(A)+(B)/(A)×flA=1×fl:B , nam B×fl:1 nihil est. Aufer utrobique (B)/(A)×flA et residuum divide per A, et prodibit fl:(B)/(A)=(A×fl B−B×fl A)/(A⁢A) .
+
+Corollarium 9. Fluxio radicis est ad fluxionem potestatis alicujus ut radix ad potestatem illam multiplicatam per numerum dimensionum fl:A.flA^3 ∷A.3⁢A^3 . vel fl:sqrt()3:A.fl:A∷sqrt()3:A.3⁢A & sic in alijs potestatibus. Patet per Corollarium 6.
+
+Theorema 2. In triangulo quovis perpetim rectangulo cujus latera quomodocunque fluunt summa laterum ductorum in suas fluxiones æquatur hypotenusæ ductæ in fluxionem suam. Sit A⁢A+B⁢B=C⁢C et erit A×fl:A+B×fl:B=C×fl:C [figure] Nam per Corollarium 9 Theorematis 1 est fl:A.fl:A⁢A (∷A.2⁢A⁢A) {∷} 1.2⁢A , adeoque fl:A⁢A=2⁢A×flA . Eadem ratione flB⁢B= 2⁢B×flB & flC⁢C=2⁢C×fl:C . Quare cum A⁢A+B⁢B =C⁢C atque adeo per Axiomata 1 & 3 fl:A⁢A+fl:B⁢B=fl:C⁢C erit 2⁢A×flA+2⁢B×flB=2⁢C×flC . Quod dimidiatum fit A×flA+B×flB=C×flC . Q.E.D.
+
+Corollarium 1. Si crus alterutrum sit data quantitas, erit fluxio alterius cruris ad fluxionem hypotenusæ ut hypotenusa ad crus illud alterum. Detur A, et erit C.B∷fl:B.fl:C , nam B×flB=C×flC propterea quòd A×flA nihil sit.
+
+Corollarium 2. Si hypotenusa datur, erit profluxio unius <37> /> cruris ad defluxionem alterius ut illud alterum crus ad crus primum. Detur C, et erit B.A∷fl:A.fl:B propterea quod C×fl:C nihil sit.
+
+Theorema 4. Si recta circa datum punctum [figure] gyrans, secet alias duas positione datas & ad commune punctum terminatas rectas: fluxiones earum quæ positione dantur, erunt ut illæ rectæ ductæ in conterminas partes lineæ gyrantis.      Circa datum punctum A gyret recta AC, & inter gyrandum secet ea rectas positione datas DC ac DB in punctis C et B. Dico esse DB×AB.DC×AC∷ flDB.flDC . Sit enim Abc positio rectæ gyrantis in proximo temporis momento, hoc est Cc momentum rectæ DC et Bb contemporaneum momentum rectæ DB; et ipsi DB parallela agatur ce occurrens AC in e: et propter similia triangula CBD, Cec, erit DC.DB∷Cc.ce . Dein propter similia triangula Aec, ABb, erit Ac.Ab∷ec.Bb , et additis rationibus DC×Ac.DB×Ab∷Cc.Bb∷ (per axioma 4) fl:DC.fl:DB . Coeant jam lineæ infinitè parùm distantes Ac & AC, et in momento concursus evadet DC×AC.DB×AB∷fl:DC.fl:DB . Q.E.D.
+
+Corollarium 1{.} Iisdem positis, et ab A demissis ad DB et DC normalibus AG et AH: erit primo DC×AC.DB×BG∷fl:DC. fl:AB . Nam per Corollarium 1 Theorematis 2, est AB.BG∷fl:DB.fl:AB . sive DB×AB.DB×BG∷fl:DB.flAB , et supra erat DC×AC. DB×AB∷fl:DC.flDB . Ergo ex æquo DC×AC.DB×BG∷ fl:DC.fl:AB .
+
+Corollarium 2. Erit secundo DC×CH.DB×BG∷flDC.flAB . Nam per Corollarium 1 Theorematis 2 est CH.AC (vel DC×CH.DC×AC)∷flAC. flDC . Et supra erat DC×AC.DB×BG∷flDC.flAB . Ergo ex æquo DC×CH.DB×BG∷flAC.flAB .
+
+Theorema 3{.} Si Trianguli alicujus Basis et longitudine et positione detur, vertex autem sit ad rectam positione datam; demisso ab alterutro termino basis ad rectam illam positione datam perpendiculo, quod occurrat opposito cruri trianguli, erit fluxio ejus oppositi cruris ad fluxionem alterius cruris ut illud alterum crus ad partem hujus cruris inter verticem trianguli et perpendiculum illud situm. Sit AB basis trianguli, C vertex, DE locus verticis, et <38> /> BE perpendiculariter demissa ad DC occurrat AC in F, eritque BC.FC∷flAC.flBC . Nam ab A ad DE [figure] demisso perpendiculo AD, erit (per Corollarium 1. Theorematis 2) BC.EC∷flEC.flBC , et DC.AC (sive EC.FC) ∷flAC.flBC=flEC . Ergo ex æquo perturbatè BC.FC∷flAC.flBC . Q.E.D.
+
+Corollarium 1{.} Est fl:AC ad fl:BC ut cosinus anguli ACD ad cosinum angulum BCD. Nam cosinus isti sunt ut BC ad FC.
+
+Corollarium 2. Si punctum A infinitè [figure] distet a B, hoc est si AC sit ipsi AB parallela, age quamvis RQ occurentem AC in Q, sitque RQ positione data, et demisso ad BC normali RT, erit TC.QC∷fl:BC.flQC . Nam demisso insuper ad QC normali RS, erit per Corollarium 1, TC.SC∷fl:BC.flAC=fl:SC , & propter datam rationem SC ad QC erit per axioma 2 SC.QC∷fl:SC.fl:QC . Ergo additis rationibus TC. QC∷fl:BC.fl:QC . Q.E.D.
+
+Hujusmodi alia Theoremata non inutilia proponi possent: sed ad fluxiones superficierum festinamus.
+
+Theorema 5. Si recta quævis motu [figure] parallelo per aream aliquam, a duabus parallelis & positione datis rectis terminatam transferatur: erit fluxio areæ ut fluxio alterutrius rectæ parallelæ. Sint AB, DC rectæ parallelæ, & BC recta per spatium interjectum ADCB in data inclinatione ABC translata et AD terminus a quo incipit transferri; et erit fl:ADCB ut flAB . Nam area BD est ut longitudo AB Quare per Axioma 2 fl:BD ut fl:AB .
+
+Scholium. Si angulus ABC rectus sit, tum quemadmodum statui solet BD=AB×BC , sic nos statuemus <39> /> flBD=flAB×BC hoc est (per Corollarium 7 Theorematis 1) =BC×flAB . Sed hic sicut per AB×BC non intelligitur linea sed productum arithmeticum quod exprimit numerum unitatum in area BD ex Hypothesi quod unitas superficialis sit quadratum cujus latera sunt unitates lineares: sic in hoc Scholio per BC×flAB non intelligitur fluxio linearis sed fluxio generans productum arithmeticum quod exprimit numerum unitatum superficialium in BD ex Hypothesi quod momentum basis fluentis ductum in datam altitudinem parallelogrammi facit momentum parallelogrammi.
+
+Theorema 6. Si recta quævis motu [figure] parallelo transferatur per aream alijs duabus positione datis et non parallelis rectis terminatam, erit fluxio areæ ut fluxio alterutrius rectæ positione datæ ducta in rectam mobilem. Transferatur BC per spatium CAB rectis AC AB positione datis terminatum: et erit fl:CAB ut BC×fl:AB . Etenim triangulum CAB est ut AB^q . ergo, per Axioma 2, fl: trianguli CAB est ut flAB^q . Sed per Corollaria 6 & 9, Theorema 1, flAB^q est ut 2⁢AB×flAB hoc est cùm 2⁢AB et BC sint in data ratione, ut BC×flAB .
+
+Scholium. Si angulus ABC rectus sit, potest juxta Scholium præcedens, poni flCAB=(1)/(2)⁢BC×fl:AB .
+
+Theorema 7{.} Si recta circa datum punctum gyrans, continuò terminetur ad aliam rectam positione datam: erit fluxio spatij a gyrante recta descripti, ut fluxio alterius rectæ. Gyret recta CB [figure] circa punctum C sitque CA terminus a quo incipit gyrare, et AB recta ad quam terminatur, et erit area ABC ut recta AB; adeoque (per Axioma 2) flABC ut flAB .
+
+Scholium. Demisso ad AB normali CD, erit (juxta Scholium Theorematis 5) (1)/(2)⁢CD×fl:AB=flABC , quia (1)/(2)⁢CD×AB=ABC .
+
+<40>
+Theorema 8. Iisdem positis, si ab alio insuper quovis dato puncto recta perpetim ducatur ad concursum priorum rectarum, et a primo puncto ad hanc rectam demittatur linea perpendicularis terminata ad rectam positione datam: erit fluxio hujus novæ rectæ ducta in lineam perpendicularem, ut fluxio areæ a prima recta descriptæ.
+
+A dato E agatur EB, et ad hanc perpendicularis CH occurrens AB in H, eritque CH×fl:EB , ut fl:ABC . Nam demisso ad AB normali EF, erit per Corollarium 1 Theorematis 2, flAB (fl:FB).fl:EB∷EB.FB . (hoc est propter similia triangula EBF, HCD) ∷HC.CD . Ergo CD×fl:AB=HC×fl:EB . Quare cùm CD datum sit, adeoque CD×fl:AB ut fl:AB , sitque etiam (per Theorema 7) flAB ut flABC , erit HC×flEB ut flABC .
+
+Scholium. Est et per Scholium superius (1)/(2)⁢HC×flEB=flABC (=(1)/(2)⁢CD×flAB)=flABC . Et insuper in eo temporis momento quo contingit angulum EBC rectum esse, est (1)/(2)⁢BC×fl:EB =fl:ABC quia tunc HC et BC coincidunt.
+
+Theorema 9. Si recta circa datum punctum gyrans, secet alias duas positione datas rectas: superficierum inter datum punctum et rectas positione datas isto motu generatarum fluxiones erunt ut quadrata longitudinum generantium. Sit A datum [figure] punctum circa quod AC gyrat, sintque BD et CD rectæ positione datæ, & AD principium a quo AC incipit gyrare, et erit fl:ADB.flADC∷AB^q.AC^q . Sit enim Abc positio rectæ gyrantis in proximo temporis momento, et triangula infinitè parva ABb, ACc erunt momenta superficierum ADB, ADC, adeoque ut ipsarum fluxiones. Sed per 15. 6. Elementarum ista triangula sunt ut AB×Ab ad AC×Ac : Quæ ratio, si Abc retro volvatur donec redeat in AC, in ultimo ejus regressûs momento, hoc est in primo momento progressûs ubi AC incipit <41> pergere ad Ac evadit AB^q ad AC^q . Q.E.D.
+
+Theorema 10. Si recta positione data tangat curvam positione datam et utraque secentur ab alia utcunque motâ rectâ: fluxiones curvæ illius & tangentis ejus in eo temporis momento æquales erunt, quo mota illa linea secat utramque in puncto contactû;s. Esto curva RS, Tangens ejus AB punctum contactûs C [figure] et linea mobilis DE: dico fluxiones linearum RC et AC æquales evadere quando DE pertingit ad C. Nam in RC sumatur arcus infinitè parvus Cc, & cum hæc juxta Hypothesin Archimedeam pro recta haberi possit, produc eam utrinque in directum, sitque ea producta AB propterea quod ipsa AB tantùm tangat curvam. RS itaque et AB commune habent momentum Cc, & proinde eandem fluxionem dum DE transit per illud momentum. Q.E.D.
+
+Corollarium. Hinc omnia quæ in Theorematibus 3 et 4 de fluxionibus rectarum positione datarum demonstrata sunt, conveniunt etiam fluxionibus curvarum quas rectæ illæ tangunt in intersectione cum linea mobili.
+
+Theorema 12. Si recta illa DE circa datum punctum D convoluta, describat duas superficies quarum una DRC terminatur ad curvam RC, altera DAC ad tangentem curvæ AC: fluxiones illarum superficierum æquales erunt in eo temporis momento quo recta circumacta transit per punctum contactus C . Nempe flDRC=flDAC quia tunc commune est utriusque momentum CDc.
+
+Corollarium{.} Hinc omnia quæ in Theorematibus 7, 8 & 9 de fluxionibus superficierum rectis positione datis terminatarum demonstrata sunt, conveniunt etiam fluxionibus superficierum terminatarum curvis positione datis quas rectæ illæ tangunt.
+
+<42>
+Theorema 13. Si recta mobilis perpetuò tangat curvam, punctum contactûs in omni temporis momento erit centrum circa quod recta [figure] in illo momento volvitur. Concipe Curvam TV lineolis parvitate et multitudine infinitis constare quarum duæ sunto AB & BC. Hasce produc utrinque in directum, nempe AB ad D et E et BC ad d et e, et manifestum est quod tangens mobilis in eo temporis momento quo volvitur de loco DE in locum de, convertitur circa punctum contactus B, propterea quod istud B sit communis intersectio locorum DE ac de.
+
+Corollarium 1. Hinc omnia quæ in Theorematibus 3, 4, 7, 8, 9, 10, 11 de recta circa datum punctum ceu centrum volvente demonstrata sunt, conveniunt etiam rectæ perpetuò tangenti curvam lineam positione datam, si modò punctum contactûs circa quod recta illa in momento contactûs illius convolvitur, vicem centri dati gerere concipiatur. Et proinde sigillatim{.}
+
+Corollarium 2. S
+
+<45>
+cruris ad defluxionem alterius ut illud alterum crus ad crus primum. Detur C, et erit B.A∷fl:A.flB propterea quod C×fl:C nihil sit.
+
+<46> diametri A, turn ab altero diametri termino B demisso BC normali ad AC, erit fluxio segmenti ACE ut dimidium fluxionis perpendiculi BC ductum in AC: vel juxta Scholium fl:ACE=(1)/(2)⁢AC×flBC .
+
+Jactis hisce demonstrationum fundamentis, methodus tenendi demonstrationes, uno et altero exemplo constabit. Proponatur itaque constructio in Exemplo secundo demonstranda. Per Corollarium 2 Theorematis 1, est fl:ID ad fl:IP ut AI ad ID. Estque AI ad ID ut ID ad CE ex natura Curvæ AGE. Et proinde CE×fl:ID=ID×fl:IP . Sed (per Scholium Theorematis 3) CE×flID= fluxioni areæ ACEG, et ID×fl:IP= fluxioni areæ PDI. et proinde areæ illæ per Axioma 1 æquantur. Q.E.D.
+
+Proponatur denuò constructio qua Cissoidis area in Exemplo 3 determinatur. Ad hanc autem demonstrandam, lineæ punctim notatæ in schemate deleantur et agantur DQ, AE et Cissoidis Asymptoton QR. Iam propter AQ,DQ,CQ ∺ , est (per Corollarium 2 Theorematis 1) flDQ. flCQ∷DQ.2⁢CQ . Et propter similia triangula QDC, DEA, est DQ.2⁢CQ∷ED.2⁢AD . Ergo flDQ.flCQ∷ED.2⁢AD . & ED×flCQ=2⁢AD×fl:DQ sive = 4×(1)/(2)⁢AD×flDQ . Sed per Corollarium 1, Theorema 3, est (1)/(2)⁢AD×flDQ = fluxioni generanti aream ADOQ, est et ejus quadruplum ED×flCQ= fluxioni generanti Cissoidalem aream QREDO. Et proinde per Axioma 2 area illa infinite longa QREDO generatur quadrupla alterius ADOQ. Q.E.D.
+
+Denique ad demonstrandam constructionem areæ Conchoidalis in Exemplo 4; Ubi demonstraveris ut supra quod sit AG.AP∷DE.MK , sic procede. Est autem (per Corollarium 2, Theorema 3) MK×flPC=fl:areæ PKC & DE×flPC =flareæ DPE . Ergo flPKC.flDPE (∷MK.DE)∷ AP.AG . Adeoque per Axioma 2 Areæ PKC et DPE sunt in eadem ratione.
