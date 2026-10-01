@@ -16,6 +16,7 @@ Every result carries its verdict:
 Statements:
 - `let r = root of y^3 - 2y - 5 = 0 near 2`, then `r to 50 places`. The second request continues from the first.
 - Plain ASCII is canonical. `√ × · − ² ³` are accepted as aliases.
+- Expression operands are evaluated from left to right.
 
 ## Series (slice 2)
 
@@ -52,6 +53,11 @@ Near the edge of convergence, for example log1p(1), the language says the terms 
 Letters are given quantities, following Newton's convention: a, b, c are given and x, z flow. Exponents may be
 fractions or negative (a^(1/2), x^(-2/5)). Division is by a single term. `to x^8` names the series letter when
 it is not clear.
+
+Finite sums print in descending total degree. Equal degrees are ordered by descending exponents of the
+alphabetically ordered letter names, independently of when the letters first appeared:
+
+    (a + x)^2                                  a^2 + 2ax + x^2  [exact]
 
     sqrt(a^2 + x^2) to x^6                     a + x^2/(2a) - x^4/(8a^3) + x^6/(16a^5) + O(x^7)
     root of y^3 + a^2 y + a x y - 2a^3 - x^3 = 0 for y

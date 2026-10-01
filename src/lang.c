@@ -880,7 +880,11 @@ static Val eval(Node *n) {
     case N_NUM: return vq(parse_number(n->s, n->len));
     case N_NAME: return name_val(n->s, n->len, n->primes);
     case N_NEG: return arith('-', vq(qi(0)), eval(n->a));
-    case N_BIN: return arith(n->op, eval(n->a), eval(n->b));
+    case N_BIN: {
+        Val left = eval(n->a);
+        Val right = eval(n->b);
+        return arith(n->op, left, right);
+    }
     case N_SQRT: return power_val(eval(n->a), vq(q_make(z_from_i64(1), z_from_i64(2))));
     case N_APPLY: {
         Binding *b = lookup(n->s, n->len);
@@ -918,7 +922,9 @@ static Val eval(Node *n) {
                 return vq(acc);
             }
         }
-        return arith('*', name_val(n->s, n->len, n->primes), eval(n->a));
+        Val left = name_val(n->s, n->len, n->primes);
+        Val right = eval(n->a);
+        return arith('*', left, right);
     }
     case N_DERIV: case N_INTEG: {
         Val v = eval(n->a);
@@ -1220,8 +1226,12 @@ static Dual sev(Node *n, SCtx *cx) {
                 nm_fail("%.*s gives no series", (int)n->len, n->s);
             }
         }
+        if (!b || b->v.kind != V_REC) {
+            Dual left = sname(n->s, n->len, n->primes, cx);
+            Dual right = sev(n->a, cx);
+            return dmul(left, right);
+        }
         Dual g = sev(n->a, cx);
-        if (!b || b->v.kind != V_REC) return dmul(sname(n->s, n->len, n->primes, cx), g);
         if (!recipe_is_equation(b)) {                        /* a definition by an expression: put the series in */
             SCtx sc; memset(&sc, 0, sizeof sc);
             sc.var = b->v.var; sc.n = cx->n; sc.has_sub = 1; sc.sub = g;

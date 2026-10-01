@@ -586,14 +586,17 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     return out;
 }
 
-/* terms in a readable order: higher total degree first */
+/* Terms: descending total degree, then descending exponents in alphabetical letter order. */
+static int print_order[NM_MAXL];
+
 static int cmp_for_print(const void *x, const void *y) {
     const CT *a = x, *b = y;
     Q da = q0(), db = q0();
-    for (int l = 0; l < NM_MAXL; l++) { da = q_add(da, a->e[l]); db = q_add(db, b->e[l]); }
+    for (int l = 0; l < nletters; l++) { da = q_add(da, a->e[l]); db = q_add(db, b->e[l]); }
     int c = q_cmp(db, da);
     if (c) return c;
-    for (int l = 0; l < NM_MAXL; l++) {
+    for (int i = 0; i < nletters; i++) {
+        int l = print_order[i];
         c = q_cmp(b->e[l], a->e[l]);
         if (c) return c;
     }
@@ -604,6 +607,14 @@ char *c_to_str(C a) {
     if (a.nt <= 0) { char *z = arena_alloc(2); strcpy(z, "0"); return z; }
     C s = c_alloc(a.nt);
     memcpy(s.t, a.t, (size_t)a.nt * sizeof(CT));
+    for (int l = 0; l < nletters; l++) {
+        int i = l;
+        while (i > 0 && strcmp(letter_names[l], letter_names[print_order[i - 1]]) < 0) {
+            print_order[i] = print_order[i - 1];
+            i--;
+        }
+        print_order[i] = l;
+    }
     qsort(s.t, (size_t)s.nt, sizeof(CT), cmp_for_print);
     size_t cap = 16;
     char **parts = arena_alloc((size_t)s.nt * sizeof(char *));

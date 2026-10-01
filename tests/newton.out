@@ -1,4 +1,4 @@
-x^2 + 2ax + a^2  [exact]
+a^2 + 2ax + x^2  [exact]
 a^2/x  [exact]
 a + x^2/(2a) - x^4/(8a^3) + x^6/(16a^5) + O(x^7)
 a^2/b - a^2x/(b^2) + a^2x^2/(b^3) - a^2x^3/(b^4) + O(x^4)

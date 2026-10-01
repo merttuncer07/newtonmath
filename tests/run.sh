@@ -11,6 +11,20 @@ while IFS= read -r line; do
   if [ "$got" != "$want" ]; then echo "FAIL: $stmt"; echo "  want: $want"; echo "  got:  $got"; fail=$((fail+1)); fi
 done < tests/cases.txt
 
+# Term order is independent of which letter was registered first.
+for first in a x; do
+  out=$(printf '%s\n(a+x)^2\n' "$first" | $NM | tail -1)
+  n=$((n+1))
+  [ "$out" = 'a^2 + 2ax + x^2  [exact]' ] || { echo "FAIL: term order after $first: $out"; fail=$((fail+1)); }
+done
+# Compare full letter names, and exact exponents even when the total degree is zero.
+out=$(printf 'az\naa+az\n' | $NM | tail -1)
+n=$((n+1))
+[ "$out" = 'aa + az  [exact]' ] || { echo "FAIL: multi-character term order: $out"; fail=$((fail+1)); }
+out=$($NM -e 'a^(-1/2)*x^(1/2)+a^(1/2)*x^(-1/2)')
+n=$((n+1))
+[ "$out" = 'a^(1/2)/(x^(1/2)) + x^(1/2)/(a^(1/2))  [exact]' ] || { echo "FAIL: fractional term order: $out"; fail=$((fail+1)); }
+
 # continuation: the second request continues from the stored root
 out=$(printf 'let r = root of y^3 - 2y - 5 = 0 near 2\nr to 60 places\n' | $NM | tail -1)
 n=$((n+1))

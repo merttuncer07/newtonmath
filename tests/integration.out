@@ -18,7 +18,7 @@ x = -i
 [no isolated solution; some solutions form a curve, not points: not listed]
 no solution  [exact: the extermination ends in a number not 0]
 x^4 + x^2 - 1  [exact]
-R = -x^3 + x^2 + 2bx + b^2 - a  [exact]
+R = -x^3 + b^2 + 2bx + x^2 - a  [exact]
 A = [[1, 2], [3, 4]]  [exact]
 [[7, 10], [15, 22]]  [exact]
 [[3], [7]]  [exact]

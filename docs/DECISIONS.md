@@ -1,6 +1,7 @@
 # newtonmath: decisions log
-Each decision gets: the question, the generic answer, what Newton did (sources), a recommendation, then Mert's
-decision. Nothing is built before Mert decides.
+Each decision gets: the question, the generic answer, what Newton did (sources), a recommendation, then the
+accepted decision. Mert currently delegates new design decisions to the previous agent: stop and give him a
+prompt to relay, then wait for the relayed decision before building. Already approved work may be completed.
 
 ## Order of decisions (proposed)
 0. Purpose and users (Mert's; the brief leaves it blank).
@@ -416,3 +417,30 @@ Small choices made while coding:
   letters, roots and surds ran out at 12; the tests run about 25% slower);
 - a solve prints its own legend for r_k, and none for radicals like sqrt(5), which explain themselves;
 - `let s2 = sqrt(1 + x)` then `s2(1/2)` now gives sqrt(6)/2 exactly (before: an error asking for an equation).
+
+## Evaluation and finite-sum order
+Question: should compiler argument order or earlier statements decide how an expression is evaluated and
+how equal-degree terms are printed?
+The generic answer: C leaves function-argument evaluation order unspecified. A language must choose its own
+evaluation order; a printer can order terms independently of the internal representation.
+Newton:
+- NATP00182: the root computations are laid out as tables, substituting the values from the left column into
+  the middle column to obtain the right column. The computation has explicit steps.
+- NATP00296: after extracting the root of aa + xx, he explicitly reverses the term order to xx + aa and
+  expands about the other leading term. His ordering serves the calculation; it does not prescribe a universal
+  alphabetical printer or a programming-language evaluation rule.
+Recommendation: evaluate operands from left to right; print finite sums by descending total degree, then
+descending exponents in ascending alphabetical letter-name order. These are practical implementation choices.
+Decision (Mert): approved both rules.
+Built:
+- binary expressions evaluate their left operand before their right operand;
+- an undefined name applied to an argument evaluates its named factor before the argument, in both the exact
+  and series passes;
+- finite-sum printing uses letter names to break degree ties, rather than registration indices;
+- regression checks cover both registration orders, full names, fractional/negative exponents, and the first
+  error in a binary expression.
+Small choices made while coding:
+- build the printer's alphabetical index order once per sum; compare exact rational degrees and exponents;
+- keep the arithmetic's indices and surd equations intact; the printer sorts a copy of the terms;
+- review only the two changed fixture lines: the binomial square and the resultant obtained by substituting
+  y = x + b into y^2 = x^3 + a. Both were checked independently by substitution and with bc.

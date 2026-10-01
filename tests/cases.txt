@@ -32,3 +32,6 @@ sqrt(2) * sqrt(2) - 2 to 20 places ||| 0.00000000000000000000  [exact]
 1/0 ||| error: division by zero
 sqrt(-1) ||| i  [exact]
 root of x^2 + y = 0 near 1 ||| error: an equation for a number must have one unknown letter
+# --- operands are evaluated from left to right; det([[1,2],[2,4]]) = 0
+(1/0) + inverse([[1,2],[2,4]]) ||| error: division by zero
+inverse([[1,2],[2,4]]) + (1/0) ||| error: the matrix is singular: its determinant is 0
