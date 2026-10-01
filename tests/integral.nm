@@ -1,0 +1,119 @@
+# Slice 9: rational curves resolved into rational, logarithmic and circular areas.
+# Acceptance key: differentiate each displayed primitive by the chain rule.
+integral(1/(x^2 - 1), x)
+integral(x/(x^2 + 1), x)
+integral(1/(x^2 + 1), x)
+integral(1/(x^2 + x + 1), x)
+integral((x^3 + 1)/(x^2 - 1), x)
+integral(1/(x - 1)^2, x)
+integral(1/(x*(x + 1)^2), x)
+integral((2x + 3)/(x^2 + 2x + 5), x)
+integral(1/(x^2 - 2), x)
+integral(1/(x^4 - 1), x)
+integral(x^2/(x + a), x)
+integral(1/(x^3 + 1), x)
+apart(1/(x^4 - 1), x)
+apart(1/(x*(x + 1)^2), x)
+apart(1/(x^3 + 1), x)
+integral(1/(1 + x), x, 0, 1)
+integral(1/(1 + x^2), x, 0, 1)
+integral(1/(x^2 + x + 1), x, 0, 1)
+integral(x/(x^2 + 1), x, 0, 2)
+integral(1/(x^3 + 1), x, 0, 1)
+# The language-level inverse checks, independently expected to be zero.
+(d/dx integral(1/(x^2 - 1), x)) - 1/(x^2 - 1)
+(d/dx integral(x/(x^2 + 1), x)) - x/(x^2 + 1)
+(d/dx integral(1/(x^2 + 1), x)) - 1/(x^2 + 1)
+(d/dx integral(1/(x^2 + x + 1), x)) - 1/(x^2 + x + 1)
+(d/dx integral((x^3 + 1)/(x^2 - 1), x)) - (x^3 + 1)/(x^2 - 1)
+(d/dx integral(1/(x - 1)^2, x)) - 1/(x - 1)^2
+(d/dx integral(1/(x*(x + 1)^2), x)) - 1/(x*(x + 1)^2)
+(d/dx integral((2x + 3)/(x^2 + 2x + 5), x)) - (2x + 3)/(x^2 + 2x + 5)
+(d/dx integral(1/(x^2 - 2), x)) - 1/(x^2 - 2)
+(d/dx integral(1/(x^4 - 1), x)) - 1/(x^4 - 1)
+(d/dx integral(x^2/(x + a), x)) - x^2/(x + a)
+(d/dx integral(1/(x^3 + 1), x)) - 1/(x^3 + 1)
+apart(1/(x^4 - 1), x) - 1/(x^4 - 1)
+apart(1/(x*(x + 1)^2), x) - 1/(x*(x + 1)^2)
+apart(1/(x^3 + 1), x) - 1/(x^3 + 1)
+# Hermite reduction handles repeated quadratics and a zero cubic remainder.
+integral(1/(x^2 + 1)^2, x)
+(d/dx integral(1/(x^2 + 1)^2, x)) - 1/(x^2 + 1)^2
+integral((3x^2 + 1)/(x^3 + x + 1)^2, x)
+integral(1/((x^2 + 1)*(x^2 + 2)), x)
+apart(1/((x^2 + 1)*(x^2 + 2)), x) - 1/((x^2 + 1)*(x^2 + 2))
+integral(0, x)
+integral(3, x)
+integral(1/(1 + t^2), t)
+# Values survive statement arena resets and are differentiated or substituted.
+let F = integral(1/(x^2 + 1), x)
+1 + 1
+F
+d/dx F
+F(0)
+F(1)
+F(-1)
+F(sqrt(3))
+let L = integral(1/(1 + x), x)
+L(0)
+L(1)
+L(-3)
+d/dx L
+let H = integral(1/(x^2 + 1)^2, x)
+H(0)
+H(1)
+d/dx H
+let G = integral(1/(x^2 - 2), x)
+G(0)
+d/dx G
+let P = apart(1/(x^4 - 1), x)
+P
+P - 1/(x^4 - 1)
+(d/dx P) + 4x^3/(x^4 - 1)^2
+let AP = apart(1/(1 + x), x)
+AP(1)
+AP(2)
+AP(x + x^2) to x^5
+# Exact limits, reversal, equal limits, and cancellation in the rational field.
+integral(1/(1 + x), x, 1, 0)
+integral(1/(1 + x^2), x, 1, 0)
+integral(1/(1 + x^2), x, -1, 1)
+integral(1/(1 + x^2), x, 0, sqrt(3))
+integral(1/(1 + x^2), x, 2, 2)
+integral((x - 1)/(x - 1), x, 0, 2)
+integral(x^2, x, -1, 2)
+# Explicit series retain the integration constant zero at the expansion point.
+integral(1/(1 + x), x) to x^6
+integral(1/(1 + x^2), x) to x^7
+integral(sqrt(1 + x), x) to x^4
+integral(sqrt(1 + x), x)
+apart(1/(1 - x^2), x) to x^4
+integral(x^(1/2), x)
+# Out-of-scope operations must not silently treat an area as zero or a number.
+F + 1
+1 + F
+2 * F
+F / 2
+F^2
+-F
+F(x)
+F'(1)
+d/dt F
+integral(F, x)
+integral(1/(1 + x^2), x, 0, 1) to x^4
+integral(1/(x^3 + x + 1), x)
+apart(1/(x^3 + x + 1), x)
+integral(1/(x^2 + a), x)
+# Closed-interval poles: inside, either endpoint, reversed, even, and algebraic.
+integral(1/x, x, -1, 1)
+integral(1/x, x, 0, 1)
+integral(1/x, x, -1, 0)
+integral(1/x, x, 0, 0)
+integral(1/x, x, 1, -1)
+integral(1/(x - 1)^2, x, 0, 2)
+integral(1/(x^2 - 2), x, 0, 2)
+integral(1/(x^2 - 2), x, 0, sqrt(2))
+integral(1/(x^2 - 2), x, -sqrt(2), 0)
+integral(1/(x^2 - 2)^2, x, 0, 2)
+# A refusal leaves stored values and the next statement intact.
+F(1)

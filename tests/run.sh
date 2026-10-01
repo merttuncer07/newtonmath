@@ -93,6 +93,58 @@ log1p(i/2)|l(5/4)/2|a(1/2)
 CASES
 fi
 
+# Closed-form rational integrals: independent conic values at 60 places.
+# Count a failed guarantee as a failed check too; round negatives symmetrically.
+if command -v bc >/dev/null 2>&1; then
+  while IFS='|' read -r mine_expr bc_expr; do
+    places=60
+    n=$((n+1))
+    mine=$($NM -e "$mine_expr to $places places")
+    case "$mine" in *"$places places guaranteed"*) ;; *) echo "FAIL: $mine_expr: $mine"; fail=$((fail+1)); continue;; esac
+    mine=$(printf '%s\n' "$mine" | cut -d' ' -f1 | tr -d '.' | sed 's/^0*//; s/^-0*/-/')
+    theirs=$(printf 'scale=%d\nv=(%s)*10^%d\nif (v<0) v=v-0.5 else v=v+0.5\nscale=0\nv/1\n' $((places+15)) "$bc_expr" $places | BC_LINE_LENGTH=0 bc -l | tr -d '\\\n')
+    [ "$mine" = "$theirs" ] || { echo "FAIL: $mine_expr to $places places differs from bc: $mine vs $theirs"; fail=$((fail+1)); }
+  done <<'CASES'
+integral(1/(1+x),x,0,1)|l(2)
+integral(1/(1+x^2),x,0,1)|a(1)
+integral(1/(x^2+x+1),x,0,1)|4*a(1)*sqrt(3)/9
+integral(x/(x^2+1),x,0,2)|l(5)/2
+integral(1/(x^3+1),x,0,1)|l(2)/3+4*a(1)*sqrt(3)/9
+integral(1/(1+x^2),x,0,2)|a(2)
+integral(1/(1+x^2),x,0,100)|a(100)
+integral(1/(1+x^2),x,0,-7)|-a(7)
+integral(1/(1+x^2),x,-3/4,5/4)|a(5/4)+a(3/4)
+integral(1/(1+x^2),x,1,0)|-a(1)
+integral(1/x,x,1,1024)|l(1024)
+integral(1/x,x,1,1/1024)|-l(1024)
+integral(1/x,x,-4,-2)|-l(2)
+integral(1/(1+x),x,1,0)|-l(2)
+integral(1/(1+x^2),x,0,sqrt(3))|4*a(1)/3
+integral(1/x,x,1,sqrt(2))|l(2)/2
+integral(1/(x^2-2),x,2,3)|sqrt(2)/4*l((3-sqrt(2))*(2+sqrt(2))/((3+sqrt(2))*(2-sqrt(2))))
+integral(1/(x^2+1)^2,x,0,1)|1/4+a(1)/2
+integral((2x+3)/(x^2+2x+5),x,0,2)|l(13/5)+(a(3/2)-a(1/2))/2
+integral(1/((x^2+1)*(x^2+2)),x,0,1)|a(1)-a(1/sqrt(2))/sqrt(2)
+CASES
+  # A user recipe can create the same printed name as a conic constant.
+  # Its callback must not replace the private, mathematically defined atan(2).
+  n=$((n+1))
+  mine=$(printf "let atan = root of y' = 1, y(0) = 0\nlet T = atan(2 + x) to x^1\nintegral(1/(1+x^2),x,0,2) to 60 places\n" | $NM | tail -1)
+  case "$mine" in
+    *"60 places guaranteed"*)
+      mine=$(printf '%s\n' "$mine" | cut -d' ' -f1 | tr -d '.')
+      theirs=$(printf 'scale=75\nv=a(2)*10^60+0.5\nscale=0\nv/1\n' | BC_LINE_LENGTH=0 bc -l | tr -d '\\\n')
+      [ "$mine" = "$theirs" ] || { echo "FAIL: conic atan(2) reused a user callback: $mine vs $theirs"; fail=$((fail+1)); };;
+    *) echo "FAIL: conic atan(2) callback isolation: $mine"; fail=$((fail+1));;
+  esac
+else
+  echo "SKIP: rational integral comparisons require bc -l"
+fi
+
+# The finite acceptance key, exact inverse checks, persistence and domain refusals.
+n=$((n+1))
+if ! ./newtonmath tests/integral.nm | diff -u tests/integral.out - ; then echo "FAIL: tests/integral.nm"; fail=$((fail+1)); fi
+
 # series: the whole file against its reviewed output (every line was checked against Newton's texts or by hand)
 n=$((n+1))
 if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL: tests/series.nm"; fail=$((fail+1)); fi
