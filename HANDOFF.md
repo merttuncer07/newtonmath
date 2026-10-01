@@ -71,16 +71,18 @@ make test                  # tests/run.sh + tests/check_z + tests/unit/*  (must 
 ./newtonmath -e "sqrt(2) to 30 places"
 ```
 
-The last `make test` passed completely (local macOS, Apple Clang 21; 12.95 s including rebuilding test binaries):
-- `run.sh`: 104 checks, including the 67-statement rational fixture and six registration-order regressions;
+The last `make test` passed completely (local macOS, Apple Clang 21; 7.24 s with current binaries;
+19.26 s in the preceding rebuild-inclusive pass, both below 60 s):
+- `run.sh`: 126 checks, including the 109-statement integral fixture and 21 new 60-place bc comparisons;
 - `check_z`: 9065 checks;
-- unit tests: arith 19, cplx 13, elim 9, linalg 13, ratfun 788, ratmat 553.
-- `tests/rational.nm` also passed AddressSanitizer/UndefinedBehaviorSanitizer with no diagnostics.
-See docs/SLICE8_VERIFICATION.md for the exact acceptance output, independent-Q checks, timings and limits.
+- unit tests: arith 19, cplx 13, elim 9, integ 86, linalg 13, ratfun 788, ratmat 553.
+- `tests/integral.nm` also passed AddressSanitizer/UndefinedBehaviorSanitizer with identical output and no diagnostics.
+See docs/SLICE9_VERIFICATION.md for the full supplied key, exact checks, timings, evidence limits and scope.
+No pre-existing .out file changed in slice 9. The earlier slice 8 record remains in docs/SLICE8_VERIFICATION.md.
 
 `tests/run.sh` contains:
 - the known-answer lines in `tests/cases.txt`, format `stmt ||| expected output`;
-- whole-file diffs, `tests/X.nm` against `tests/X.out`, for series, newton, irrational, rules, integration and rational functions;
+- whole-file diffs, `tests/X.nm` against `tests/X.out`, for series, newton, irrational, rules, integration, rational functions and rational integrals;
 - independent checks against `bc` (sqrt, series values, complex values, fact(300), F[2000]).
 
 When a test disagrees, check the math independently, e.g. with `bc -l`, before changing anything. Several times
@@ -136,7 +138,7 @@ See `README.md` for every slice with examples. See `tests/*.nm` and `tests/*.out
 
 | file | what it holds |
 |---|---|
-| `nm.h` | all shared types and declarations: Z, Q, Poly, C/CT, Ser, Root, Ball, Solutions, Mat, Factors, CBall, TermRule |
+| `nm.h` | shared types and declarations, including R, Integral, AreaTerm and Apart |
 | `z.c` | big integers, base 10^9 blocks |
 | `q.c` | rationals |
 | `coef.c` | **quantities in letters** C: sums of k·a^e with rational exponents. Letters, surds (letters with equations: reduction, inverse by Euclid, root choice by bracket), i, named letters (known only by a value callback, e.g. `exp(1)`), printing and the shared fixed leading-term order |
@@ -145,6 +147,7 @@ See `README.md` for every slice with examples. See `tests/*.nm` and `tests/*.out
 | `newton.c` | Newton's parallelogram (lower hull, ruler polynomial, Puiseux) |
 | `elim.c` | module 1: resultants (Sylvester, Berkowitz `det_nodiv`), rational roots, quadratic formula, Sturm isolation → surds `r_1, r_2...`, `elim_solve`, `elim_roots` |
 | `ratfun.c` | reduced R {num, den}; recursive primitive pseudo-remainder gcd over Q, shared UP from elim.c, exact division and cross-multiplication checks |
+| `integ.c` | exact rational integrals, Hermite reduction, conic terms, partial fractions, derivative/add-back checks, persistence and display |
 | `linalg.c` | exact matrices over R (echelon, Berkowitz); inverse/solutions/nullspace checked by multiplying back; generic rank loci from maximal minors |
 | `cplx.c` | module 3: complex balls, `rule_value` (value or j-th fluxion at a complex point from a term rule, with a rigorous tail bound) |
 | `arith.c` | module 4: mod arithmetic, Miller–Rabin/BPSW, Pocklington proofs, Pollard rho (Brent), factor/sigma/phi/divisors/nextprime |
@@ -161,7 +164,7 @@ Important internals:
   `try_builtin`. Variables changed between setjmp and longjmp must be `volatile`, or gcc warns `-Wclobbered`.
 - **Value kinds** (`Val.kind`): V_Q, V_POLY (a C quantity), V_ROOT, V_BALL, V_REC (a series recipe: source text
   plus letter), V_NUMREC, V_FUNC (a rule), V_SEQ, V_MAT, V_CBALL, V_TEXT (a verdict text such as factor or isprime
-  output), V_RAT. Mat entries are R; ordinary C quantities embed with a unit denominator.
+  output), V_RAT, V_AREA (conic primitive), V_APART (checked rational summands). Mat entries are R; ordinary C quantities embed with a unit denominator.
 - **Recipes.** These are stored source text, re-parsed when used. `recipe_is_equation` tells `root of ...`
   definitions from expression definitions.
 - **Values of series** come from `series_value_d(b, arg, deriv)` in `lang.c`. It does three things:
@@ -170,10 +173,19 @@ Important internals:
   - calls `rule_value` (cplx.c).
 - **Built-in functions** live in `builtin()` in `lang.c`. They are used only when the user has not defined the
   name.
-- **Rational integration.** vr collapses constant denominators. Explicit `to x^N` enters sev directly; rational
+- **Rational language values.** vr collapses constant denominators. Explicit `to x^N` enters sev directly; rational
   bindings expand by s_div of their numerator and denominator. Bound one-letter quotients use UP Horner
   substitution. Parametric affine solve statements route to mat_solve; nonlinear elimination is unchanged.
   Val.verdict preserves generic conditions with saved values and through arithmetic/builtins/matrix entries.
+- **Rational integrals.** `integ_rational` divides the polynomial part, solves Hermite coefficient equations
+  over R, and factors only the remaining square-free denominator. `elim_conic_factors` shares rational-root
+  machinery and adds bounded quadratic interpolation. `elim_has_root_closed` uses Sturm counts.
+  Each primitive is differentiated back exactly before acceptance; each apart sum is added back.
+- **Conic values.** Area coefficients are R, arguments C polynomials. Stored areas support their own derivative
+  and exact real-number substitution; general arithmetic is refused. Definite values use private copies of
+  the prelude equations, through `series_value_d` and `rule_value`, with certified argument reduction.
+  Named-number identity includes the callback to prevent collision with user rules. Approximate endpoints,
+  parameter-dependent nonlinear conic parts, and unsupported higher-degree factors are refused explicitly.
 - **Adding a value kind:** update `arith`, `show`, `persist_val`, and `as_cball`/`entry_of` if relevant.
 - **Adding a module.** The pattern so far:
   1. Write an isolated `src/X.c` with declarations in `nm.h`.
@@ -201,6 +213,8 @@ Important internals:
 8. Slice 7: the four modules wired into the language (commit `35a8c1f`).
 9. Slice 8: isolated rational functions (`514b63f`), then language/matrix integration (`20090ef`). The supplied
    D1-D6 design was approved; small implementation choices and scope are recorded in DECISIONS.md.
+10. Slice 9: isolated rational integration (`71438dd`), language and numeric values (`c645594`), acceptance/bc
+    tests (`1d7c06a`). The supplied D1-D7 design is implemented; see DECISIONS.md and SLICE9_VERIFICATION.md.
 
 `docs/DECISIONS.md` holds the research and reasoning (Newton quotes with NATP ids) behind every slice.
 
@@ -211,8 +225,7 @@ Important internals:
 Mert's order:
 1. **Grow the mathematics first.** In Mert's words, "our mathematics is still too small to leave C". Natural
    next steps, each decided Newton's way and logged in DECISIONS.md:
-   - **partial fractions and integration of rational functions:** the next step requested after slice 8,
-     explicitly not part of slice 8; a new design is still needed;
+   - broaden rational integration beyond slice 9's linear/quadratic conic remainder when a design is supplied;
    - polynomial factorization over Q as a first-class operation, i.e. `factor` for polynomials (gcd now exists);
    - further **integration:** Newton's quadratures and tables of integrals, through series and closed forms;
    - **ODE solving beyond linear:** the series exists already; values need it too;

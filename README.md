@@ -185,6 +185,50 @@ Scope of this version:
   C representation; expansions requiring inversion of a coefficient such as `a+b` remain unsupported.
 - Special parameter cases are not solved automatically. Listing all maximal minors can be expensive for large
   rectangular matrices. The shared UP representation retains its existing degree limit of 10000 per letter.
-- Polynomial factorization, partial fractions and closed-form integration of rational functions are not added.
-  They are subsequent steps. See [the verification record](docs/SLICE8_VERIFICATION.md) for the acceptance key,
-  check counts, measured times and the single changed old fixture line.
+- See [the slice 8 verification record](docs/SLICE8_VERIFICATION.md) for its acceptance key, check counts,
+  measured times and the single old fixture line changed in that slice.
+
+
+## Rational integrals (slice 9)
+
+A rational integral returns a finite area: a rational function plus logarithmic and circular areas.
+Every answer is differentiated back exactly before it is accepted. Logs use absolute values; the arbitrary
+constant is omitted. Ask explicitly for a series to retain expansion at zero.
+
+    integral(1/(x^2 + 1), x)                 atan(x)  [exact]
+    integral(x/(x^2 + 1), x)                 (1/2)*log|x^2 + 1|  [exact]
+    integral(1/(x - 1)^2, x)                 -1/(x - 1)  [exact]
+    integral(x^2/(x + a), x)                 -ax + x^2/2 + (a^2)*log|a + x|  [exact]
+    integral(1/(1 + x), x) to x^4            x - x^2/2 + x^3/3 - x^4/4 + O(x^5)
+    apart(1/(x*(x + 1)^2), x)                a sum of three rational fractions, added back exactly
+
+A stored area supports its derivative and substitution of a real number. Partial fractions support the same
+operations as their rational sum. General arithmetic on an area is not yet supported.
+
+    let F = integral(1/(x^2 + 1), x)
+    d/dx F                                  1/(x^2 + 1)  [exact]
+    F(1)                                    pi/4  [exact]
+    integral(1/(1 + x), x, 0, 1)             log(2)  [exact]
+    integral(1/(1 + x^2), x, 0, 1)           pi/4  [exact]
+    integral(1/(1 + x), x, 0, 1) to 60 places
+        0.693147180559945309417232121458176568075500134360255254120680  [bounded: 60 places guaranteed]
+
+Definite integrals check the entire closed interval for poles, including the endpoints and poles of even
+multiplicity. Reversed and supported algebraic limits work. `use prelude` is not required: named conic
+constants use the prelude equations and the existing certified term-rule evaluator with smaller arguments.
+
+Scope:
+- After Hermite reduction, the remaining denominator must split into supported linear and quadratic factors.
+  An unsupported higher-degree factor is refused with `later: Rothstein-Trager`; bounded factor searches do
+  not claim irreducibility. The denominator degree limit is 64.
+- Parameter-dependent log/atan parts are restricted to a single linear factor, including its repetitions.
+  A quadratic with parameters is refused with a reason. Constant parameter denominators and general linear
+  coefficients such as `(a+b)*x+1` use rational coefficients in those parameters.
+- Exact definite values may retain named `atan(k)` values beyond the familiar rational multiples of pi.
+  General symbolic identities between logarithms, conic-area arithmetic, integration of conic areas, and
+  cross derivatives in other letters remain outside this version.
+- For algebraic bounds extremely close to a pole, inability to separate them at the working precision is
+  reported rather than guessed. As elsewhere, cancelled holes in a rational expression are not retained.
+
+See [the slice 9 verification report](docs/SLICE9_VERIFICATION.md) for all supplied answers, check counts,
+changed old outputs, measured test time and remaining limits.

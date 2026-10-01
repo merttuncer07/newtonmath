@@ -512,3 +512,70 @@ Integration built:
 - One old fixture changes: tests/integration.out line 70, the binding g=1/(1-x), now prints -1/(x-1) [exact]
   instead of its default geometric series through x^8. Multiplying by 1-x gives 1; its explicit expansions
   and its value g(1/3)=3/2 are unchanged. No other pre-existing .out line changes.
+
+# Slice 9: rational integrals and conic areas
+
+Question: how should the finite area of a rational curve be represented, computed and checked?
+Decision (Mert, supplied D1-D7): polynomial division, Hermite reduction, then linear/quadratic factors over Q;
+return a rational part plus logarithmic and circular areas. Keep explicit series requests unchanged. Add
+`apart(f,x)`, exact definite integrals, numerical substitution, and guaranteed decimal values through the
+existing equation/term-rule engine. Every primitive is differentiated back and every partial fraction sum is
+added back using exact arithmetic. General arithmetic on the new area value is outside this slice.
+
+Newton and evidence:
+- The supplied design attributes reduction to conic areas to Methodus, Problem IX and its tables. The local
+  NATP00295 text is a 115-line appendix on geometric fluxion axioms, and NATP00296 is a 537-line Methodus
+  transcription ending before Problem IX. Those local files do not verify the specific table attribution;
+  it is the supplied design's historical motivation, not a newly verified historical claim.
+- NATP00296, Problem 2, local line 184 explicitly checks the inverse result by the direct problem and calls a
+  disagreement "vitiose". This directly supports the implemented derivative check.
+- Hermite reduction and the bounded exact factor search are practical modern implementation choices under
+  the approved method; they are not attributed to Newton.
+
+Representation and small implementation choices:
+- `Integral` stores its integration letter, rational part R, and terms `(R coefficient, LOG|ATAN, C polynomial)`.
+  R coefficients allow `1/((a+b)*x+1)` without introducing reciprocals of sums into C. No integration constant
+  is printed. `log|p|` is the real logarithm of the absolute value, on intervals where the primitive is defined.
+- Polynomial division comes first. With D=G*S, G=gcd(D,D'), Hermite reduction solves
+  `A = S*B' - (S*G'/G)*B + G*C` by exact coefficient comparison using the existing matrix solver.
+  The rational primitive is B/G; only C/S is sent to conic factorization. A zero remainder can therefore
+  integrate rationally even when D contains an otherwise unsupported cubic.
+- Existing rational-root routines are shared with elimination. The sample roots 0, -1, 1 are tried regardless
+  of coefficient size. Quadratics use the discriminant. For larger factors, a bounded Kronecker search
+  interpolates integer quadratic candidates from divisors of the values at -1, 0, 1 and divides each back.
+  It can find products of quadratics with no rational roots. Failure never claims a proof of irreducibility.
+- Negative discriminants give atan plus, if needed, a log of the quadratic. Positive nonsquare discriminants
+  give conjugate surd logs. Private unreduced derivative fractions allow conjugate cancellation before using
+  the ordinary Q-rational normalizer; the general R arithmetic scope is unchanged.
+- The denominator degree is limited to 64. Rational-root trial search retains the existing coefficient bound
+  below 10^12; quadratic interpolation uses at most 256 divisors per sample and 100000 signed candidates.
+  Search exhaustion is reported, with `later: Rothstein-Trager` for an unsupported remaining factor.
+- `apart` stores its individual rational summands for display and persistence; ordinary arithmetic,
+  differentiation, numeric substitution and explicit series work on their checked sum.
+- The new area value supports persistence, derivative in its integration letter, and substitution of a real
+  number. Another integral, another derivative letter, or general arithmetic on an area gets an explicit
+  refusal. Purely rational primitives collapse to the existing rational/polynomial value types.
+- For nonrational inputs, the existing polynomial power rule and series resolver remain in charge. An explicit
+  `integral(f,x) to x^N` always enters the old series route. Definite integrals cannot silently discard their
+  bounds when given a formal series order.
+
+Definite values and checks:
+- Endpoints are exact real numbers, including supported surds. Exact substitution detects endpoint poles;
+  Sturm variation counts detect interior poles, including repeated ones. Rational endpoints are tested
+  exactly; algebraic endpoints use enclosing rational balls after exact endpoint substitution. An unresolved
+  separation near an algebraic endpoint is refused. Reversed intervals keep their orientation.
+- Pole checks use the reduced rational function, consistent with slice 8: cancelled holes are not retained.
+  Equal endpoints give zero only when that point is regular. Unknown parameter-dependent poles are refused.
+- Evaluated logs and atan values are named numbers with callbacks, through the same fluxional equations as
+  `lib/prelude.nm` and the existing `series_value_d`/`rule_value` engine. Private equation bindings prevent
+  user redefinitions of atan, log1p or the equation's letters from changing mathematical constants. No second
+  transcendental series evaluator is introduced and `use prelude` is not required for definite integrals.
+- `pi=4*atan(1)` is evaluated using `atan(1)=2*atan(1/3)+atan(1/7)`. Logs reduce their positive argument by powers
+  of two, using `log(2)=log1p(1/2)-log1p(-1/4)`. Atan uses oddness, reciprocal arguments and subtraction of
+  atan(1/2), keeping series arguments bounded away from the convergence boundary. All operations use balls.
+- Atan at 0, +/-1, +/-sqrt(3), +/-1/sqrt(3) reduces exactly to rational multiples of pi. Other values remain
+  named atan constants. `log(1)=0`; general logarithmic identities are not a symbolic simplification engine.
+- Named-number identity includes its value callback as well as its display text. A moved user-defined rule
+  named atan must not supply the value of a circular-area constant with the same printed spelling.
+- Tests compare the five supplied definite values and additional range/domain cases with independent bc -l
+  values at 60 places. Regression counts and the full acceptance table are in SLICE9_VERIFICATION.md.
