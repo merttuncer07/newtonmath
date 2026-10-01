@@ -209,4 +209,19 @@ int64_t b_guaranteed_places(Ball a, int64_t want);  /* largest k <= want with ra
 char *fixed_str(Z scaled, int64_t places);          /* scaled / 10^places written in decimal */
 Z b_round_to_places(Ball a, int64_t places);
 
+/* ---- complex balls and values from term rules (cplx.c) ---- */
+typedef struct { Ball re, im; } CBall;
+typedef struct { int s, T; Poly D; Poly *N; Poly h; } TermRule;   /* D(n) c_n = sum N_t(n) c_{n-t} - h_{n-s} */
+CBall cb_from_q(Q re, Q im, int64_t prec);
+CBall cb_add(CBall a, CBall b, int64_t prec);
+CBall cb_sub(CBall a, CBall b, int64_t prec);
+CBall cb_mul(CBall a, CBall b, int64_t prec);
+CBall cb_div(CBall a, CBall b, int64_t prec);
+Q cb_abs_upper(CBall a);
+int rule_converges(const TermRule *R, Q r);
+CBall rule_value(const TermRule *R, const Q *seed, int nseed, int64_t start, CBall A, int deriv, int64_t places, int64_t prec);
+int letter_is_named(int i);
+Ball named_ball(int i, int64_t prec);
+C c_named(const char *disp, Ball (*value)(void *, int64_t), void *data);
+
 #endif

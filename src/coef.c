@@ -16,7 +16,8 @@ static int nletters;
 /* A surd is a letter with its own equation (Methodus, Problem 1, Example 3: "pro singulis pono totidem literas"):
  *   r^d = e[0] + e[1] r + ... + e[d-1] r^(d-1),
  * and a choice of root: a certified bracket, a radical of a positive quantity, or i. */
-typedef struct { int d; C *e; Root *root; C radA; int radn; int radneg; int imag; } Alg;
+typedef struct { int d; C *e; Root *root; C radA; int radn; int radneg; int imag;
+                 Ball (*value)(void *data, int64_t prec); void *data; } Alg;   /* value: a named number, no equation */
 static Alg alg[NM_MAXL];
 
 int letter_index(const char *name, size_t len) {
@@ -32,6 +33,21 @@ int letter_index(const char *name, size_t len) {
 
 const char *letter_name(int i) { return letter_names[i]; }
 int letter_is_surd(int i) { return alg[i].d > 0; }
+int letter_is_named(int i) { return alg[i].value != NULL; }
+Ball named_ball(int i, int64_t prec) { return alg[i].value(alg[i].data, prec); }
+
+/* a number known by its value only, kept as a letter: exp(1), sin(1) ... ("pro singulis pono literas") */
+C c_named(const char *disp, Ball (*value)(void *, int64_t), void *data) {
+    for (int l = 0; l < nletters; l++) if (alg[l].value && !strcmp(letter_names[l], disp)) return c_letter(l);
+    char key[32];
+    snprintf(key, sizeof key, "#n%d", nletters);
+    int l = letter_index(key, strlen(key));
+    size_t n = strlen(disp);
+    letter_names[l] = perm_alloc(n + 1);
+    memcpy(letter_names[l], disp, n + 1);
+    alg[l].value = value; alg[l].data = data;
+    return c_letter(l);
+}
 int letter_is_imag(int i) { return alg[i].imag; }
 Root *surd_root(int i) { return alg[i].root; }
 int surd_radical(int i, C *A, int *n, int *neg) { *A = alg[i].radA; *n = alg[i].radn; *neg = alg[i].radneg; return alg[i].radn > 0; }
@@ -182,7 +198,7 @@ int c_is_monomial(C a) { return a.nt == 1; }
 
 int c_has_plain(C a) {                        /* a letter that is not a surd */
     for (int t = 0; t < a.nt; t++)
-        for (int l = 0; l < nletters; l++) if (!alg[l].d && q_sign(a.t[t].e[l])) return 1;
+        for (int l = 0; l < nletters; l++) if (!alg[l].d && !alg[l].value && q_sign(a.t[t].e[l])) return 1;
     return 0;
 }
 
@@ -520,8 +536,9 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     for (int l = 0; l < nletters; l++) order[l] = l;
     for (int a = 1; a < nletters; a++)
         for (int b = a; b > 0; b--) {
-            int sb = (alg[order[b]].d > 0) + (alg[order[b]].d > 0 && !alg[order[b]].imag);   /* 2: surds, 1: i, 0: letters */
-            int sa = (alg[order[b - 1]].d > 0) + (alg[order[b - 1]].d > 0 && !alg[order[b - 1]].imag);
+#define NUMLIKE(l) (alg[l].d > 0 || alg[l].value)
+            int sb = NUMLIKE(order[b]) + (NUMLIKE(order[b]) && !alg[order[b]].imag);   /* 2: surds and named, 1: i, 0: letters */
+            int sa = NUMLIKE(order[b - 1]) + (NUMLIKE(order[b - 1]) && !alg[order[b - 1]].imag);
             int before = sb > sa || (sb == sa && strcmp(letter_names[order[b - 1]], letter_names[order[b]]) > 0);
             if (!before) break;
             int t2 = order[b]; order[b] = order[b - 1]; order[b - 1] = t2;
