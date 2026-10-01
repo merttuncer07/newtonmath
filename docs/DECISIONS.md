@@ -579,3 +579,30 @@ Definite values and checks:
   named atan must not supply the value of a circular-area constant with the same printed spelling.
 - Tests compare the five supplied definite values and additional range/domain cases with independent bc -l
   values at 60 places. Regression counts and the full acceptance table are in SLICE9_VERIFICATION.md.
+
+# Slice 10: notation, what is printed can be read back
+Question: outputs such as `pisqrt(3)/9`, `a^2 + ax + x^2` (where `ax` read back as one name), `(-a - x)/(a - x)`
+and `(-1/2)*log|x + 1|` were correct but could not be pasted back, or read back as another value.
+Newton: notation is chosen so that calculation becomes mechanical for the reader (D1 research, NATP00182 on
+writing powers). His letters are single (initial letters a, b, c given; final letters v, x, y, z flowing), `ax`
+is a product, and he orders a quantity by the powers of its flowing letter: xx + 2ax + aa (Methodus, NATP00296).
+Built:
+- the reader takes an unbound name of letters only, not a defined name, rule parameter, builtin or keyword and not
+  followed by `(`, `[` or `'`, as the product of its letters: `2ax` = 2·a·x;
+- `pi`, and `log(k)`, `atan(k)` of exact numbers, are read as the exact constants Slice 9 prints;
+- terms are ordered by descending powers of the flowing letters (x, y, z, w, v, u, t), then by total degree and
+  alphabetically: `x^2 + 2ax + a^2`, `(x + a)/(x - a)`. It is a product order, so it also serves division;
+- factors stand side by side only where that reads back the same; elsewhere a `*` (pi*x, r_1*x); surds come
+  before named values: `sqrt(3)pi/9`;
+- a quotient by a product is bracketed, `ad/(bc)`; fraction coefficients go to the denominator,
+  `x/(2(x^2 + 1))`, `log|x - 1|/2 - atan(x)/2`;
+- apart keeps each denominator as a power of its factor: `1/x - 1/(x + 1) - 1/(x + 1)^2`, `1/(4(x - 1))`.
+Check: tests/roundtrip.sh feeds every exact printed result of the fixtures back as (result) - (statement) and
+requires 0 [exact]: 154 checks. Exempt: series, places, log/atan sums, roots r_k, verdict texts.
+Found and fixed by it: `ad/bc` (read back as (a/b)c) and the refusal of 2x^(3/2)/3 (division by a number now
+takes the old exact path, not the quotient of letters).
+Small choices:
+- a defined name wins over the reading as letters (`let ab = 5`, then `ab` is 5);
+- multi-letter unbound names are no longer letters of their own; the old fixture `aa + az` now reads az + a^2.
+- a single unbound letter before a bracket multiplies, and a power binds to the bracket: x(x + 1)^2 = x·(x + 1)^2
+  (before, it read as (x(x + 1))^2). Defined rules and parameters keep f(...) as application.

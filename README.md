@@ -232,3 +232,16 @@ Scope:
 
 See [the slice 9 verification report](docs/SLICE9_VERIFICATION.md) for all supplied answers, check counts,
 changed old outputs, measured test time and remaining limits.
+
+## Notation (slice 10)
+
+What is printed reads back as the same value. Letters are single, as in Newton: `2ax` is 2·a·x unless `ax` is a
+defined name. Terms follow the powers of the flowing letter: `x^2 + 2ax + a^2`, `(x + a)/(x - a)`.
+
+    (x^2 + 2ax + a^2)/(x^2 - a^2)     (x + a)/(x - a)  [exact]
+    integral(1/(x^4 - 1), x)          -log|x + 1|/4 + log|x - 1|/4 - atan(x)/2  [exact]
+    apart(1/(x(x + 1)^2), x)          -1/(x + 1) - 1/(x + 1)^2 + 1/x  [exact]
+    integral(1/(x^2 + x + 1), x, 0, 1) - sqrt(3)pi/9     0  [exact]
+
+`tests/roundtrip.sh` checks this for every exact result in the test files.
+

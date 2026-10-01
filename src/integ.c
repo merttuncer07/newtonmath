@@ -1,6 +1,7 @@
 /* Finite areas of rational curves. Hermite's reduction is solved by exact
  * coefficients; only the square-free remainder needs conic factorization. */
 #include "nm.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -88,41 +89,41 @@ Apart integ_apart(R f,int v) {
     int dd=degree(f.den,v);
     if(dd>64) nm_fail("rational integration degree limit is 64");
     if(dd<=1) {
-        Apart out={0,arena_alloc(2*sizeof(R))};
-        if(dd==0) out.part[out.n++]=f;
+        Apart out={0,arena_alloc(2*sizeof(R)),arena_alloc(2*sizeof(C)),arena_alloc(2*sizeof(int))};
+        if(dd==0) { out.pw[out.n]=0; out.part[out.n++]=f; }
         else {
             R q,a; divide_parameters(f.num,f.den,v,&q,&a);
-            if(!r_is_zero(q)) out.part[out.n++]=q;
-            if(!r_is_zero(a)) out.part[out.n++]=r_div(a,r_from_c(f.den));
-            if(!out.n) out.part[out.n++]=r_from_c(N(0));
+            if(!r_is_zero(q)) { out.pw[out.n]=0; out.part[out.n++]=q; }
+            if(!r_is_zero(a)) { out.base[out.n]=f.den; out.pw[out.n]=1; out.part[out.n++]=r_div(a,r_from_c(f.den)); }
+            if(!out.n) { out.pw[out.n]=0; out.part[out.n++]=r_from_c(N(0)); }
         }
         if(!r_equal(apart_sum(out),f)) nm_fail("internal check failed: apart added back (vitiose)");
         return out;
     }
     R q,a; divide_parameters(f.num,f.den,v,&q,&a);
-    Apart out={0,arena_alloc((size_t)(dd+2)*sizeof(R))};
-    if(!r_is_zero(q)) out.part[out.n++]=q;
+    Apart out={0,arena_alloc((size_t)(dd+2)*sizeof(R)),arena_alloc((size_t)(dd+2)*sizeof(C)),arena_alloc((size_t)(dd+2)*sizeof(int))};
+    if(!r_is_zero(q)) { out.pw[out.n]=0; out.part[out.n++]=q; }
     if(!r_is_zero(a)) {
         C fs[64]; int mult[64],nf=factors(f.den,v,fs,mult);
         C *columns=arena_alloc((size_t)dd*sizeof(C));
         C *den=arena_alloc((size_t)dd*sizeof(C));
-        int *pow=arena_alloc((size_t)dd*sizeof(int)),n=0;
+        int *pow=arena_alloc((size_t)dd*sizeof(int)),*fi=arena_alloc((size_t)dd*sizeof(int)),*fk=arena_alloc((size_t)dd*sizeof(int)),n=0;
         for(int i=0;i<nf;i++) for(int k=1;k<=mult[i];k++) {
             C dk=c_pow_int(fs[i],k), rest=poly_exact_div(f.den,dk);
             for(int j=0;j<degree(fs[i],v);j++) {
-                columns[n]=c_mul(rest,mono(v,j)); den[n]=dk;pow[n++]=j;
+                columns[n]=c_mul(rest,mono(v,j)); den[n]=dk;fi[n]=i;fk[n]=k;pow[n++]=j;
             }
         }
         if(n!=dd) nm_fail("internal check failed: partial fraction dimensions (vitiose)");
         R *c=compare(columns,n,a,v);
         for(int i=0;i<n;) {
-            R num=r_from_c(N(0));C d=den[i];
+            R num=r_from_c(N(0));C d=den[i];int bi=fi[i],bk=fk[i];
             do { num=r_add(num,r_mul(c[i],r_from_c(mono(v,pow[i]))));i++; }
             while(i<n && c_equal(d,den[i]));
-            if(!r_is_zero(num)) out.part[out.n++]=r_div(num,r_from_c(d));
+            if(!r_is_zero(num)) { out.base[out.n]=fs[bi]; out.pw[out.n]=bk; out.part[out.n++]=r_div(num,r_from_c(d)); }
         }
     }
-    if(!out.n) out.part[out.n++]=r_from_c(N(0));
+    if(!out.n) { out.pw[out.n]=0; out.part[out.n++]=r_from_c(N(0)); }
     if(!r_equal(apart_sum(out),f)) nm_fail("internal check failed: apart added back (vitiose)");
     return out;
 }
@@ -236,25 +237,79 @@ Integral integ_persist(Integral a) {
     a.term=t;return a;
 }
 Apart apart_persist(Apart a) {
-    R *p=perm_alloc((size_t)a.n*sizeof(R));for(int i=0;i<a.n;i++) p[i]=r_persist(a.part[i]);a.part=p;return a;
+    R *p=perm_alloc((size_t)a.n*sizeof(R));C *b=perm_alloc((size_t)a.n*sizeof(C)+1);int *w=perm_alloc((size_t)a.n*sizeof(int)+1);
+    for(int i=0;i<a.n;i++) { p[i]=r_persist(a.part[i]); w[i]=a.pw[i]; b[i]=a.pw[i]?c_persist(a.base[i]):c_zero(); }
+    a.part=p;a.base=b;a.pw=w;return a;
 }
-/* Size the strings from the actual terms; no fixed display buffer. */
-static char *join(char *a,const char *b) {
-    size_t n=strlen(a),m=strlen(b);char *s=arena_alloc(n+m+4);
-    snprintf(s,n+m+4,"%s%s%s",a,n?" + ":"",b);return s;
+/* Printing in the notation of the series: a sign between terms, the coefficient's denominator last
+ * (log|x - 1|/2 - atan(x)/2), and every printed form reads back as the same value. */
+static int lead_negative(C a) { return a.nt && q_sign(a.t[c_leading_index(a)].k) < 0; }
+static int needs_paren(const char *s) { return strchr(s, ' ') != NULL || strchr(s, '/') != NULL; }
+static char *cat(char *a, const char *b) {
+    size_t n = strlen(a), m = strlen(b); char *s = arena_alloc(n + m + 1);
+    memcpy(s, a, n); memcpy(s + n, b, m + 1); return s;
+}
+static R clear_fractions(R k) {                          /* (1/2)/(x+1) as 1/(2(x + 1)): whole coefficients on top */
+    Z l = z_from_i64(1);
+    for (int i = 0; i < k.num.nt; i++) { Z g = z_gcd(l, k.num.t[i].k.den), q, r; z_divmod(z_mul(l, k.num.t[i].k.den), g, &q, &r); l = q; }
+    if (z_is_one(l)) return k;
+    C m = c_const(q_from_z(l));
+    k.num = c_mul(k.num, m); k.den = c_mul(k.den, m);
+    return k;
+}
+static char *add_term(char *s, int neg, const char *body) {   /* body is printed without its sign */
+    if (!*s) return neg ? cat("-", body) : cat("", body);
+    return cat(cat(s, neg ? " - " : " + "), body);
+}
+/* k * body, body a name such as log|p| or atan(p); NULL body: k alone */
+static char *scaled(R k, const char *body, int *neg) {
+    k = clear_fractions(k);
+    *neg = lead_negative(k.num);
+    C num = *neg ? c_neg(k.num) : k.num;
+    char *n = c_to_str(num), *d = c_to_str(k.den), *s = "";
+    int one = !strcmp(n, "1"), done = !strcmp(d, "1");
+    if (!body) s = needs_paren(n) && !done ? cat(cat("(", n), ")") : n;
+    else if (one) s = cat("", body);
+    else {
+        s = needs_paren(n) ? cat(cat("(", n), ")") : n;
+        if (isalpha((unsigned char)s[strlen(s) - 1]) || s[strlen(s) - 1] == '_') s = cat(s, "*");
+        s = cat(s, body);
+    }
+    if (!done) s = cat(cat(s, "/"), needs_paren(d) || !isdigit((unsigned char)d[0]) || strspn(d, "0123456789") != strlen(d) ? cat(cat("(", d), ")") : d);
+    return s;
+}
+static char *rat_term(char *s, R r) {
+    int neg = lead_negative(r.num);
+    if (neg) r.num = c_neg(r.num);
+    return add_term(s, neg, r_to_str(r));
 }
 char *apart_to_str(Apart a) {
-    char *s="";for(int i=0;i<a.n;i++) s=join(s,r_to_str(a.part[i]));return s;
+    char *s = "";
+    for (int i = 0; i < a.n; i++) {
+        if (!a.pw[i]) { s = rat_term(s, a.part[i]); continue; }
+        C b = a.base[i]; int k = a.pw[i];
+        R top = r_mul(a.part[i], r_from_c(c_pow_int(b, k)));      /* part = top / b^k, top free of the letter */
+        if (lead_negative(b)) { b = c_neg(b); if (k & 1) top.num = c_neg(top.num); }
+        top = clear_fractions(top);
+        int neg = lead_negative(top.num);
+        if (neg) top.num = c_neg(top.num);
+        char *n = c_to_str(top.num), *dk = c_to_str(top.den), *bs = c_to_str(b);
+        char *base = b.nt > 1 ? cat(cat("(", bs), ")") : bs;
+        if (k > 1) { char e[16]; snprintf(e, sizeof e, "^%d", k); base = cat(b.nt > 1 ? base : cat(cat("(", bs), ")"), e); if (b.nt == 1 && !strchr(bs, '^') && strspn(bs, "abcdefghijklmnopqrstuvwxyz") == strlen(bs) && strlen(bs) == 1) base = cat(bs, e); }
+        char *den = strcmp(dk, "1") ? cat(needs_paren(dk) ? cat(cat("(", dk), ")") : dk, base) : base;
+        char *body = cat(cat(needs_paren(n) ? cat(cat("(", n), ")") : n, "/"), strcmp(dk, "1") || (b.nt > 1 && k == 1) ? (strcmp(dk, "1") ? cat(cat("(", den), ")") : den) : den);
+        s = add_term(s, neg, body);
+    }
+    return *s ? s : "0";
 }
 char *integ_to_str(Integral a) {
-    char *s=r_is_zero(a.rational)?"":r_to_str(a.rational);
-    for(int i=0;i<a.n;i++) {
-        AreaTerm t=a.term[i];if(r_is_zero(t.coef)) continue;
-        char *k=r_to_str(t.coef),*p=c_to_str(t.poly);
-        size_t n=strlen(k)+strlen(p)+24;char *b=arena_alloc(n);
-        int one=r_equal(t.coef,r_from_c(N(1)));
-        snprintf(b,n,"%s%s%s%s%s%s",one?"":"(",one?"":k,one?"":")*",t.kind==AREA_LOG?"log|":"atan(",p,t.kind==AREA_LOG?"|":")");
-        s=join(s,b);
+    char *s = r_is_zero(a.rational) ? "" : rat_term("", a.rational);
+    for (int i = 0; i < a.n; i++) {
+        AreaTerm t = a.term[i]; if (r_is_zero(t.coef)) continue;
+        char *p = c_to_str(t.poly), *body = arena_alloc(strlen(p) + 8);
+        sprintf(body, t.kind == AREA_LOG ? "log|%s|" : "atan(%s)", p);
+        int neg; char *b = scaled(t.coef, body, &neg);
+        s = add_term(s, neg, b);
     }
-    return *s?s:"0";
+    return *s ? s : "0";
 }

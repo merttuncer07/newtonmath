@@ -3,6 +3,7 @@
  * one fewer ordinary letter in each content calculation. No sampling enters gcd.
  * Every gcd is divided into both inputs; every quotient is multiplied back. */
 #include "nm.h"
+#include <ctype.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -188,7 +189,23 @@ R r_persist(R a) { R r = {c_persist(a.num), c_persist(a.den)}; return r; }
 
 char *r_to_str(R a) {
     if (unit(a.den)) return c_to_str(a.num);
+    Z l = z_from_i64(1);                          /* (x/2)/(x^2 + 1) is written x/(2(x^2 + 1)) */
+    for (int i = 0; i < a.num.nt; i++) { Z g = z_gcd(l, a.num.t[i].k.den), q, r; z_divmod(z_mul(l, a.num.t[i].k.den), g, &q, &r); l = q; }
+    if (!z_is_one(l)) {
+        char *n = c_to_str(c_mul(a.num, c_const(q_from_z(l)))), *d = c_to_str(a.den), *k = z_to_str(l);
+        int np = a.num.nt > 1, dp = a.den.nt > 1 || strchr(d, '/') != NULL;
+        char *s = arena_alloc(strlen(n) + strlen(d) + strlen(k) + 10);
+        sprintf(s, "%s%s%s/(%s%s%s%s)", np ? "(" : "", n, np ? ")" : "", k, dp || isdigit((unsigned char)d[0]) ? "(" : "", d, dp || isdigit((unsigned char)d[0]) ? ")" : "");
+        return s;
+    }
     char *n = c_to_str(a.num), *d = c_to_str(a.den);
+    /* a/(bc), not a/bc, which reads back as (a/b)c */
+    if (a.den.nt == 1 && strspn(d, "0123456789") != strlen(d) && (strlen(d) > 1 && !(isalpha((unsigned char)d[0]) && (d[1] == 0 || d[1] == '^') && !strpbrk(d + 1, "abcdefghijklmnopqrstuvwxyz*(")))) {
+        char *s = arena_alloc(strlen(n) + strlen(d) + 8);
+        int np = a.num.nt > 1 || strchr(n, '/') != NULL;
+        sprintf(s, "%s%s%s/(%s)", np ? "(" : "", n, np ? ")" : "", d);
+        return s;
+    }
     /* A coefficient fraction also needs grouping inside an outer quotient. */
     int np = a.num.nt > 1 || strchr(n, '/') != NULL;
     int dp = a.den.nt > 1 || strchr(d, '/') != NULL;

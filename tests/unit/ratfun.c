@@ -89,16 +89,16 @@ int main(int argc, char **argv) {
     r[6] = r_add(r_make(a,c_sub(a,b)), r_make(b,c_sub(b,a)));
     r[7] = r_div(r_make(a,b), r_make(c,d));
     for (int i = 0; i < 11; i++) quotient(r[i],p[i],q[i]);
-    const char *wanted[] = {"a + x", "a^2 + ax + x^2", "a^2 + x^2", "(x - 1)/(x + 1)",
-        "(-a - x)/(a - x)", "-2x/(a^2 - x^2)", "1", "ad/bc", "a/b", "a^2/(b + x)", "-1/(a + x)"};
+    const char *wanted[] = {"x + a", "x^2 + ax + a^2", "x^2 + a^2", "(x - 1)/(x + 1)",
+        "(x + a)/(x - a)", "2x/(x^2 - a^2)", "1", "ad/(bc)", "a/b", "a^2/(x + b)", "-1/(x + a)"};
     for (int i = 0; i < 11; i++) text_is(r[i], wanted[i]);
     text_is(r_make(N(-1),apx), wanted[10]);
     text_is(r_make(apx,apx), "1"); text_is(r_make(N(0),apx), "0");
-    text_is(r_make(N(2), c_scale(apx, qi(-2))), "-1/(a + x)");
+    text_is(r_make(N(2), c_scale(apx, qi(-2))), "-1/(x + a)");
     text_is(r_make(c_pow_int(x,-1),c_pow_int(a,-1)), "a/x");
     text_is(r_sub(r[5],r[5]), "0");
     text_is(r_mul(r[5],r_make(q[5],N(1))), "2x");
-    text_is(r_pow_int(r_make(apx,xma),-2), "(a^2 - 2ax + x^2)/(a^2 + 2ax + x^2)");
+    text_is(r_pow_int(r_make(apx,xma),-2), "(x^2 - 2ax + a^2)/(x^2 + 2ax + a^2)");
     C f = c_mul(c_add(a,b),c_add(x,c)), g = c_mul(f,c_add(x,N(1)));
     C h = c_mul(f,c_add(x,N(2)));
     C gcd = poly_gcd(g,h);

@@ -3,6 +3,8 @@
  * as in all of Newton's examples (xx/64a, 131x^3/512aa); anything else is refused with the reason. */
 #include "nm.h"
 
+#include <ctype.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -524,6 +526,18 @@ static char *letter_power(int l, Q e) {           /* a, a^2, a^(1/2), sqrt(2), (
 
 /* one term written by hand: 131x^3/(512a^2), -x/4, 2ax, a^(1/2)x^(1/2).
  * extra: an extra letter power appended (the series letter), may be NULL. */
+/* Side by side only where it reads back the same: single letters (ax) or after a closing bracket or digit
+ * (sqrt(3)x, 2pi). Elsewhere a '*' keeps names apart: pi*x, r_1*x. */
+static char *put_factor(char *start, char *p, int l, const char *f) {
+    int single = !alg[l].d && !alg[l].value && isalpha((unsigned char)letter_names[l][0]) && !letter_names[l][1];
+    char *q = p;                                   /* the word just before: a name, or a number such as an exponent */
+    while (q > start && (isalnum((unsigned char)q[-1]) || q[-1] == '_')) q--;
+    int prev_name = q < p && (isalpha((unsigned char)q[0]) || q[0] == '_');
+    int prev_single = prev_name && p - q == 1;
+    if (prev_name && (isalpha((unsigned char)f[0]) || f[0] == '_') && !(single && prev_single)) *p++ = '*';
+    return p + sprintf(p, "%s", f);
+}
+
 char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     int neg = q_sign(t.k) < 0;
     Q k = neg ? q_neg(t.k) : t.k;
@@ -539,8 +553,8 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     for (int a = 1; a < nletters; a++)
         for (int b = a; b > 0; b--) {
 #define NUMLIKE(l) (alg[l].d > 0 || alg[l].value)
-            int sb = NUMLIKE(order[b]) + (NUMLIKE(order[b]) && !alg[order[b]].imag);   /* 2: surds and named, 1: i, 0: letters */
-            int sa = NUMLIKE(order[b - 1]) + (NUMLIKE(order[b - 1]) && !alg[order[b - 1]].imag);
+#define RANKF(l) (alg[l].d > 0 && !alg[l].imag ? 3 : alg[l].value ? 2 : alg[l].imag ? 1 : 0)
+            int sb = RANKF(order[b]), sa = RANKF(order[b - 1]);   /* 3: surds, 2: named values, 1: i, 0: letters */
             int before = sb > sa || (sb == sa && strcmp(letter_names[order[b - 1]], letter_names[order[b]]) > 0);
             if (!before) break;
             int t2 = order[b]; order[b] = order[b - 1]; order[b - 1] = t2;
@@ -549,8 +563,8 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
         int l = order[oi];
         if (alg[l].imag) continue;
         int s = q_sign(t.e[l]);
-        if (s > 0) { pn += sprintf(pn, "%s", letter_power(l, t.e[l])); nfac++; }
-        if (s < 0) { pd += sprintf(pd, "%s", letter_power(l, q_neg(t.e[l]))); dfac++; }
+        if (s > 0) { pn = put_factor(num, pn, l, letter_power(l, t.e[l])); nfac++; }
+        if (s < 0) { pd = put_factor(den, pd, l, letter_power(l, q_neg(t.e[l]))); dfac++; }
     }
     for (int oi = 0; oi < nletters; oi++) {          /* i last: sqrt(3)i, 2a*i */
         int l = order[oi];
@@ -588,31 +602,51 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     return out;
 }
 
-/* Terms: descending total degree, then descending exponents in alphabetical letter order. */
-static int print_order[NM_MAXL];
+/* Terms, as Newton orders them: descending powers of the flowing letters (x, then y, z, w, v, u, t), then
+ * descending total degree of the rest, then descending exponents in alphabetical order. A product order, so it
+ * also serves division by the leading term. */
+static int print_order[NM_MAXL], nflow;
+
+static int flow_rank(const char *s) {
+    static const char *flow = "xyzwvut";
+    const char *p = s[0] && !s[1] ? strchr(flow, s[0]) : NULL;
+    return p ? (int)(p - flow) : -1;
+}
 
 static int cmp_for_print(const void *x, const void *y) {
     const CT *a = x, *b = y;
-    Q da = q0(), db = q0();
-    for (int l = 0; l < nletters; l++) { da = q_add(da, a->e[l]); db = q_add(db, b->e[l]); }
-    int c = q_cmp(db, da);
-    if (c) return c;
-    for (int i = 0; i < nletters; i++) {
+    int c;
+    for (int i = 0; i < nflow; i++) {
         int l = print_order[i];
-        c = q_cmp(b->e[l], a->e[l]);
-        if (c) return c;
+        if ((c = q_cmp(b->e[l], a->e[l]))) return c;
+    }
+    Q da = q0(), db = q0();
+    for (int i = nflow; i < nletters; i++) { int l = print_order[i]; da = q_add(da, a->e[l]); db = q_add(db, b->e[l]); }
+    if ((c = q_cmp(db, da))) return c;
+    for (int i = nflow; i < nletters; i++) {
+        int l = print_order[i];
+        if ((c = q_cmp(b->e[l], a->e[l]))) return c;
     }
     return 0;
 }
 
+static int print_before(int a, int b) {             /* flowing letters by rank, then the rest alphabetically */
+    int ra = alg[a].d || alg[a].value ? -1 : flow_rank(letter_names[a]);
+    int rb = alg[b].d || alg[b].value ? -1 : flow_rank(letter_names[b]);
+    if (ra >= 0 || rb >= 0) return rb < 0 || (ra >= 0 && ra < rb);
+    return strcmp(letter_names[a], letter_names[b]) < 0;
+}
+
 static void set_print_order(void) {
+    nflow = 0;
     for (int l = 0; l < nletters; l++) {
         int i = l;
-        while (i > 0 && strcmp(letter_names[l], letter_names[print_order[i - 1]]) < 0) {
-            print_order[i] = print_order[i - 1];
-            i--;
-        }
+        while (i > 0 && print_before(l, print_order[i - 1])) { print_order[i] = print_order[i - 1]; i--; }
         print_order[i] = l;
+    }
+    for (int i = 0; i < nletters; i++) {
+        int l = print_order[i];
+        if (!alg[l].d && !alg[l].value && flow_rank(letter_names[l]) >= 0) nflow++;
     }
 }
 

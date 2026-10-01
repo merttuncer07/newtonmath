@@ -54,10 +54,18 @@ static void push(int kind, const char *s, size_t len, char op) {
     toks[ntok++] = t;
 }
 
+static int same_word(Tok t, const char *w) { return t.len == strlen(w) && !strncmp(t.s, w, t.len); }
+static int reads_as_letters(const char *s, size_t len);
+static Ball conic_pi(void *data, int64_t prec);
+static int number_sign(C a);
+static C conic_constant(int kind, C arg);
+
 static void lex(const char *src) {
     size_t n = strlen(src);
     toks = arena_alloc((n * 3 + 2) * sizeof(Tok));
     ntok = 0; pos = 0;
+    int header_open = 0, nheader = 0;
+    const char *header_s[16]; size_t header_l[16];
     for (size_t i = 0; i < n;) {
         unsigned char c = (unsigned char)src[i];
         if (c == '#') break;
@@ -72,9 +80,25 @@ static void lex(const char *src) {
         if (isalpha(c) || c == '_') {
             size_t j = i;
             while (j < n && (isalnum((unsigned char)src[j]) || src[j] == '_')) j++;
-            push(is_key(src + i, j - i) ? T_KEY : T_NAME, src + i, j - i, 0);
+            int key = is_key(src + i, j - i);
+            size_t k = j;
+            while (k < n && isspace((unsigned char)src[k])) k++;
+            int exempt = key || j - i == 1 || (k < n && strchr("(['", src[k]))
+                         || (ntok >= 1 && toks[ntok - 1].kind == T_KEY && (same_word(toks[ntok - 1], "let") || same_word(toks[ntok - 1], "use")))
+                         || (ntok >= 2 && toks[ntok - 1].kind == T_OP && toks[ntok - 1].op == '/' && same_word(toks[ntok - 2], "d"))
+                         || header_open;
+            if (header_open && !key && nheader < 16) { header_s[nheader] = src + i; header_l[nheader++] = j - i; }
+            for (int h = 0; h < nheader && !exempt; h++) exempt = header_l[h] == j - i && !strncmp(header_s[h], src + i, j - i);
+            if (!exempt && reads_as_letters(src + i, j - i)) {          /* Newton's ax: the product of a and x */
+                for (size_t q = i; q < j; q++) push(T_NAME, src + q, 1, 0);
+            } else push(key ? T_KEY : T_NAME, src + i, j - i, 0);
             while (j < n && src[j] == '\'') { toks[ntok - 1].primes++; j++; }   /* y', y'' */
+            if (ntok == 2 && same_word(toks[0], "let") && j < n && src[j] == '(') header_open = 1;   /* let f(a, b): names */
             i = j; continue;
+        }
+        if (header_open && c == ')') {
+            header_open = 0;
+            push(T_OP, src + i, 1, ')'); i++; continue;
         }
         if ((c == '<' || c == '>') && i + 1 < n && src[i + 1] == '=') {
             push(T_OP, src + i, 2, c == '<' ? 'l' : 'g'); i += 2; continue;
@@ -134,6 +158,7 @@ static int flowing_letter(const char *s, size_t len) { return len == 1 && strchr
 static Node *mk(int kind) { Node *n = arena_alloc(sizeof *n); memset(n, 0, sizeof *n); n->kind = kind; return n; }
 static Node *bin(char op, Node *a, Node *b) { Node *n = mk(N_BIN); n->op = op; n->a = a; n->b = b; return n; }
 
+static int name_known(const char *s, size_t len);
 static Node *expr(void);
 static Node *unary(void);
 static Node *power(void);
@@ -143,6 +168,11 @@ static Node *primary(void) {
     if (t->kind == T_NUM) { Node *n = mk(N_NUM); n->s = t->s; n->len = t->len; pos++; return n; }
     if (t->kind == T_NAME) {
         Tok *t1 = peek_at(1), *t2 = peek_at(2);
+        if (t->len == 1 && !t->primes && t1->kind == T_OP && t1->op == '(' && !(t->s[0] == 'd' && t2->kind == T_OP)
+            && !name_known(t->s, 1)) {          /* x(x + 1)^2: a letter times, as Newton writes */
+            Node *n = mk(N_NAME); n->s = t->s; n->len = 1; pos++;
+            return n;
+        }
         if (t->len == 1 && t->s[0] == 'd' && t1->kind == T_OP && t1->op == '/' && t2->kind == T_NAME
             && t2->len >= 2 && t2->s[0] == 'd') {                      /* d/dx */
             pos += 3;
@@ -686,6 +716,11 @@ static Val arith_value(char op, Val a, Val b) {
         case '/': return vq(q_div(a.q, b.q));
         }
     }
+    if (op == '/' && is_exact(a) && a.kind != V_RAT && (b.kind == V_Q || (b.kind == V_POLY && !c_has_plain(b.c)))) {
+        C d = as_c(b);                                /* by a number or surd: no quotient of letters is needed */
+        if (c_is_zero(d)) nm_fail("division by zero");
+        return vc(c_mul(as_c(a), c_inv(d)));
+    }
     if (is_exact(a) && is_exact(b) && (a.kind == V_RAT || b.kind == V_RAT || op == '/')) {
         R x = as_r(a), y = as_r(b);
         switch (op) {
@@ -752,6 +787,7 @@ static Val name_val(const char *s, size_t len, int primes) {
         return b->v;
     }
     if (len == 1 && s[0] == 'i') return vc(c_imag_unit());   /* i: the square root of -1 */
+    if (same(s, len, "pi", 2)) return vc(c_named("pi", conic_pi, NULL));
     return vc(c_letter(letter_index(s, len)));       /* a letter */
 }
 
@@ -807,6 +843,19 @@ static int inherit_builtin(Val *out, Val *args, int n) {
 }
 
 /* the functions every mathematician expects, when the name is not defined otherwise */
+static const char *BUILTINS[] = {"det", "inverse", "transpose", "rank", "nullspace", "charpoly", "eigenvalues", "linsolve",
+    "gcd", "lcm", "mod", "powmod", "invmod", "isprime", "apart", "factor", "divisors", "sigma", "phi", "nextprime",
+    "log", "atan", "pi", NULL};
+
+static int name_known(const char *s, size_t len) { return lookup(s, len) || param_find(s, len); }
+
+/* an unbound name of letters only, not a function, parameter or defined name, is a product of single letters */
+static int reads_as_letters(const char *s, size_t len) {
+    for (size_t i = 0; i < len; i++) if (!isalpha((unsigned char)s[i])) return 0;
+    for (int i = 0; BUILTINS[i]; i++) if (same(s, len, BUILTINS[i], strlen(BUILTINS[i]))) return 0;
+    return !lookup(s, len) && !param_find(s, len);
+}
+
 static int builtin(const char *s, size_t len, Node *n, Val *out) {
 #define IS(name) same(s, len, name, strlen(name))
     Val a[8];
@@ -814,8 +863,21 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
     if (na > 8) return 0;
     if (!(IS("det") || IS("inverse") || IS("transpose") || IS("rank") || IS("nullspace") || IS("charpoly") || IS("eigenvalues")
           || IS("linsolve") || IS("gcd") || IS("lcm") || IS("mod") || IS("powmod") || IS("invmod") || IS("isprime")
-          || IS("apart") || IS("factor") || IS("divisors") || IS("sigma") || IS("phi") || IS("nextprime"))) return 0;
+          || IS("apart") || IS("factor") || IS("divisors") || IS("sigma") || IS("phi") || IS("nextprime")
+          || IS("log") || IS("atan"))) return 0;
     for (int i = 0; i < na; i++) a[i] = eval(n->args[i]);
+    if (IS("log") || IS("atan")) {                    /* areas of the hyperbola and the circle, as exact constants */
+        if (na != 1) nm_fail("%.*s takes one number", (int)len, s);
+        C u;
+        if (a[0].kind == V_Q) u = c_const(a[0].q);
+        else if (a[0].kind == V_POLY && !c_has_plain(a[0].c)) u = a[0].c;
+        else nm_fail("%.*s here takes an exact number; for a series use log1p or atan from the prelude", (int)len, s);
+        if (IS("log") && number_sign(u) <= 0) nm_fail("log of a number that is not positive");
+        C r = conic_constant(IS("log") ? AREA_LOG : AREA_ATAN, u);
+        Q k;
+        *out = c_const_value(r, &k) ? vq(k) : vc(r);
+        return 1;
+    }
 #define NEED(k) do { if (na != (k)) nm_fail("%.*s takes %d argument%s", (int)len, s, (k), (k) == 1 ? "" : "s"); } while (0)
     if (IS("apart")) {
         NEED(2);

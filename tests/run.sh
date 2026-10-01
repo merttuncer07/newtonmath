@@ -15,15 +15,15 @@ done < tests/cases.txt
 for first in a x; do
   out=$(printf '%s\n(a+x)^2\n' "$first" | $NM | tail -1)
   n=$((n+1))
-  [ "$out" = 'a^2 + 2ax + x^2  [exact]' ] || { echo "FAIL: term order after $first: $out"; fail=$((fail+1)); }
+  [ "$out" = 'x^2 + 2ax + a^2  [exact]' ] || { echo "FAIL: term order after $first: $out"; fail=$((fail+1)); }
 done
-# Compare full letter names, and exact exponents even when the total degree is zero.
+# Letters are single (aa is a*a; Slice 10), flowing letters lead; exact exponents even at total degree zero.
 out=$(printf 'az\naa+az\n' | $NM | tail -1)
 n=$((n+1))
-[ "$out" = 'aa + az  [exact]' ] || { echo "FAIL: multi-character term order: $out"; fail=$((fail+1)); }
+[ "$out" = 'az + a^2  [exact]' ] || { echo "FAIL: multi-character term order: $out"; fail=$((fail+1)); }
 out=$($NM -e 'a^(-1/2)*x^(1/2)+a^(1/2)*x^(-1/2)')
 n=$((n+1))
-[ "$out" = 'a^(1/2)/(x^(1/2)) + x^(1/2)/(a^(1/2))  [exact]' ] || { echo "FAIL: fractional term order: $out"; fail=$((fail+1)); }
+[ "$out" = 'x^(1/2)/(a^(1/2)) + a^(1/2)/(x^(1/2))  [exact]' ] || { echo "FAIL: fractional term order: $out"; fail=$((fail+1)); }
 
 # continuation: the second request continues from the stored root
 out=$(printf 'let r = root of y^3 - 2y - 5 = 0 near 2\nr to 60 places\n' | $NM | tail -1)
@@ -169,7 +169,7 @@ for first in a x; do
   for expr in '(x-a)/(a^2-x^2)' '-1/(x+a)'; do
     out=$(printf '%s\n%s\n' "$first" "$expr" | $NM | tail -1)
     n=$((n+1))
-    [ "$out" = '-1/(a + x)  [exact]' ] || { echo "FAIL: quotient order after $first: $out"; fail=$((fail+1)); }
+    [ "$out" = '-1/(x + a)  [exact]' ] || { echo "FAIL: quotient order after $first: $out"; fail=$((fail+1)); }
   done
 done
 for first in a d; do

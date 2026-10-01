@@ -206,7 +206,7 @@ int elim_has_root_closed(C p, int v, Q lo, Q hi);
 enum { AREA_LOG, AREA_ATAN };
 typedef struct { R coef; C poly; int kind; } AreaTerm;
 typedef struct { int var, n; R rational; AreaTerm *term; } Integral;
-typedef struct { int n; R *part; } Apart;
+typedef struct { int n; R *part; C *base; int *pw; } Apart;   /* part[i] over base[i]^pw[i]; pw 0: the whole part */
 C integ_diff_poly(C p, int v);
 C integ_subst_poly(C p, int v, C x);
 R integ_derivative(Integral a);

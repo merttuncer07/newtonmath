@@ -9,6 +9,7 @@ UNITS = $(patsubst tests/unit/%.c,tests/unit/%_test,$(wildcard tests/unit/*.c))
 
 test: newtonmath tests/check_z $(UNITS)
 	sh tests/run.sh
+	sh tests/roundtrip.sh
 	./tests/check_z
 	for u in $(UNITS); do ./$$u > /dev/null || { ./$$u; exit 1; }; ./$$u | tail -1; done
 
