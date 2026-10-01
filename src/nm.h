@@ -209,6 +209,21 @@ int64_t b_guaranteed_places(Ball a, int64_t want);  /* largest k <= want with ra
 char *fixed_str(Z scaled, int64_t places);          /* scaled / 10^places written in decimal */
 Z b_round_to_places(Ball a, int64_t places);
 
+/* ---- whole numbers (arith.c) ---- */
+#define NM_MAXFAC 128
+typedef struct { int sign, n; Z p[NM_MAXFAC]; int e[NM_MAXFAC]; int status[NM_MAXFAC]; } Factors;   /* status: 1 proved, 2 probable */
+Z z_mod(Z a, Z m);
+Z z_powmod(Z b, Z e, Z m);
+Z z_xgcd(Z a, Z b, Z *s, Z *t);
+int z_invmod(Z a, Z m, Z *out);
+int z_crt(const Z *r, const Z *m, int k, Z *x, Z *M);
+int z_isprime(Z n);                           /* 0 composite, 1 proved prime, 2 probable prime */
+Factors z_factor(Z n);
+Z z_sigma(Z n);
+Z z_phi(Z n);
+int z_divisors(Z n, Z *out, int max);
+Z z_nextprime(Z n);
+
 /* ---- complex balls and values from term rules (cplx.c) ---- */
 typedef struct { Ball re, im; } CBall;
 typedef struct { int s, T; Poly D; Poly *N; Poly h; } TermRule;   /* D(n) c_n = sum N_t(n) c_{n-t} - h_{n-s} */
