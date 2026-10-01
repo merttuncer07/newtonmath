@@ -13,14 +13,12 @@ static Q qi(int64_t v) { return q_from_z(z_from_i64(v)); }
 
 /* ---------------- polynomials in one letter, coefficients quantities in the others ---------------- */
 
-typedef struct { int deg; C *c; } UP;
-
-static UP up_alloc(int deg) {
+UP up_alloc(int deg) {
     UP p; p.deg = deg; p.c = arena_alloc((size_t)(deg + 2) * sizeof(C));
     for (int i = 0; i <= deg; i++) p.c[i] = c_zero();
     return p;
 }
-static UP up_trim(UP p) { while (p.deg >= 0 && c_is_zero(p.c[p.deg])) p.deg--; return p; }
+UP up_trim(UP p) { while (p.deg >= 0 && c_is_zero(p.c[p.deg])) p.deg--; return p; }
 
 static int64_t whole_exp(Q e) {
     int64_t v;
@@ -28,7 +26,7 @@ static int64_t whole_exp(Q e) {
     return v;
 }
 
-static UP up_from(C a, int v) {
+UP up_from(C a, int v) {
     int deg = 0;
     for (int t = 0; t < a.nt; t++) { int64_t e = whole_exp(a.t[t].e[v]); if (e > deg) deg = (int)e; }
     UP p = up_alloc(deg);
@@ -40,7 +38,7 @@ static UP up_from(C a, int v) {
     return up_trim(p);
 }
 
-static UP up_sub(UP a, UP b) {
+UP up_sub(UP a, UP b) {
     UP r = up_alloc(a.deg > b.deg ? a.deg : b.deg);
     for (int i = 0; i <= r.deg; i++) r.c[i] = c_sub(i <= a.deg ? a.c[i] : c_zero(), i <= b.deg ? b.c[i] : c_zero());
     return up_trim(r);

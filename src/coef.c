@@ -603,10 +603,7 @@ static int cmp_for_print(const void *x, const void *y) {
     return 0;
 }
 
-char *c_to_str(C a) {
-    if (a.nt <= 0) { char *z = arena_alloc(2); strcpy(z, "0"); return z; }
-    C s = c_alloc(a.nt);
-    memcpy(s.t, a.t, (size_t)a.nt * sizeof(CT));
+static void set_print_order(void) {
     for (int l = 0; l < nletters; l++) {
         int i = l;
         while (i > 0 && strcmp(letter_names[l], letter_names[print_order[i - 1]]) < 0) {
@@ -615,6 +612,21 @@ char *c_to_str(C a) {
         }
         print_order[i] = l;
     }
+}
+
+int c_leading_index(C a) {
+    set_print_order();
+    int best = -1;
+    for (int i = 0; i < a.nt; i++)
+        if (best < 0 || cmp_for_print(&a.t[i], &a.t[best]) < 0) best = i;
+    return best;
+}
+
+char *c_to_str(C a) {
+    if (a.nt <= 0) { char *z = arena_alloc(2); strcpy(z, "0"); return z; }
+    C s = c_alloc(a.nt);
+    memcpy(s.t, a.t, (size_t)a.nt * sizeof(CT));
+    set_print_order();
     qsort(s.t, (size_t)s.nt, sizeof(CT), cmp_for_print);
     size_t cap = 16;
     char **parts = arena_alloc((size_t)s.nt * sizeof(char *));

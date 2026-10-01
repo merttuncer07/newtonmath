@@ -124,8 +124,32 @@ int c_equal(C a, C b);
 C c_persist(C a);
 C c_coeff_of(C a, int idx, Q e);              /* the part with letter idx to the power e, that letter removed */
 char *c_to_str(C a);
+int c_leading_index(C a);                    /* fixed degree/alphabetical term order; -1 for zero */
 char *ct_str(CT t, const char *extra_name, Q extra_e, int first);
 char *c_term_str(C a, const char *var, Q e, int first);
+
+/* Polynomials in one letter with C coefficients, shared with elimination. */
+typedef struct { int deg; C *c; } UP;
+UP up_alloc(int deg);
+UP up_trim(UP p);
+UP up_from(C a, int v);
+UP up_sub(UP a, UP b);
+
+/* Rational functions over Q in ordinary letters. A unit denominator also holds existing C quantities. */
+typedef struct { C num, den; } R;
+C poly_gcd(C a, C b);                       /* monic gcd, including gcd(0,0) = 0 */
+C poly_exact_div(C a, C b);                 /* refuses a nonzero remainder; checks by multiplication */
+R r_from_c(C a);
+R r_make(C num, C den);
+R r_add(R a, R b);
+R r_sub(R a, R b);
+R r_mul(R a, R b);
+R r_div(R a, R b);
+R r_pow_int(R a, int64_t e);
+int r_equal(R a, R b);
+int r_is_zero(R a);
+R r_persist(R a);
+char *r_to_str(R a);
 
 /* ---- series: c[0] + c[1] x + ... + c[n-1] x^(n-1) + O(x^n), coefficients in letters ---- */
 typedef struct { int n; C *c; } Ser;

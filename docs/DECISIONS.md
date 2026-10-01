@@ -444,3 +444,42 @@ Small choices made while coding:
 - keep the arithmetic's indices and surd equations intact; the printer sorts a copy of the terms;
 - review only the two changed fixture lines: the binomial square and the resultant obtained by substituting
   y = x + b into y^2 = x^3 + a. Both were checked independently by substitution and with bc.
+
+# Slice 8: rational functions
+
+Question: how should division by a sum of ordinary letters behave, and how can matrices use it?
+Decision (Mert, supplied design D1-D6): return a finite exact quotient first; expand only when a series is
+requested. Reduce by recursive multivariate polynomial gcd over Q, using primitive pseudo-remainder sequences,
+not modular or heuristic gcd. Share elimination's univariate-in-one-letter representation. Matrices use the
+resulting field; rank and nullspace must state their generic meaning and exceptional values. Check quotients by
+cross-multiplication and every gcd by exact division of both inputs. The supplied design supersedes the earlier
+requirement to return new design questions to the previous agent; routine implementation choices are delegated.
+
+Newton and evidence:
+- NATP00204, De Analysi, rule III and the following division example (local text, lines 27-33): aa/(b+x) is a
+  given quantity, expanded by division to compute its area. This motivates keeping the finite form available.
+- NATP00296, Problem 2: checking the inverse by the direct operation, with a failed check called "vitiose"
+  (the passage already recorded under D3 above).
+- Arithmetica Universalis: fraction reduction by continual division / Euclid on polynomials, **from general
+  knowledge**; this book is not in sources/ and this historical attribution has not been checked against it.
+
+Isolated module built:
+- `R { C num, den }`, arithmetic, whole powers, equality, persistence and printing in src/ratfun.c.
+- Recursive content gcd and primitive pseudo-remainders use UP allocated, split and subtracted by elim.c.
+- Exact polynomial division multiplies back. Each gcd is checked against both inputs; quotient normalization
+  checks the original numerator and denominator by cross-multiplication. Unit-denominator sums/products use
+  the existing C operations directly.
+- Unsupported fractional powers in quotients, surds mixed with ordinary letters in denominators, and zero
+  denominators fail with a reason. Existing inverses of pure surd/complex denominators still use c_inv.
+
+Small choices:
+- Main letter: alphabetically last ordinary letter present. Leading term: the existing fixed descending total
+  degree, then descending exponents in alphabetical letter-name order; the printer shares this comparison.
+- Make the gcd and denominator monic over Q, stronger than merely positive. This also fixes rational scalar
+  units and gives a unique normal form independent of registration order. gcd(0,0)=0; gcd(0,p) is monic(p).
+- Clear negative whole powers in numerator and denominator by the same monomial before polynomial gcd.
+- A quotient with an ordinary-letter denominator requires rational coefficients; surd numerators in such
+  quotients are outside v1. An ordinary-letter numerator over a pure surd denominator can still be rationalized.
+- Tests use explicit multiplication in input expressions: `a*x` is a product; `ax` remains a whole name.
+- Numerical checks are fixed-seed regression evidence, not proofs: 64 nonsingular rational assignments compare
+  11 original expressions evaluated with Q alone against the reduced results (704 comparisons).
