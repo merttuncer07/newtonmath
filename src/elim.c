@@ -403,3 +403,10 @@ Solutions elim_solve(C *eqs, int ne, int *vars, int nv) {
     }
     return S;
 }
+
+/* the roots of one polynomial in the letter v (numbers, surds and letters in its coefficients) */
+int elim_roots(C p, int v, C *out, int max, int *unresolved) {
+    int n = 0;
+    *unresolved = up_roots(up_from(p, v), out, &n, max);
+    return n;
+}

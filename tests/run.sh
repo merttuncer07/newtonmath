@@ -54,6 +54,28 @@ log1p(sqrt(2) - 1)|l(sqrt(2))
 atan(sqrt(3) - 1)|a(sqrt(3)-1)
 sqrt(1 + sqrt(2))|sqrt(1+sqrt(2))
 (3 + sqrt(5))/(1 + sqrt(2))|(3+sqrt(5))/(1+sqrt(2))
+sin'(1/2)|c(1/2)
+-cos''(1/3)|c(1/3)
+CASES
+  # values at complex points: real and imaginary parts, each against bc
+  while IFS='|' read -r mine_expr bc_re bc_im; do
+    places=60
+    mine=$(printf 'use prelude\n%s to %d places\n' "$mine_expr" $places | ./newtonmath | tail -1)
+    case "$mine" in *"$places places guaranteed"*) ;; *) echo "FAIL: $mine_expr: $mine"; fail=$((fail+1)); continue;; esac
+    re=$(echo "$mine" | cut -d' ' -f1 | tr -d '.' | sed 's/^0*//')
+    im=$(echo "$mine" | cut -d' ' -f3 | tr -d '.i' | sed 's/^0*//')
+    sg=$(echo "$mine" | cut -d' ' -f2); [ "$sg" = "-" ] && im="-$im"
+    for part in re im; do
+      if [ $part = re ]; then e=$bc_re; got=$re; else e=$bc_im; got=$im; fi
+      theirs=$(printf 'scale=%d\nv=(%s)*10^%d\nif (v<0) v=v-0.5 else v=v+0.5\nscale=0\nv/1\n' $((places+10)) "$e" $places | BC_LINE_LENGTH=0 bc -l)
+      n=$((n+1))
+      [ "$got" = "$theirs" ] || { echo "FAIL: $mine_expr ($part) differs from bc: $got vs $theirs"; fail=$((fail+1)); }
+    done
+  done <<'CASES'
+exp(1 + i)|e(1)*c(1)|e(1)*s(1)
+sin(1/2 + i/3)|s(1/2)*(e(1/3)+e(-1/3))/2|c(1/2)*(e(1/3)-e(-1/3))/2
+log1p(i/2)|l(5/4)/2|a(1/2)
+(1 + 2i) * exp(i)|c(1)-2*s(1)|s(1)+2*c(1)
 CASES
 fi
 
@@ -68,6 +90,10 @@ if ! ./newtonmath tests/newton.nm | diff -u tests/newton.out - ; then echo "FAIL
 # surds and i
 n=$((n+1))
 if ! ./newtonmath tests/irrational.nm | diff -u tests/irrational.out - ; then echo "FAIL: tests/irrational.nm"; fail=$((fail+1)); fi
+
+# the four modules reached from the language: systems, matrices, whole numbers, complex points, moved series
+n=$((n+1))
+if ! ./newtonmath tests/integration.nm | diff -u tests/integration.out - ; then echo "FAIL: tests/integration.nm"; fail=$((fail+1)); fi
 
 # rules, sequences, sums and cases
 n=$((n+1))

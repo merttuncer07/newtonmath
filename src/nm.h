@@ -88,7 +88,7 @@ char *p_to_str(Poly a);
 struct Root;
 
 /* ---- quantities in letters: sums of k * a^e1 * b^e2 ..., rational k and rational exponents ---- */
-#define NM_MAXL 12
+#define NM_MAXL 32
 typedef struct { Q k; Q e[NM_MAXL]; } CT;
 typedef struct { int nt; CT *t; } C;
 
@@ -172,6 +172,7 @@ typedef struct {
 C det_nodiv(C *m, int n);
 C elim_resultant(C A, C B, int v);
 Solutions elim_solve(C *eqs, int ne, int *vars, int nv);
+int elim_roots(C p, int v, C *out, int max, int *unresolved);
 
 /* ---- matrices (linalg.c) ---- */
 typedef struct { int r, c; C *a; } Mat;       /* row by row */

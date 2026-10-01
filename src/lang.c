@@ -34,7 +34,7 @@ extern char nm_error_msg[512];
 enum { T_END, T_NUM, T_NAME, T_OP, T_KEY };
 typedef struct { int kind; const char *s; size_t len; char op; int primes; const char *at; } Tok;   /* at: where in the line */
 
-static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", "for", "starting", "sum", "if", "otherwise", NULL};
+static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", "for", "starting", "sum", "if", "otherwise", "solve", "eliminate", "from", NULL};
 
 static Tok *toks;
 static int ntok, pos;
@@ -108,7 +108,7 @@ static void expect_key(const char *k) {
 
 /* ---------------- syntax tree ---------------- */
 
-enum { N_NUM, N_NAME, N_NEG, N_BIN, N_SQRT, N_ROOT, N_APPLY, N_DERIV, N_INTEG, N_INDEX, N_SUM, N_CASES, N_CMP };
+enum { N_NUM, N_NAME, N_NEG, N_BIN, N_SQRT, N_ROOT, N_APPLY, N_DERIV, N_INTEG, N_INDEX, N_SUM, N_CASES, N_CMP, N_MAT };
 
 typedef struct Cond { const char *s; size_t len; int primes; struct Node *at, *val; } Cond;
 
@@ -174,6 +174,29 @@ static Node *primary(void) {
         return n;
     }
     if (at_op('(')) { pos++; Node *e = expr(); expect_op(')'); return e; }
+    if (at_op('[')) {                                                  /* [[1, 2], [3, 4]], or [1, 2, 3] (a column) */
+        pos++;
+        Node *n = mk(N_MAT);
+        n->args = arena_alloc(256 * sizeof(Node *));
+        if (at_op('[')) {
+            while (at_op('[')) {
+                pos++;
+                Node *row = mk(N_MAT);
+                row->args = arena_alloc(256 * sizeof(Node *));
+                do { if (row->nargs == 256) nm_fail("too many entries"); row->args[row->nargs++] = expr(); } while (at_op(',') && (pos++, 1));
+                expect_op(']');
+                if (n->nargs == 256) nm_fail("too many rows");
+                n->args[n->nargs++] = row;
+                if (at_op(',')) pos++;
+            }
+            n->op = 'm';
+        } else {
+            do { if (n->nargs == 256) nm_fail("too many entries"); n->args[n->nargs++] = expr(); } while (at_op(',') && (pos++, 1));
+            n->op = 'v';
+        }
+        expect_op(']');
+        return n;
+    }
     if (at_key("sqrt")) {
         pos++;
         Node *n = mk(N_SQRT);
@@ -313,9 +336,12 @@ static Node *parse_text(const char *src) {
 
 /* ---------------- values ---------------- */
 
-enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC, V_FUNC, V_SEQ };   /* recipes: series, number; rules */
+enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC, V_FUNC, V_SEQ, V_MAT, V_CBALL, V_TEXT };
 struct Def;
-typedef struct { int kind; Q q; C c; Root *root; Ball ball; const char *src, *var; struct Def *def; } Val;   /* V_POLY holds c */
+typedef struct {
+    int kind; Q q; C c; Root *root; Ball ball; const char *src, *var; struct Def *def;
+    Mat m; CBall z; const char *text;       /* a matrix; a complex approximate value; a verdict to print */
+} Val;   /* V_POLY holds c */
 
 /* A quantity with its moment: a + b·o, where o·o is rejected (Methodus, Problem 1). The moment carries the
  * derivative with respect to the unknown term, which is what resolution needs. */
@@ -512,7 +538,6 @@ static Poly c_to_poly(C c, const char *var) {
 /* ---------------- the exact pass: numbers, rationals, polynomials ---------------- */
 
 static Val eval(Node *n);
-static Val series_value(Binding *b, Val arg);
 
 /* while reading an equation's coefficients, the unknown and its derivatives stand for given numbers */
 static struct { int active; const char *u; size_t ul; Q vals[8]; } ovr;
@@ -537,7 +562,66 @@ static Val power_val(Val base, Val ex) {
     return vball(b_pow(as_ball(base), num, work_prec));
 }
 
+static int max_primes(Node *n, const char *u, size_t ul);
+static Val vmat(Mat m) { Val v; memset(&v, 0, sizeof v); v.kind = V_MAT; v.m = m; return v; }
+static Val vcb(CBall z) { Val v; memset(&v, 0, sizeof v); v.kind = V_CBALL; v.z = z; return v; }
+static Val vtext(const char *t) { Val v; memset(&v, 0, sizeof v); v.kind = V_TEXT; v.text = t; return v; }
+static int split_imag(C a, C *re, C *im);
+static Ball ball_of_c(C a, int64_t prec);
+
+static CBall as_cball(Val v) {
+    CBall z;
+    if (v.kind == V_CBALL) return v.z;
+    if (v.kind == V_POLY) {
+        C re, im;
+        if (split_imag(v.c, &re, &im)) { z.re = ball_of_c(re, work_prec); z.im = ball_of_c(im, work_prec); return z; }
+    }
+    if (v.kind == V_MAT || v.kind == V_TEXT) nm_fail("this is not a number");
+    z.re = as_ball(v); z.im = b_from_q(qi(0), work_prec);
+    return z;
+}
+
+static C entry_of(Val v) {                              /* a matrix entry, or a scalar for a matrix */
+    if (v.kind == V_Q) return c_const(v.q);
+    if (v.kind == V_POLY) return v.c;
+    nm_fail("matrix entries must be exact (numbers, surds or letters)");
+}
+
 static Val arith(char op, Val a, Val b) {
+    if (a.kind == V_TEXT || b.kind == V_TEXT) nm_fail("a verdict cannot enter a calculation");
+    if (a.kind == V_MAT || b.kind == V_MAT) {
+        if (op == '^') {
+            if (a.kind != V_MAT || b.kind != V_Q || !q_is_int(b.q)) nm_fail("a matrix power needs a whole exponent");
+            int64_t e; z_fits_i64(b.q.num, &e);
+            return vmat(mat_pow(a.m, e));
+        }
+        if (a.kind == V_MAT && b.kind == V_MAT) {
+            if (op == '+') return vmat(mat_add(a.m, b.m, 1));
+            if (op == '-') return vmat(mat_add(a.m, b.m, -1));
+            if (op == '*') return vmat(mat_mul(a.m, b.m));
+            nm_fail("dividing by a matrix: multiply by its inverse, M^-1");
+        }
+        if (op == '*') return a.kind == V_MAT ? vmat(mat_scale(a.m, entry_of(b))) : vmat(mat_scale(b.m, entry_of(a)));
+        if (op == '/' && a.kind == V_MAT) return vmat(mat_scale(a.m, c_inv(entry_of(b))));
+        nm_fail("a matrix and a number can only be multiplied, or the matrix divided by the number");
+    }
+    if (a.kind == V_CBALL || b.kind == V_CBALL) {
+        if (op == '^') {
+            if (b.kind != V_Q || !q_is_int(b.q)) nm_fail("a complex approximate value takes whole powers only");
+            int64_t e; z_fits_i64(b.q.num, &e);
+            CBall r = cb_from_q(qi(1), qi(0), work_prec), x = as_cball(a);
+            int neg = e < 0; if (neg) e = -e;
+            while (e) { if (e & 1) r = cb_mul(r, x, work_prec); e >>= 1; if (e) x = cb_mul(x, x, work_prec); }
+            return vcb(neg ? cb_div(cb_from_q(qi(1), qi(0), work_prec), r, work_prec) : r);
+        }
+        CBall x = as_cball(a), y = as_cball(b);
+        switch (op) {
+        case '+': return vcb(cb_add(x, y, work_prec));
+        case '-': return vcb(cb_sub(x, y, work_prec));
+        case '*': return vcb(cb_mul(x, y, work_prec));
+        case '/': return vcb(cb_div(x, y, work_prec));
+        }
+    }
     if (op == '^') return power_val(a, b);
     if (a.kind == V_Q && b.kind == V_Q) {
         switch (op) {
@@ -619,8 +703,157 @@ static int64_t whole(Val v, const char *what) {
     return k;
 }
 
+static Val series_value_d(Binding *b, Val arg, int deriv);
+static int recipe_is_equation(Binding *b);
+
+static Z whole_z(Val v, const char *what) {
+    if (v.kind != V_Q || !q_is_int(v.q)) nm_fail("%s must be a whole number", what);
+    return v.q.num;
+}
+
+static Mat as_mat(Val v, const char *what) {
+    if (v.kind != V_MAT) nm_fail("%s must be a matrix", what);
+    return v.m;
+}
+
+static char *verdict_of_prime(int s) { return s == 1 ? "[proved]" : s == 2 ? "[probable: BPSW test, no proof found]" : "[exact]"; }
+
+/* the functions every mathematician expects, when the name is not defined otherwise */
+static int builtin(const char *s, size_t len, Node *n, Val *out) {
+#define IS(name) same(s, len, name, strlen(name))
+    Val a[8];
+    int na = n->nargs;
+    if (na > 8) return 0;
+    if (!(IS("det") || IS("inverse") || IS("transpose") || IS("rank") || IS("nullspace") || IS("charpoly") || IS("eigenvalues")
+          || IS("linsolve") || IS("gcd") || IS("lcm") || IS("mod") || IS("powmod") || IS("invmod") || IS("isprime")
+          || IS("factor") || IS("divisors") || IS("sigma") || IS("phi") || IS("nextprime"))) return 0;
+    for (int i = 0; i < na; i++) a[i] = eval(n->args[i]);
+#define NEED(k) do { if (na != (k)) nm_fail("%.*s takes %d argument%s", (int)len, s, (k), (k) == 1 ? "" : "s"); } while (0)
+    if (IS("det")) { NEED(1); *out = vc(mat_det(as_mat(a[0], "the argument of det"))); return 1; }
+    if (IS("inverse")) { NEED(1); *out = vmat(mat_inverse(as_mat(a[0], "the argument of inverse"))); return 1; }
+    if (IS("transpose")) { NEED(1); *out = vmat(mat_transpose(as_mat(a[0], "the argument of transpose"))); return 1; }
+    if (IS("rank")) { NEED(1); *out = vq(qi(mat_rank(as_mat(a[0], "the argument of rank")))); return 1; }
+    if (IS("nullspace")) { NEED(1); *out = vmat(mat_nullspace(as_mat(a[0], "the argument of nullspace"))); return 1; }
+    if (IS("charpoly") || IS("eigenvalues")) {
+        if (na != 1 && !(IS("charpoly") && na == 2)) nm_fail("%.*s takes a matrix", (int)len, s);
+        Mat m = as_mat(a[0], "the argument");
+        int t;
+        if (na == 2) {
+            if (n->args[1]->kind != N_NAME) nm_fail("the second argument of charpoly is a letter");
+            t = letter_index(n->args[1]->s, n->args[1]->len);
+        } else t = letter_index("t", 1);
+        C *cp = mat_charpoly(m), p = c_zero();
+        for (int i = 0; i <= m.r; i++) p = c_add(p, c_mul(cp[i], c_pow_int(c_letter(t), i)));
+        if (IS("charpoly")) { *out = vc(p); return 1; }
+        C roots[256]; int unres;
+        int k = elim_roots(p, t, roots, 256, &unres);
+        Mat r = mat_new(1, k);
+        for (int i = 0; i < k; i++) r.a[i] = roots[i];
+        if (!unres) { *out = vmat(r); return 1; }
+        char *txt = arena_alloc(strlen(mat_to_str(r)) + 128);
+        sprintf(txt, "%s  [and %d complex roots of a factor above degree two, not shown]", mat_to_str(r), unres);
+        *out = vtext(txt);
+        return 1;
+    }
+    if (IS("linsolve")) {
+        NEED(2);
+        Mat ns, x = mat_solve(as_mat(a[0], "the matrix"), as_mat(a[1], "the right side"), &ns);
+        if (ns.c == 0) { *out = vmat(x); return 1; }
+        char *t1 = mat_to_str(x), *t2 = mat_to_str(ns);
+        char *txt = arena_alloc(strlen(t1) + strlen(t2) + 128);
+        sprintf(txt, "%s + any combination of the columns of %s  [exact]", t1, t2);
+        *out = vtext(txt);
+        return 1;
+    }
+    if (IS("gcd") || IS("lcm")) {
+        if (na < 1) nm_fail("%.*s needs numbers", (int)len, s);
+        Z g = whole_z(a[0], "an argument");
+        g = z_abs(g);
+        for (int i = 1; i < na; i++) {
+            Z b = z_abs(whole_z(a[i], "an argument"));
+            if (IS("gcd")) g = z_gcd(g, b);
+            else { Z q, r, d = z_gcd(g, b); if (d.s) { z_divmod(z_mul(g, b), d, &q, &r); g = q; } else g = z_zero(); }
+        }
+        *out = vq(q_from_z(g));
+        return 1;
+    }
+    if (IS("mod")) { NEED(2); *out = vq(q_from_z(z_mod(whole_z(a[0], "a"), whole_z(a[1], "m")))); return 1; }
+    if (IS("powmod")) {
+        NEED(3);
+        Z b = whole_z(a[0], "the base"), e = whole_z(a[1], "the exponent"), m = whole_z(a[2], "the modulus");
+        if (e.s < 0) { Z iv; if (!z_invmod(b, m, &iv)) nm_fail("%s has no inverse modulo %s", z_to_str(b), z_to_str(m)); b = iv; e = z_neg(e); }
+        *out = vq(q_from_z(z_powmod(b, e, m)));
+        return 1;
+    }
+    if (IS("invmod")) {
+        NEED(2);
+        Z iv, b = whole_z(a[0], "a"), m = whole_z(a[1], "m");
+        if (!z_invmod(b, m, &iv)) nm_fail("%s has no inverse modulo %s (they share a factor)", z_to_str(b), z_to_str(m));
+        *out = vq(q_from_z(iv));
+        return 1;
+    }
+    if (IS("isprime")) {
+        NEED(1);
+        int v = z_isprime(whole_z(a[0], "the argument"));
+        char *txt = arena_alloc(96);
+        sprintf(txt, "%s  %s", v ? "true" : "false", verdict_of_prime(v));
+        *out = vtext(txt);
+        return 1;
+    }
+    if (IS("factor")) {
+        NEED(1);
+        Factors F = z_factor(whole_z(a[0], "the argument"));
+        size_t cap = 128;
+        for (int i = 0; i < F.n; i++) cap += strlen(z_to_str(F.p[i])) + 32;
+        char *txt = arena_alloc(cap), *o = txt;
+        int probable = 0;
+        if (F.sign < 0) o += sprintf(o, "-");
+        if (F.n == 0) o += sprintf(o, "1");
+        for (int i = 0; i < F.n; i++) {
+            o += sprintf(o, "%s%s", i ? " * " : "", z_to_str(F.p[i]));
+            if (F.e[i] > 1) o += sprintf(o, "^%d", F.e[i]);
+            if (F.status[i] == 2) probable++;
+        }
+        if (F.n == 0) sprintf(o, "  [exact]");
+        else if (probable) sprintf(o, "  [multiplied back; %d factor%s only probable prime%s (BPSW)]", probable, probable > 1 ? "s" : "", probable > 1 ? "s" : "");
+        else sprintf(o, "  [multiplied back; every factor proved prime]");
+        *out = vtext(txt);
+        return 1;
+    }
+    if (IS("divisors")) {
+        NEED(1);
+        Z *dv = arena_alloc(100000 * sizeof(Z));
+        int k = z_divisors(z_abs(whole_z(a[0], "the argument")), dv, 100000);
+        Mat r = mat_new(1, k);
+        for (int i = 0; i < k; i++) r.a[i] = c_const(q_from_z(dv[i]));
+        *out = vmat(r);
+        return 1;
+    }
+    if (IS("sigma")) { NEED(1); *out = vq(q_from_z(z_sigma(z_abs(whole_z(a[0], "the argument"))))); return 1; }
+    if (IS("phi")) { NEED(1); *out = vq(q_from_z(z_phi(z_abs(whole_z(a[0], "the argument"))))); return 1; }
+    if (IS("nextprime")) { NEED(1); *out = vq(q_from_z(z_nextprime(whole_z(a[0], "the argument")))); return 1; }
+#undef IS
+#undef NEED
+    return 0;
+}
+
 static Val eval(Node *n) {
     switch (n->kind) {
+    case N_MAT: {
+        Mat m;
+        if (n->op == 'v') {                              /* a column */
+            m = mat_new(n->nargs, 1);
+            for (int i = 0; i < n->nargs; i++) m.a[i] = entry_of(eval(n->args[i]));
+        } else {
+            int cols = n->args[0]->nargs;
+            m = mat_new(n->nargs, cols);
+            for (int i = 0; i < n->nargs; i++) {
+                if (n->args[i]->nargs != cols) nm_fail("every row of a matrix must have %d entries", cols);
+                for (int j = 0; j < cols; j++) m.a[i * cols + j] = entry_of(eval(n->args[i]->args[j]));
+            }
+        }
+        return vmat(m);
+    }
     case N_INDEX: {
         Binding *b = lookup(n->s, n->len);
         if (!b || b->v.kind != V_SEQ) nm_fail("%.*s is not a sequence (define it with let %.*s[0] = ..., %.*s[k] = ...)",
@@ -652,12 +885,23 @@ static Val eval(Node *n) {
     case N_APPLY: {
         Binding *b = lookup(n->s, n->len);
         if (b && b->v.kind == V_FUNC && !param_find(n->s, n->len)) return call_rule(b, n);
+        if (!b && !param_find(n->s, n->len)) { Val bv; if (builtin(n->s, n->len, n, &bv)) return bv; }
         if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
         if (b && b->v.kind == V_REC) {
             Val arg = eval(n->a);
             if (arg.kind == V_POLY && c_has_plain(arg.c)) longjmp(need_series, 1);
+            if (!recipe_is_equation(b)) {                    /* a definition by an expression: put the number in */
+                if (n->primes) nm_fail("the fluxion of %s at a number: take d/d%s first, then put the number in", b->name, b->v.var);
+                int saved_base = frame_base, saved_depth = pdepth;
+                frame_base = pdepth;
+                Param *p = param_push(b->v.var, strlen(b->v.var));
+                p->hasv = 1; p->v = arg;
+                Val r = eval(parse_text(b->v.src));
+                pdepth = saved_depth; frame_base = saved_base;
+                return r;
+            }
             if (arg.kind == V_POLY && c_has_plain(arg.c)) longjmp(need_series, 1);
-            return series_value(b, arg);
+            return series_value_d(b, arg, n->primes);
         }
         if (b && b->v.kind == V_POLY) {                     /* a polynomial in one letter, at a number */
             Val arg = eval(n->a);
@@ -728,6 +972,8 @@ typedef struct {
     int n;                      /* coefficients wanted */
     const char *unk; size_t unklen;
     Dual *yd; int r;            /* the unknown and its derivatives y, y', ..., y^(r) */
+    int has_sub; Dual sub;      /* the letter stands for this series (a definition used at another argument) */
+    int has_shift; C shift;     /* the letter stands for shift + x (an equation moved to another point) */
 } SCtx;
 
 static Dual dconst(Ser a) { Dual d; d.a = a; d.b = a; d.hasb = 0; return d; }
@@ -782,7 +1028,11 @@ static Dual dpow(Dual x, Q alpha) {
 }
 
 static Dual sev(Node *n, SCtx *cx);
-static Ser resolve(Node *root, const char *var, int n);
+static Ser resolve_ex(Node *root, const char *var, int n, const C *shift, const C *starts);
+#define resolve(root, var, n) resolve_ex(root, var, n, NULL, NULL)
+static int recipe_is_equation(Binding *b);
+static Ser moved_series(Binding *b, C a, int n);
+static CBall as_cball(Val v);
 
 static C const_c_of(Dual d, const char *what) {
     for (int i = 1; i < d.a.n; i++)
@@ -821,6 +1071,56 @@ static Ser recipe_series(Binding *b, const char *var, int n) {
     return sev(parse_text(b->v.src), &cx).a;
 }
 
+/* a built-in at a number inside a series: if its arguments need the series letter, it has no series */
+static int try_builtin(Node *n, Val *out) {
+    jmp_buf saved; memcpy(saved, need_series, sizeof saved);
+    volatile int ok = 0;
+    if (!setjmp(need_series)) ok = builtin(n->s, n->len, n, out);
+    memcpy(need_series, saved, sizeof saved);
+    return ok;
+}
+
+static int recipe_is_equation(Binding *b) {
+    Node *r = parse_text(b->v.src);
+    return r->kind == N_ROOT && r->nconds;
+}
+
+/* the value of f^(j) at a, kept as a letter: exp(1), exp'(1) ... */
+typedef struct { Binding *b; C a; int j; } MovedStart;
+
+static Ball moved_start_value(void *data, int64_t prec) {
+    MovedStart *m = data;
+    int64_t saved = work_prec;
+    work_prec = prec;
+    Val av; Q k;
+    if (c_const_value(m->a, &k)) av = vq(k); else { memset(&av, 0, sizeof av); av.kind = V_POLY; av.c = m->a; }
+    CBall z = as_cball(series_value_d(m->b, av, m->j));
+    work_prec = saved;
+    if (z.im.m.s || z.im.r.s) nm_fail("a moved series at a complex point comes later");
+    return z.re;
+}
+
+/* f(a + x) for f known by its equation: the same equation with x put for a + x, and its starts the values of
+ * f, f', ... at a, each a letter known by its value */
+static Ser moved_series(Binding *b, C a, int n) {
+    Node *root = parse_text(b->v.src);
+    const char *u = root->conds[0].s; size_t ul = root->conds[0].len;
+    int r = max_primes(root->a, u, ul), r2 = max_primes(root->b, u, ul);
+    if (r2 > r) r = r2;
+    int need = r ? r : 1;
+    if (c_has_plain(a)) nm_fail("moving %s to a point with letters comes later", b->name);
+    C *starts = arena_alloc((size_t)need * sizeof(C));
+    char *as = c_to_str(a);
+    for (int j = 0; j < need; j++) {
+        char *disp = arena_alloc(strlen(b->name) + strlen(as) + 16);
+        { char *o = disp + sprintf(disp, "%s", b->name); for (int q = 0; q < j; q++) *o++ = 39; sprintf(o, "(%s)", as); }
+        MovedStart *ms = perm_alloc(sizeof *ms);
+        ms->b = b; ms->a = c_persist(a); ms->j = j;
+        starts[j] = c_named(disp, moved_start_value, ms);
+    }
+    return resolve_ex(root, b->v.var, n, &a, starts);
+}
+
 static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
     if (cx->unk && same(s, len, cx->unk, cx->unklen)) {
         if (primes > cx->r) nm_fail("internal: derivative order");
@@ -834,7 +1134,16 @@ static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
         if (pp->v.kind == V_POLY) return dconst(s_from_c(pp->v.c, cx->var, cx->n));
         nm_fail("%.*s is an approximate number; it cannot enter a series", (int)len, s);
     }
-    if (same(s, len, cx->var, strlen(cx->var))) return dconst(s_var(cx->n));
+    if (same(s, len, cx->var, strlen(cx->var))) {
+        if (cx->has_sub) {
+            Dual d = cx->sub;
+            d.a = s_trunc(d.a, cx->n);
+            if (d.hasb) d.b = s_trunc(d.b, cx->n);
+            return d;
+        }
+        if (cx->has_shift) return dconst(s_add(s_var(cx->n), s_const(cx->shift, cx->n)));
+        return dconst(s_var(cx->n));
+    }
     Binding *b = lookup(s, len);
     if (!b && len == 1 && s[0] == 'i') return dconst(s_const(c_imag_unit(), cx->n));
     if (!b) return dconst(s_const(c_letter(letter_index(s, len)), cx->n));    /* a given letter: a, b, ... */
@@ -903,8 +1212,32 @@ static Dual sev(Node *n, SCtx *cx) {
             return r;
         }
         if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
+        if (!b && !param_find(n->s, n->len)) {
+            Val bv;
+            if (try_builtin(n, &bv)) {
+                if (bv.kind == V_Q) return dconst(s_const(c_const(bv.q), cx->n));
+                if (bv.kind == V_POLY) return dconst(s_from_c(bv.c, cx->var, cx->n));
+                nm_fail("%.*s gives no series", (int)n->len, n->s);
+            }
+        }
         Dual g = sev(n->a, cx);
         if (!b || b->v.kind != V_REC) return dmul(sname(n->s, n->len, n->primes, cx), g);
+        if (!recipe_is_equation(b)) {                        /* a definition by an expression: put the series in */
+            SCtx sc; memset(&sc, 0, sizeof sc);
+            sc.var = b->v.var; sc.n = cx->n; sc.has_sub = 1; sc.sub = g;
+            return sev(parse_text(b->v.src), &sc);
+        }
+        if (g.a.n && !c_is_zero(g.a.c[0])) {                /* f(a + ...): the equation moved to a */
+            C a0 = g.a.c[0];
+            Ser f = moved_series(b, a0, g.a.n);
+            Dual h = g;
+            h.a = s_sub(g.a, s_const(a0, g.a.n));
+            Dual d;
+            d.a = s_compose(f, h.a);
+            d.hasb = g.hasb;
+            if (g.hasb) d.b = s_mul(s_compose(s_deriv(f), s_trunc(h.a, f.n - 1)), g.b);
+            return d;
+        }
         Ser f = recipe_series(b, b->v.var, g.a.n);                /* f(g), and its moment f'(g) g' */
         Dual d;
         d.a = s_compose(f, g.a);
@@ -949,7 +1282,7 @@ static int max_primes(Node *n, const char *u, size_t ul) {
 /* Resolution of an equation for a series y, term by term from its start (Methodus, Problem 2; De analysi).
  * Put y = (terms found) + o x^d; the lowest term of the equation that o reaches fixes the new coefficient.
  * At the end the whole series is substituted back, and the equation must vanish to the order claimed. */
-static Ser resolve(Node *root, const char *var, int n) {
+static Ser resolve_ex(Node *root, const char *var, int n, const C *shift, const C *starts) {
     Cond *cs = root->conds;
     const char *u = cs[0].s; size_t ul = cs[0].len;
     for (int i = 1; i < root->nconds; i++)
@@ -965,7 +1298,15 @@ static Ser resolve(Node *root, const char *var, int n) {
     int *given = arena_alloc((size_t)need * sizeof(int));
     memset(given, 0, (size_t)need * sizeof(int));
     SCtx k0; memset(&k0, 0, sizeof k0); k0.var = var; k0.n = 1;
-    for (int i = 0; i < root->nconds; i++) {
+    if (starts) {                                       /* the equation moved: its starts are given values */
+        for (int j = 0; j < need; j++) {
+            Q fact = qi(1);
+            for (int f = 2; f <= j; f++) fact = q_mul(fact, qi(f));
+            c[j] = c_scale(starts[j], q_div(qi(1), fact));
+            given[j] = 1;
+        }
+    }
+    for (int i = 0; i < root->nconds && !starts; i++) {
         if (q_sign(const_of(sev(cs[i].at, &k0), "the point of a start")) != 0)
             nm_fail("starts must be given at 0 in this version");
         int j = cs[i].primes;
@@ -981,6 +1322,7 @@ static Ser resolve(Node *root, const char *var, int n) {
     Node *eqn = bin('-', root->a, root->b);
     SCtx cx; memset(&cx, 0, sizeof cx);
     cx.var = var; cx.unk = u; cx.unklen = ul; cx.r = r;
+    if (shift) { cx.has_shift = 1; cx.shift = *shift; }
     cx.yd = arena_alloc((size_t)(r + 1) * sizeof(Dual));
     for (int d = need; d < n; d++) {
         int k = d - r;                                  /* the equation's term that decides y's term of degree d */
@@ -1071,7 +1413,7 @@ static void letters(Node *n, Letters *L, const char *skip, size_t skiplen) {
  * y = sum c_k x^k gives, for n large enough,
  *     D(n) c_n = sum_{t>=1} N_t(n) c_{n-t} - h_{n-s},
  * each term from the ones before, as Newton's A, B, C, D. */
-typedef struct { int s, T; Poly D; Poly *N; Poly h; } Rule;
+typedef TermRule Rule;
 
 static Poly poly_of(Val v, const char *var) {
     if (v.kind == V_Q) return p_const(v.q);
@@ -1154,25 +1496,10 @@ nonlinear:
 
 static Q qabs(Q a) { return q_sign(a) < 0 ? q_neg(a) : a; }
 
-/* an upper bound for |P(n)/D(n)| valid for every n >= N, when deg P <= deg D; negative if none yet */
-static Q ratio_bound(Poly P, Poly D, int64_t N) {
-    int d = D.deg;
-    Q nn = qi(N), num = qi(0), den = qabs(D.c[d]);
-    for (int i = 0; i <= P.deg; i++) num = q_add(num, q_div(qabs(P.c[i]), q_pow(nn, d - i)));
-    for (int i = 0; i < d; i++) den = q_sub(den, q_div(qabs(D.c[i]), q_pow(nn, d - i)));
-    if (q_sign(den) <= 0) return qi(-1);
-    return q_div(num, den);
-}
-
-static Ball ball_widen(Ball b, Q err) {               /* add |err| to the radius */
-    Z num = z_abs(err.num), den = err.den, q, rem;
-    if (b.e < 0) num = z_mul_pow10(num, -b.e); else den = z_mul(den, z_pow10(b.e));
-    z_divmod(num, den, &q, &rem);
-    b.r = z_add(z_add(b.r, q), z_from_i64(rem.s ? 1 : 0));
-    return b;
-}
-
-static Val series_value(Binding *b, Val arg) {
+/* the value of f, or of its j-th fluxion, at a number: real or complex, exact or approximate */
+static Val series_value_d(Binding *b, Val arg, int deriv) {
+    CBall A = as_cball(arg);
+    int real = !A.im.m.s && !A.im.r.s;
     Q a = arg.kind == V_Q ? arg.q : q_from_z(z_zero());
     Node *root = parse_text(b->v.src);
     if (root->kind != N_ROOT || !root->nconds)
@@ -1182,13 +1509,7 @@ static Val series_value(Binding *b, Val arg) {
     if (r2 > r) r = r2;
     Rule R = term_rule(root, b->v.var, r);
     if (R.D.deg < 0) nm_fail("the equation fixes no term of %s", b->name);
-    Q rr = qabs(a);
-    Ball Aball;
-    if (arg.kind != V_Q) {                               /* an approximate argument: the tail with an upper bound of |a| */
-        Aball = as_ball(arg);
-        Z top = z_add(z_abs(Aball.m), Aball.r);
-        rr = Aball.e >= 0 ? q_from_z(z_mul_pow10(top, Aball.e)) : q_make(top, z_pow10(-Aball.e));
-    }
+    Q rr = arg.kind == V_Q ? qabs(a) : cb_abs_upper(A);
     /* how fast the terms shrink in the end: sum over t of lim |N_t / D| r^t must be below 1 */
     Q ginf = qi(0);
     for (int t = 1; t <= R.T; t++) {
@@ -1197,7 +1518,7 @@ static Val series_value(Binding *b, Val arg) {
     }
     if (q_cmp_one(ginf) >= 0)
         nm_fail("at %s the terms of %s shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2",
-                arg.kind == V_Q ? q_to_str(a) : "this argument", b->name);
+                arg.kind == V_Q ? q_to_str(a) : "this point", b->name);
     /* from where on the rule holds: beyond the integer roots of D and the inhomogeneous terms */
     Q cb = qi(0);
     for (int i = 0; i < R.D.deg; i++) {
@@ -1228,61 +1549,24 @@ static Val series_value(Binding *b, Val arg) {
         if (q_cmp(cn, c[n]) != 0) nm_fail("internal check failed: the term rule of %s disagrees with its resolution (vitiose)", b->name);
     }
     ncoef = nseed;
-    if (arg.kind == V_Q && q_sign(a) == 0) return vq(c[0]);
-    /* sum term by term in places (the coefficients exact, the powers of a carried as balls); stop when the rest
-     * is certainly below the places asked */
-    int64_t want = work_prec - GUARD_DIGITS + 10;
-    Q eps = q_make(z_from_i64(1), z_pow10(want));
-    Ball S = b_from_q(qi(0), work_prec), A = arg.kind == V_Q ? b_from_q(a, work_prec) : Aball, P = b_from_q(qi(1), work_prec);
-    Ball *term = arena_alloc((size_t)cap * sizeof(Ball));
-    for (int k = 0;; k++) {
-        if (k >= ncoef) {
-            if (ncoef == cap) {
-                int ncap = cap * 2;
-                Q *nc = arena_alloc((size_t)ncap * sizeof(Q));
-                Ball *nt = arena_alloc((size_t)ncap * sizeof(Ball));
-                memcpy(nc, c, (size_t)cap * sizeof(Q)); memcpy(nt, term, (size_t)cap * sizeof(Ball));
-                c = nc; term = nt; cap = ncap;
-            }
+    if (arg.kind == V_Q && q_sign(a) == 0) {                /* at 0: the term itself, times j! */
+        while (ncoef <= deriv) {
             int n = ncoef;
             Q acc = qi(0);
             for (int t = 1; t <= R.T; t++) acc = q_add(acc, q_mul(p_at(R.N[t], qi(n)), c[n - t]));
             int m = n - R.s;
             if (m >= 0 && m <= R.h.deg) acc = q_sub(acc, R.h.c[m]);
+            if (ncoef == cap) nm_fail("too many terms");
             c[n] = q_div(acc, p_at(R.D, qi(n)));
             ncoef++;
         }
-        term[k] = q_sign(c[k]) ? b_mul(b_from_q(c[k], work_prec), P, work_prec) : b_from_q(qi(0), work_prec);
-        S = b_add(S, term[k], work_prec);
-        P = b_mul(P, A, work_prec);
-        int64_t N = k + 1;
-        if (N < start || N < R.T) continue;
-        /* the careful bound only once the last terms are small */
-        int small = 1;
-        for (int t = 1; t <= R.T; t++) {
-            Ball b = term[N - t];
-            Z top = z_add(z_abs(b.m), b.r);
-            if (top.s && b.e + z_digits(top) > -want + 2) { small = 0; break; }
-        }
-        if (!small) { if (k > 2000000) nm_fail("too many terms"); continue; }
-        Q gamma = qi(0);
-        int ok = 1;
-        for (int t = 1; t <= R.T; t++) {
-            Q u = ratio_bound(R.N[t], R.D, N);
-            if (q_sign(u) < 0) { ok = 0; break; }
-            gamma = q_add(gamma, q_mul(u, q_pow(rr, t)));
-        }
-        if (!ok || q_cmp_one(gamma) >= 0) continue;
-        Q W = qi(0);
-        for (int t = 1; t <= R.T; t++) {                 /* an upper bound of |term|: (|m| + r) 10^e */
-            Ball b = term[N - t];
-            Z top = z_add(z_abs(b.m), b.r);
-            Q up = b.e >= 0 ? q_from_z(z_mul_pow10(top, b.e)) : q_make(top, z_pow10(-b.e));
-            if (q_cmp(up, W) > 0) W = up;
-        }
-        Q tail = q_div(q_mul(q_mul(qi(R.T), gamma), W), q_sub(qi(1), gamma));
-        if (q_cmp(tail, eps) <= 0) return vball(ball_widen(S, tail));
+        Q f = c[deriv];
+        for (int u = 2; u <= deriv; u++) f = q_mul(f, qi(u));
+        return vq(f);
     }
+    CBall v = rule_value(&R, c, ncoef, start, A, deriv, work_prec - GUARD_DIGITS, work_prec);
+    if (real) return vball(v.re);
+    return vcb(v);
 }
 
 /* ---------------- conditions and sequences ---------------- */
@@ -1408,6 +1692,19 @@ static char *show(Val v, int64_t places, int asked) {
         }
         break;
     }
+    case V_MAT: body = mat_to_str(v.m); snprintf(out, 4096, "[exact]"); break;
+    case V_TEXT: return (char *)v.text;
+    case V_CBALL: {
+        int64_t kr = b_guaranteed_places(v.z.re, places), ki = b_guaranteed_places(v.z.im, places);
+        int64_t k = kr < ki ? kr : ki;
+        if (k < 0) nm_fail("not even the units place is guaranteed");
+        char *sr = fixed_str(b_round_to_places(v.z.re, k), k), *si = fixed_str(b_round_to_places(v.z.im, k), k);
+        body = arena_alloc(strlen(sr) + strlen(si) + 8);
+        if (si[0] == '-') sprintf(body, "%s - %si", sr, si + 1); else sprintf(body, "%s + %si", sr, si);
+        if (k == places) snprintf(out, 4096, "[bounded: %lld places guaranteed]", (long long)k);
+        else snprintf(out, 4096, "[bounded: only %lld of %lld places guaranteed]", (long long)k, (long long)places);
+        break;
+    }
     default: body = "?";
     }
     char *line = arena_alloc(strlen(body) + strlen(out) + 4);
@@ -1420,6 +1717,18 @@ static Val persist_val(Val v) {
     case V_Q: v.q = q_persist(v.q); break;
     case V_POLY: v.c = c_persist(v.c); break;
     case V_BALL: v.ball.m = z_persist(v.ball.m); v.ball.r = z_persist(v.ball.r); break;
+    case V_CBALL:
+        v.z.re.m = z_persist(v.z.re.m); v.z.re.r = z_persist(v.z.re.r);
+        v.z.im.m = z_persist(v.z.im.m); v.z.im.r = z_persist(v.z.im.r);
+        break;
+    case V_MAT: {
+        Mat m; m.r = v.m.r; m.c = v.m.c;
+        m.a = perm_alloc((size_t)(m.r * m.c > 0 ? m.r * m.c : 1) * sizeof(C));
+        for (int i = 0; i < m.r * m.c; i++) m.a[i] = c_persist(v.m.a[i]);
+        v.m = m;
+        break;
+    }
+    case V_TEXT: { size_t L = strlen(v.text); char *t = perm_alloc(L + 1); memcpy(t, v.text, L + 1); v.text = t; break; }
     default: break;                                     /* roots and recipes already live in permanent memory */
     }
     return v;
@@ -1567,6 +1876,89 @@ static char *define_rule(const char *name, size_t len) {
 }
 
 /* Run one statement; returns the line to print (arena memory), or NULL for an empty line. */
+/* ---------------- systems: solve ... for x, y  and  eliminate y from ... ---------------- */
+
+static C equation_c(void) {                            /* A = B  as  A - B, a sum of letters */
+    Node *a = expr(), *b = NULL;
+    if (at_op('=')) { pos++; b = expr(); }
+    jmp_buf saved; memcpy(saved, need_series, sizeof saved);
+    if (setjmp(need_series)) { memcpy(need_series, saved, sizeof saved); nm_fail("the equations of a system are sums of letters and numbers"); }
+    Val va = eval(a), vb = b ? eval(b) : vq(qi(0));
+    memcpy(need_series, saved, sizeof saved);
+    Val d = arith('-', va, vb);
+    if (d.kind == V_Q) return c_const(d.q);
+    if (d.kind == V_POLY) return d.c;
+    nm_fail("the equations of a system must be exact");
+}
+
+static int equations(C *eqs, int max) {
+    int ne = 0;
+    for (;;) {
+        if (ne == max) nm_fail("at most %d equations", max);
+        eqs[ne++] = equation_c();
+        if (!at_op(',')) break;
+        pos++;
+    }
+    return ne;
+}
+
+/* the roots r_1, r_2 ... met in the answer, each with its equation and certified places */
+static void root_legend(C *vals, int nv, char **o) {
+    for (int l = 0; l < letter_count(); l++) {
+        if (!letter_is_surd(l) || !surd_root(l) || strchr(letter_name(l), '(')) continue;   /* sqrt(2) needs no legend */
+        int used = 0;
+        for (int j = 0; j < nv && !used; j++) used = c_uses(vals[j], l);
+        if (!used) continue;
+        Val rv; memset(&rv, 0, sizeof rv); rv.kind = V_ROOT; rv.root = surd_root(l);
+        *o += sprintf(*o, "\n  where %s = %s", letter_name(l), show(rv, 20, 1));
+    }
+}
+
+static char *solve_stmt(void) {
+    C eqs[16];
+    int ne = equations(eqs, 16);
+    expect_key("for");
+    int vars[NM_MAXL], nv = 0;
+    for (;;) {
+        if (peek()->kind != T_NAME) nm_fail("expected an unknown after 'for'");
+        if (nv == NM_MAXL) nm_fail("too many unknowns");
+        vars[nv++] = letter_index(peek()->s, peek()->len);
+        pos++;
+        if (!at_op(',')) break;
+        pos++;
+    }
+    if (peek()->kind != T_END) nm_fail("unexpected '%.*s'", (int)peek()->len, peek()->s);
+    work_prec = DEFAULT_PLACES + GUARD_DIGITS;
+    Solutions S = elim_solve(eqs, ne, vars, nv);
+    size_t cap = 512;
+    for (int k = 0; k < S.n; k++) for (int j = 0; j < nv; j++) cap += strlen(c_to_str(S.val[k][j])) + 400;
+    char *txt = arena_alloc(cap), *o = txt;
+    for (int k = 0; k < S.n; k++) {
+        for (int j = 0; j < nv; j++) o += sprintf(o, "%s%s = %s", j ? ", " : "", letter_name(vars[j]), c_to_str(S.val[k][j]));
+        root_legend(S.val[k], nv, &o);
+        o += sprintf(o, "\n");
+    }
+    if (S.n == 0 && !S.curve && !S.unresolved) { sprintf(o, "no solution  [exact: the extermination ends in a number not 0]"); return txt; }
+    if (S.n) o += sprintf(o, "[%d solution%s, each put back into the equations: exact", S.n, S.n == 1 ? "" : "s");
+    else o += sprintf(o, "[no isolated solution");
+    if (S.rejected) o += sprintf(o, "; %d brought in by the extermination and refused", S.rejected);
+    if (S.unresolved) o += sprintf(o, "; and %d complex roots of factors above degree two, not shown", S.unresolved);
+    if (S.curve) o += sprintf(o, "; some solutions form a curve, not points: not listed");
+    sprintf(o, "]");
+    return txt;
+}
+
+static C eliminate_expr(void) {
+    if (peek()->kind != T_NAME) nm_fail("expected the letter to exterminate after 'eliminate'");
+    int v = letter_index(peek()->s, peek()->len);
+    pos++;
+    expect_key("from");
+    C eqs[16];
+    int ne = equations(eqs, 16);
+    if (ne != 2) nm_fail("eliminate takes two equations (Newton: from two equations one unknown is exterminated)");
+    return elim_resultant(eqs[0], eqs[1], v);
+}
+
 char *nm_run(const char *line, int *failed) {
     *failed = 0;
     if (setjmp(nm_on_error)) {
@@ -1586,6 +1978,7 @@ char *nm_run(const char *line, int *failed) {
         char *name = dup_perm(t.s, t.len);             /* the library's own lines replace this one */
         return use_library(name, t.len);
     }
+    if (at_key("solve")) { pos++; return solve_stmt(); }
     const char *volatile let_name = NULL; volatile size_t let_len = 0;
     if (at_key("let")) {
         pos++;
@@ -1593,6 +1986,19 @@ char *nm_run(const char *line, int *failed) {
         let_name = peek()->s; let_len = peek()->len; pos++;
         if (at_op('(') || at_op('[')) return define_rule(let_name, let_len);
         expect_op('=');
+    }
+    if (at_key("eliminate")) {
+        pos++;
+        C r = eliminate_expr();
+        if (peek()->kind != T_END) nm_fail("unexpected '%.*s'", (int)peek()->len, peek()->s);
+        Val v; Q k;
+        if (c_const_value(r, &k)) v = vq(k); else { memset(&v, 0, sizeof v); v.kind = V_POLY; v.c = r; }
+        char *text = show(v, DEFAULT_PLACES, 0);
+        if (!let_name) return text;
+        bind(let_name, let_len, v);
+        char *o = arena_alloc(strlen(text) + let_len + 4);
+        sprintf(o, "%.*s = %s", (int)let_len, let_name, text);
+        return o;
     }
     const char *src_start = peek()->at;
     Node *volatile e = expr();

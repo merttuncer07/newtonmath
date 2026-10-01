@@ -392,3 +392,27 @@ Small choices made while coding:
 - a bare `i` is the square root of −1 (a sum index or rule parameter named i still works);
 - a lone surd prints as itself, `sqrt(2) [exact]`, and gives its places when asked;
 - sqrt(2)·sqrt(3) stays a product of two surds (not sqrt(6)).
+
+# Slice 7: four modules, then one integration pass
+Decision (Mert): build systems, linear algebra, complex arguments and number theory each apart, then join them to
+the engine once. Newton was consulted instead of Mert at each choice, taking a practical method where it fits his
+way better than his own historical one.
+Newton: from two equations one unknown is exterminated (Arithmetica Universalis, "De duarum pluriumve
+aequationum in unam transformatione"); every root found is put back into the equation; a moved series
+(Methodus: y at a + x) has its starting values as given quantities, written as letters.
+Built:
+- `solve eqs for x, y`: extermination by resultants, roots by rational roots, the quadratic formula and Sturm
+  brackets (r_1, r_2 ... with their equations and certified places), every solution put back;
+- `eliminate y from A = B, C = D`: the resultant, which can be named with let;
+- matrices: literals, + − ×, scalar × and /, whole powers (negative through the inverse), det, inverse,
+  transpose, rank, nullspace, charpoly, eigenvalues, linsolve (with the null space when not unique);
+- whole numbers: gcd, lcm, mod, powmod, invmod, isprime, factor, divisors, sigma, phi, nextprime;
+- values at complex points and f'(a), f''(a) ... from the term rule (one routine, rule_value, for all);
+- f(a + x) as a series: an equation-defined f is moved to a, with f(a), f'(a) ... as named letters; an
+  expression-defined recipe has the series (or number) put in.
+Small choices made while coding:
+- built-in names are used only when the name is not defined by the user;
+- the limit on different letters and surds in one session went from 12 to 32 (a session of matrices with
+  letters, roots and surds ran out at 12; the tests run about 25% slower);
+- a solve prints its own legend for r_k, and none for radicals like sqrt(5), which explain themselves;
+- `let s2 = sqrt(1 + x)` then `s2(1/2)` now gives sqrt(6)/2 exactly (before: an error asking for an equation).

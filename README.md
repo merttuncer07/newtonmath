@@ -93,9 +93,30 @@ denominators:
 A named root whose equation factors is reduced to the factor its root satisfies. The parallelogram follows
 starts with surds: starting y = sqrt(2) a^(1/2) x^(1/2).
 
+## Systems, matrices, whole numbers, complex points (slice 7)
+
+Four parts built apart (src/elim.c, linalg.c, cplx.c, arith.c, each with its own tests in tests/unit) and then
+joined to the language in one pass:
+
+    solve x^2 + y^2 = 5, x - y = 1 for x, y      x = -1, y = -2 / x = 2, y = 1  [each put back: exact]
+    solve x^3 - x - 1 for x                      x = r_1, where r_1 = 1.3247...  [certified]
+    eliminate y from x^2 + y^2 = 1, y = x^2      x^4 + x^2 - 1  [exact]
+    let A = [[1, 2], [3, 4]]
+    inverse(A), det(A), A^-2, transpose(A), rank(...), nullspace(...), linsolve(A, [3, 1])
+    charpoly(A)                                  t^2 - 5t - 2
+    eigenvalues(A)                               [[sqrt(33)/2 + 5/2, -sqrt(33)/2 + 5/2]]
+    factor(2^64 + 1)                             274177 * 67280421310721  [multiplied back; every factor proved prime]
+    isprime(2^61 - 1)                            true  [proved]
+    gcd, lcm, mod, powmod, invmod, divisors, sigma, phi, nextprime
+    exp(1 + i)                                   1.46869393991588515714 + 2.28735528717884239121i  (use prelude)
+    sin'(1/2)                                    0.87758256189037271612  (a fluxion at a point)
+    sin(1/2 + x) to x^3                          sin(1/2) + sin'(1/2)x - sin(1/2)x^2/2 - sin'(1/2)x^3/6 + O(x^4)
+
+`[a, b]` is a column, `[[..], [..]]` a matrix. A probable prime is labelled probable, never proved. A series moved
+to a point keeps the values at that point as letters (sin(1/2), sin'(1/2)), each known by its value.
+
 Not yet:
 - division by quantities with several different surds nested in each other's equations;
-- functions at complex numbers;
-- division by a sum of letters;
+- division by a sum of letters (so inverses of matrices with letters);
 - arithmetic on fractional-power results;
-- values at approximate arguments.
+- moving a series to a complex point.
