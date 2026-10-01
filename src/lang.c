@@ -7,7 +7,7 @@
  *   unary     := "-" unary | power
  *   power     := primary [ "^" unary ]
  *   primary   := NUMBER | NAME{'} | NAME "(" expr ")" | "(" expr ")" | "sqrt" "(" expr ")"
- *              | "d/d"LETTER primary | "integral" "(" expr ["," LETTER] ")"
+ *              | "d/d"LETTER primary | "integral" "(" expr ["," LETTER ["," expr "," expr]] ")"
  *              | "root" "of" expr "=" expr ( "near" expr | { "," NAME{'} "(" expr ")" "=" expr } )
  *
  * One engine does the hard work: resolution. A number is resolved by Newton's iteration on its places (approx.c);
@@ -24,6 +24,10 @@
 
 extern jmp_buf nm_on_error;
 extern char nm_error_msg[512];
+
+#ifndef NM_LIBDIR
+#define NM_LIBDIR "lib"
+#endif
 
 #define DEFAULT_PLACES 20
 #define DEFAULT_ORDER 8
@@ -222,6 +226,7 @@ static Node *primary(void) {
             pos++;
             if (peek()->kind != T_NAME) nm_fail("expected the letter to integrate in");
             n->s = peek()->s; n->len = peek()->len; pos++;
+            if (at_op(',')) { pos++; n->b=expr(); expect_op(','); n->c=expr(); }
         }
         expect_op(')');
         return n;
@@ -336,11 +341,11 @@ static Node *parse_text(const char *src) {
 
 /* ---------------- values ---------------- */
 
-enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC, V_FUNC, V_SEQ, V_MAT, V_CBALL, V_TEXT, V_RAT };
+enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC, V_FUNC, V_SEQ, V_MAT, V_CBALL, V_TEXT, V_RAT, V_AREA, V_APART };
 struct Def;
 typedef struct {
     int kind; Q q; C c; Root *root; Ball ball; const char *src, *var; struct Def *def;
-    R rat; const char *verdict;
+    R rat; Integral area; Apart apart; const char *verdict;
     Mat m; CBall z; const char *text;       /* a matrix; a complex approximate value; a verdict to print */
 } Val;   /* V_POLY holds c */
 
@@ -412,12 +417,13 @@ static Param *param_push(const char *s, size_t len) {
 static jmp_buf need_series;                             /* the exact pass meets something only a series can hold */
 
 static C as_c(Val v) {
+    if (v.kind == V_APART) return as_c(vr(apart_sum(v.apart)));
     if (v.kind == V_POLY) return v.c;
     if (v.kind == V_Q) return c_const(v.q);
     if (v.kind == V_RAT && c_is_monomial(v.rat.den)) return c_div(v.rat.num, v.rat.den);
     nm_fail("a polynomial quantity is required here; a rational function has a denominator");
 }
-static R as_r(Val v) { return v.kind == V_RAT ? v.rat : r_from_c(as_c(v)); }
+static R as_r(Val v) { return v.kind == V_APART ? apart_sum(v.apart) : v.kind == V_RAT ? v.rat : r_from_c(as_c(v)); }
 
 static Ball ball_of_c(C a, int64_t prec);
 
@@ -432,7 +438,7 @@ static Ball as_ball(Val v) {
     return v.ball;
 }
 
-static int is_exact(Val v) { return v.kind == V_Q || v.kind == V_POLY || v.kind == V_RAT; }
+static int is_exact(Val v) { return v.kind == V_Q || v.kind == V_POLY || v.kind == V_RAT || v.kind == V_APART; }
 
 /* the n-th root of every number between lo > 0 and hi, as one ball: roots of both ends by Newton's resolution */
 static Ball ball_root_between(Q lo, Q hi, int64_t n, int64_t prec) {
@@ -459,6 +465,7 @@ static Ball ball_root_between(Q lo, Q hi, int64_t n, int64_t prec) {
 }
 
 static Ball ball_of_surd(int l, int64_t prec) {
+    if (letter_is_named(l)) return named_ball(l,prec);
     if (letter_is_imag(l)) nm_fail("a complex number has no single real value here (functions at complex numbers come later)");
     Root *r = surd_root(l);
     if (r) return b_from_root(r, prec);
@@ -630,6 +637,9 @@ static R entry_of(Val v) {                              /* a matrix entry, or a 
 }
 
 static Val arith_value(char op, Val a, Val b) {
+    if (a.kind==V_AREA || b.kind==V_AREA) nm_fail("general arithmetic on conic areas comes later; differentiate or substitute a number");
+    if (a.kind==V_APART) a=vr(apart_sum(a.apart));
+    if (b.kind==V_APART) b=vr(apart_sum(b.apart));
     if (a.kind == V_TEXT || b.kind == V_TEXT) nm_fail("a verdict cannot enter a calculation");
     if (a.kind == V_MAT || b.kind == V_MAT) {
         if (op == '^') {
@@ -770,6 +780,8 @@ static int64_t whole(Val v, const char *what) {
 }
 
 static Val series_value_d(Binding *b, Val arg, int deriv);
+static C conic_constant(int kind,C arg);
+static void integral_no_poles(R f,int v,C lo,C hi);
 static int recipe_is_equation(Binding *b);
 
 static Z whole_z(Val v, const char *what) {
@@ -802,9 +814,16 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
     if (na > 8) return 0;
     if (!(IS("det") || IS("inverse") || IS("transpose") || IS("rank") || IS("nullspace") || IS("charpoly") || IS("eigenvalues")
           || IS("linsolve") || IS("gcd") || IS("lcm") || IS("mod") || IS("powmod") || IS("invmod") || IS("isprime")
-          || IS("factor") || IS("divisors") || IS("sigma") || IS("phi") || IS("nextprime"))) return 0;
+          || IS("apart") || IS("factor") || IS("divisors") || IS("sigma") || IS("phi") || IS("nextprime"))) return 0;
     for (int i = 0; i < na; i++) a[i] = eval(n->args[i]);
 #define NEED(k) do { if (na != (k)) nm_fail("%.*s takes %d argument%s", (int)len, s, (k), (k) == 1 ? "" : "s"); } while (0)
+    if (IS("apart")) {
+        NEED(2);
+        if(n->args[1]->kind!=N_NAME || n->args[1]->primes) nm_fail("apart needs its integration letter as the second argument");
+        *out=vq(qi(0));out->kind=V_APART;
+        out->apart=integ_apart(as_r(a[0]),letter_index(n->args[1]->s,n->args[1]->len));
+        return inherit_builtin(out,a,na);
+    }
     if (IS("det")) { NEED(1); *out = vr(mat_det(as_mat(a[0], "the argument of det"))); return inherit_builtin(out,a,na); }
     if (IS("inverse")) {
         NEED(1); Mat m = as_mat(a[0], "the argument of inverse"), inv = mat_inverse(m);
@@ -996,7 +1015,10 @@ static Val eval(Node *n) {
     }
     case N_SQRT: return power_val(eval(n->a), vq(q_make(z_from_i64(1), z_from_i64(2))));
     case N_APPLY: {
-        Binding *b = lookup(n->s, n->len);
+        Binding *b = lookup(n->s, n->len), summed;
+        if(b && b->v.kind==V_APART) {
+            summed=*b;summed.v=vr(apart_sum(b->v.apart));summed.v.verdict=b->v.verdict;b=&summed;
+        }
         if (b && b->v.kind == V_FUNC && !param_find(n->s, n->len)) return call_rule(b, n);
         if (!b && !param_find(n->s, n->len)) { Val bv; if (builtin(n->s, n->len, n, &bv)) return bv; }
         if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
@@ -1015,6 +1037,10 @@ static Val eval(Node *n) {
             }
             if (arg.kind == V_RAT || (arg.kind == V_POLY && c_has_plain(arg.c))) longjmp(need_series, 1);
             return series_value_d(b, arg, n->primes);
+        }
+        if (b && b->v.kind == V_AREA) {
+            if(n->primes) nm_fail("take d/d%s first, then substitute into the conic area",letter_name(b->v.area.var));
+            return vc(integ_value(b->v.area,as_c(eval(n->a)),conic_constant));
         }
         if (b && b->v.kind == V_RAT) {
             int li = rational_letter(b->v.rat);
@@ -1048,6 +1074,32 @@ static Val eval(Node *n) {
     }
     case N_DERIV: case N_INTEG: {
         Val v = eval(n->a);
+        if(v.kind==V_APART) v=vr(apart_sum(v.apart));
+        if(v.kind==V_AREA) {
+            if(n->kind!=N_DERIV) nm_fail("integrating a conic area again comes later");
+            if(n->len && letter_index(n->s,n->len)!=v.area.var) nm_fail("a conic area currently supports its own integration letter only");
+            return vr(integ_derivative(v.area));
+        }
+        if(n->kind==N_INTEG && is_exact(v)) {
+            int li=n->len?letter_index(n->s,n->len):rational_letter(as_r(v));
+            int finite=li>=0;
+            if(v.kind==V_POLY && li>=0) for(int t=0;t<v.c.nt;t++)
+                for(int l=0;l<letter_count();l++) if(!q_is_int(v.c.t[t].e[l])) finite=0;
+            if(finite) {
+                R f=as_r(v);
+                C lo=c_zero(),hi=c_zero();
+                if(n->b) {
+                    Val lv=eval(n->b),hv=eval(n->c);
+                    if(!is_exact(lv) || !is_exact(hv)) nm_fail("definite integration needs exact real endpoints, not approximate values");
+                    lo=as_c(lv);hi=as_c(hv);integral_no_poles(f,li,lo,hi);
+                }
+                Integral a=integ_rational(f,li);
+                if(n->b) return vc(c_sub(integ_value(a,hi,conic_constant),integ_value(a,lo,conic_constant)));
+                if(!a.n) return vr(a.rational);
+                Val out=vq(qi(0));out.kind=V_AREA;out.area=a;out.verdict=v.verdict;return out;
+            }
+        }
+        if(n->kind==N_INTEG && n->b) nm_fail("definite integration currently needs a rational function");
         if (v.kind == V_RAT && n->kind == N_DERIV) {
             int li = n->len ? letter_index(n->s,n->len) : rational_letter(v.rat);
             if (li < 0) longjmp(need_series,1);
@@ -1285,6 +1337,11 @@ static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
     case V_Q: return dconst(s_const(c_const(b->v.q), cx->n));
     case V_POLY: return dconst(s_from_c(b->v.c, cx->var, cx->n));
     case V_RAT: return dconst(s_div(s_from_c(b->v.rat.num, cx->var, cx->n), s_from_c(b->v.rat.den, cx->var, cx->n)));
+    case V_APART: {
+        R r=apart_sum(b->v.apart);
+        return dconst(s_div(s_from_c(r.num,cx->var,cx->n),s_from_c(r.den,cx->var,cx->n)));
+    }
+    case V_AREA: nm_fail("a stored conic area has no formal series in this version; expand integral(f,x) directly");
     case V_REC: return dconst(recipe_series(b, cx->var, cx->n));
     default: nm_fail("%s is an irrational number; irrational coefficients come later", b->name);
     }
@@ -1333,7 +1390,10 @@ static Dual sev(Node *n, SCtx *cx) {
     }
     case N_SQRT: return dpow(sev(n->a, cx), q_make(z_from_i64(1), z_from_i64(2)));
     case N_APPLY: {
-        Binding *b = lookup(n->s, n->len);
+        Binding *b = lookup(n->s, n->len), summed;
+        if(b && b->v.kind==V_APART) {
+            summed=*b;summed.v=vr(apart_sum(b->v.apart));summed.v.verdict=b->v.verdict;b=&summed;
+        }
         if (b && b->v.kind == V_FUNC && !param_find(n->s, n->len)) {
             Def *d = b->v.def;
             if (n->nargs != d->np) nm_fail("%s takes %d argument%s", b->name, d->np, d->np == 1 ? "" : "s");
@@ -1347,16 +1407,17 @@ static Dual sev(Node *n, SCtx *cx) {
             pdepth = saved_depth; frame_base = saved_base; calldepth--;
             return r;
         }
-        if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
         if (!b && !param_find(n->s, n->len)) {
             Val bv;
             if (try_builtin(n, &bv)) {
+                if(bv.kind==V_APART) bv=vr(apart_sum(bv.apart));
                 if (bv.kind == V_Q) return dconst(s_const(c_const(bv.q), cx->n));
                 if (bv.kind == V_POLY) return dconst(s_from_c(bv.c, cx->var, cx->n));
                 if (bv.kind == V_RAT) return dconst(s_div(s_from_c(bv.rat.num, cx->var, cx->n), s_from_c(bv.rat.den, cx->var, cx->n)));
                 nm_fail("%.*s gives no series", (int)n->len, n->s);
             }
         }
+        if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
         if (b && b->v.kind == V_RAT) {
             int li = rational_letter(b->v.rat);
             if (li >= 0) {
@@ -1402,6 +1463,7 @@ static Dual sev(Node *n, SCtx *cx) {
         return d;
     }
     case N_DERIV: case N_INTEG: {
+        if(n->kind==N_INTEG && n->b) nm_fail("definite integrals take places, not a formal series order");
         if (n->len && !same(n->s, n->len, cx->var, strlen(cx->var))) {
             if (n->kind == N_DERIV) return dconst(s_const(c_zero(), cx->n));
             nm_fail("integral in %.*s inside a series in %s", (int)n->len, n->s, cx->var);
@@ -1728,6 +1790,126 @@ static Val series_value_d(Binding *b, Val arg, int deriv) {
     return vcb(v);
 }
 
+/* The same equations as lib/prelude.nm, through the existing resolver and
+ * certified term rules. Private bindings keep mathematical constants stable
+ * when a user gives atan, log1p, x or y another meaning. */
+static Ball conic_series(int kind,Ball x,int64_t prec) {
+    Binding b={0}; b.name=kind==AREA_LOG?"log1p":"atan";
+    b.v.kind=V_REC;b.v.var="x";
+    b.v.src=kind==AREA_LOG?"root of (1 + x) y' = 1, y(0) = 0":"root of (1 + x^2) y' = 1, y(0) = 0";
+    Binding *save_names=names;int save_base=frame_base;int64_t save_prec=work_prec;
+    jmp_buf saved_error;memcpy(saved_error,nm_on_error,sizeof saved_error);
+    if(setjmp(nm_on_error)) {
+        char err[sizeof nm_error_msg];memcpy(err,nm_error_msg,sizeof err);
+        names=save_names;frame_base=save_base;work_prec=save_prec;
+        memcpy(nm_on_error,saved_error,sizeof saved_error);nm_fail("%s",err);
+    }
+    names=NULL;frame_base=pdepth;work_prec=prec+GUARD_DIGITS;
+    Ball r=as_ball(series_value_d(&b,vball(x),0));
+    names=save_names;frame_base=save_base;work_prec=save_prec;
+    memcpy(nm_on_error,saved_error,sizeof saved_error);
+    return r;
+}
+static Q conic_end(Ball b,int upper) {
+    Z m=upper?z_add(b.m,b.r):z_sub(b.m,b.r);
+    return b.e>=0?q_from_z(z_mul_pow10(m,b.e)):q_make(m,z_pow10(-b.e));
+}
+static int number_sign(C x) {
+    if(c_is_zero(x)) return 0;
+    if(c_has_plain(x)) nm_fail("a conic value requires real numbers, without parameters");
+    Ball b=ball_of_c(x,work_prec+10);
+    if(q_sign(conic_end(b,0))>0) return 1;
+    if(q_sign(conic_end(b,1))<0) return -1;
+    nm_fail("the sign of a conic argument is not separated at this precision");
+}
+static Ball conic_pi(void *data,int64_t prec) {
+    /* atan(1)=2 atan(1/3)+atan(1/7); all series arguments are inside the disc. */
+    int64_t p=prec+12;
+    Ball a=conic_series(AREA_ATAN,b_from_q(q_div(qi(1),qi(3)),p),p);
+    Ball b=conic_series(AREA_ATAN,b_from_q(q_div(qi(1),qi(7)),p),p);
+    return b_add(b_mul(b_from_q(qi(8),p),a,p),b_mul(b_from_q(qi(4),p),b,p),prec);
+}
+typedef struct { int kind; C arg; } ConicNumber;
+static Ball conic_number(void *data,int64_t prec) {
+    ConicNumber *c=data;int64_t p=prec+12;
+    Ball x=ball_of_c(c->arg,p),one=b_from_q(qi(1),p),two=b_from_q(qi(2),p);
+    if(c->kind==AREA_LOG) {
+        int shift=0;
+        while(q_cmp(conic_end(x,1),q_div(qi(3),qi(2)))>0) {
+            x=b_div(x,two,p);if(++shift>100000) nm_fail("logarithm range reduction limit");
+        }
+        while(q_cmp(conic_end(x,0),q_div(qi(3),qi(4)))<0) {
+            x=b_mul(x,two,p);if(--shift < -100000) nm_fail("logarithm range reduction limit");
+        }
+        Ball r=conic_series(AREA_LOG,b_sub(x,one,p),p);
+        if(shift) {
+            /* log(2)=log1p(1/2)-log1p(-1/4). */
+            Ball a=conic_series(AREA_LOG,b_from_q(q_div(qi(1),qi(2)),p),p);
+            Ball b=conic_series(AREA_LOG,b_from_q(q_div(qi(-1),qi(4)),p),p);
+            r=b_add(r,b_mul(b_from_q(qi(shift),p),b_sub(a,b,p),p),p);
+        }
+        return r;
+    }
+    /* Positive arguments only. Invert above 2; subtract atan(1/2) above 1/2.
+     * The resulting absolute argument is at most 3/4. */
+    int invert=q_cmp(conic_end(x,0),qi(2))>0;
+    if(invert) x=b_div(one,x,p);
+    Ball r;
+    if(q_cmp(conic_end(x,1),q_div(qi(1),qi(2)))>0) {
+        Ball half=b_from_q(q_div(qi(1),qi(2)),p);
+        Ball y=b_div(b_sub(x,half,p),b_add(one,b_mul(x,half,p),p),p);
+        r=b_add(conic_series(AREA_ATAN,half,p),conic_series(AREA_ATAN,y,p),p);
+    } else r=conic_series(AREA_ATAN,x,p);
+    if(invert) r=b_sub(b_div(conic_pi(NULL,p),two,p),r,p);
+    return r;
+}
+static C conic_constant(int kind,C arg) {
+    int sign=number_sign(arg);
+    if(!sign) {
+        if(kind==AREA_LOG) nm_fail("logarithm at zero: pole");
+        return c_zero();
+    }
+    if(sign<0) arg=c_neg(arg);
+    if(kind==AREA_LOG && c_equal(arg,c_const(qi(1)))) return c_zero();
+    if(kind==AREA_ATAN) {
+        Q sq;C square=c_mul(arg,arg);
+        if(c_const_value(square,&sq)) {
+            Q k=qi(0);
+            if(q_cmp(sq,qi(1))==0) k=q_div(qi(sign),qi(4));
+            if(q_cmp(sq,qi(3))==0) k=q_div(qi(sign),qi(3));
+            if(q_cmp(sq,q_div(qi(1),qi(3)))==0) k=q_div(qi(sign),qi(6));
+            if(q_sign(k)) return c_scale(c_named("pi",conic_pi,NULL),k);
+        }
+    }
+    ConicNumber *n=perm_alloc(sizeof *n);n->kind=kind;n->arg=c_persist(arg);
+    char *a=c_to_str(arg),*label=arena_alloc(strlen(a)+10);
+    sprintf(label,"%s(%s)",kind==AREA_LOG?"log":"atan",a);
+    C r=c_named(label,conic_number,n);
+    return kind==AREA_ATAN && sign<0?c_neg(r):r;
+}
+static void integral_no_poles(R f,int v,C lo,C hi) {
+    /* Exact endpoint substitution detects poles at algebraic endpoints. A
+     * Sturm count over enclosing rational endpoints then certifies the interval. */
+    number_sign(lo);number_sign(hi);
+    if(c_is_zero(integ_subst_poly(f.den,v,lo)) || c_is_zero(integ_subst_poly(f.den,v,hi)))
+        nm_fail("pole in the closed integration interval");
+    if(c_equal(lo,hi)) return;
+    Q exact_lo,exact_hi;
+    if(c_const_value(lo,&exact_lo) && c_const_value(hi,&exact_hi)) {
+        if(elim_has_root_closed(f.den,v,exact_lo,exact_hi)) nm_fail("pole in the closed integration interval");
+        return;
+    }
+    int order=number_sign(c_sub(hi,lo));
+    if(order<0) { C t=lo;lo=hi;hi=t; }
+    Ball lb=ball_of_c(lo,work_prec+10),hb=ball_of_c(hi,work_prec+10);
+    Q l=conic_end(lb,0),h=conic_end(hb,1);
+    if(!elim_has_root_closed(f.den,v,l,h)) return;
+    Q inner_l=conic_end(lb,1),inner_h=conic_end(hb,0);
+    if(q_cmp(inner_l,inner_h)<=0 && elim_has_root_closed(f.den,v,inner_l,inner_h))
+        nm_fail("pole in the closed integration interval");
+    nm_fail("a pole is too close to an endpoint to separate at this precision");
+}
+
 /* ---------------- conditions and sequences ---------------- */
 
 static int holds(Node *c) {
@@ -1805,6 +1987,8 @@ static char *show(Val v, int64_t places, int asked) {
             else snprintf(out, 4096, "[exact value %s, rounded to %lld places]", q_to_str(v.q), (long long)places);
         }
         break;
+    case V_AREA: body=integ_to_str(v.area); snprintf(out,4096,"[exact]"); break;
+    case V_APART: body=apart_to_str(v.apart); snprintf(out,4096,"[exact]"); break;
     case V_RAT: body = r_to_str(v.rat); snprintf(out, 4096, "[exact]"); break;
     case V_POLY: {
         C re, im;
@@ -1883,6 +2067,8 @@ static Val persist_val(Val v) {
     switch (v.kind) {
     case V_Q: v.q = q_persist(v.q); break;
     case V_POLY: v.c = c_persist(v.c); break;
+    case V_AREA: v.area=integ_persist(v.area); break;
+    case V_APART: v.apart=apart_persist(v.apart); break;
     case V_RAT: v.rat = r_persist(v.rat); break;
     case V_BALL: v.ball.m = z_persist(v.ball.m); v.ball.r = z_persist(v.ball.r); break;
     case V_CBALL:

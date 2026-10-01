@@ -33,22 +33,35 @@ static void divide(C a,C b,int v,C *q,C *r) {
     if(db<0) nm_fail("division by zero");
     while(degree(a,v)>=db && !c_is_zero(a)) {
         int da=degree(a,v);
-        C t=c_mul(c_div(coeff(a,v,da),lead),mono(v,da-db));
+        C t=c_mul(from_r(r_make(coeff(a,v,da),lead)),mono(v,da-db));
         *q=c_add(*q,t); a=c_sub(a,c_mul(t,b));
     }
     *r=a;
 }
+/* Polynomial division over the parameter field, including nonmonomial
+ * coefficients such as a+b. The remainder's denominator is independent of v. */
+static void divide_parameters(C a,C b,int v,R *q,R *r) {
+    int db=degree(b,v); C lead=coeff(b,v,db);
+    *q=r_from_c(N(0)); *r=r_from_c(a);
+    while(!r_is_zero(*r) && degree(r->num,v)>=db) {
+        int da=degree(r->num,v);
+        R t=r_make(c_mul(coeff(r->num,v,da),mono(v,da-db)),c_mul(r->den,lead));
+        *q=r_add(*q,t); *r=r_sub(*r,r_mul(t,r_from_c(b)));
+        if(!r_is_zero(*r) && degree(r->num,v)>=da)
+            nm_fail("internal check failed: parameter division did not lower the degree (vitiose)");
+    }
+}
 /* Coefficient comparison over the existing exact rational matrix engine. */
-static C *compare(C *columns,int n,C rhs,int v) {
+static R *compare(C *columns,int n,R rhs,int v) {
     Mat m=mat_new(n,n), b=mat_new(n,1), null;
     for(int row=0;row<n;row++) {
-        b.a[row]=r_from_c(coeff(rhs,v,row));
+        b.a[row]=r_make(coeff(rhs.num,v,row),rhs.den);
         for(int col=0;col<n;col++) m.a[row*n+col]=r_from_c(coeff(columns[col],v,row));
     }
     Mat sol=mat_solve(m,b,&null);
     if(null.c) nm_fail("internal check failed: conic coefficients are not unique (vitiose)");
-    C *c=arena_alloc((size_t)n*sizeof(C));
-    for(int i=0;i<n;i++) c[i]=from_r(sol.a[i]);
+    R *c=arena_alloc((size_t)n*sizeof(R));
+    for(int i=0;i<n;i++) c[i]=sol.a[i];
     return c;
 }
 static int factors(C d,int v,C *f,int *mult) {
@@ -57,8 +70,8 @@ static int factors(C d,int v,C *f,int *mult) {
     if(degree(s,v)<=1) { n=1;f[0]=s; }
     else n=elim_conic_factors(s,v,f,64);
     for(int i=0;i<n;i++) {
-        /* Monic in the integration variable, irrespective of letter order. */
-        f[i]=c_div(f[i],coeff(f[i],v,degree(f[i],v)));
+        /* Keep parameter leading coefficients: dividing by a+b would turn
+         * this polynomial into a rational coefficient expression. */
         mult[i]=0;
         C q,r;
         for(;;) {
@@ -74,10 +87,22 @@ static int factors(C d,int v,C *f,int *mult) {
 Apart integ_apart(R f,int v) {
     int dd=degree(f.den,v);
     if(dd>64) nm_fail("rational integration degree limit is 64");
-    C q,a; divide(f.num,f.den,v,&q,&a);
+    if(dd<=1) {
+        Apart out={0,arena_alloc(2*sizeof(R))};
+        if(dd==0) out.part[out.n++]=f;
+        else {
+            R q,a; divide_parameters(f.num,f.den,v,&q,&a);
+            if(!r_is_zero(q)) out.part[out.n++]=q;
+            if(!r_is_zero(a)) out.part[out.n++]=r_div(a,r_from_c(f.den));
+            if(!out.n) out.part[out.n++]=r_from_c(N(0));
+        }
+        if(!r_equal(apart_sum(out),f)) nm_fail("internal check failed: apart added back (vitiose)");
+        return out;
+    }
+    R q,a; divide_parameters(f.num,f.den,v,&q,&a);
     Apart out={0,arena_alloc((size_t)(dd+2)*sizeof(R))};
-    if(!c_is_zero(q)) out.part[out.n++]=r_from_c(q);
-    if(!c_is_zero(a)) {
+    if(!r_is_zero(q)) out.part[out.n++]=q;
+    if(!r_is_zero(a)) {
         C fs[64]; int mult[64],nf=factors(f.den,v,fs,mult);
         C *columns=arena_alloc((size_t)dd*sizeof(C));
         C *den=arena_alloc((size_t)dd*sizeof(C));
@@ -89,12 +114,12 @@ Apart integ_apart(R f,int v) {
             }
         }
         if(n!=dd) nm_fail("internal check failed: partial fraction dimensions (vitiose)");
-        C *c=compare(columns,n,a,v);
+        R *c=compare(columns,n,a,v);
         for(int i=0;i<n;) {
-            C num=c_zero(),d=den[i];
-            do { num=c_add(num,c_mul(c[i],mono(v,pow[i])));i++; }
+            R num=r_from_c(N(0));C d=den[i];
+            do { num=r_add(num,r_mul(c[i],r_from_c(mono(v,pow[i]))));i++; }
             while(i<n && c_equal(d,den[i]));
-            if(!c_is_zero(num)) out.part[out.n++]=r_make(num,d);
+            if(!r_is_zero(num)) out.part[out.n++]=r_div(num,r_from_c(d));
         }
     }
     if(!out.n) out.part[out.n++]=r_from_c(N(0));
@@ -115,46 +140,63 @@ R integ_derivative(Integral a) {
     for(int i=0;i<a.n;i++) {
         AreaTerm t=a.term[i];
         C den=t.kind==AREA_LOG?t.poly:c_add(N(1),c_pow_int(t.poly,2));
-        d=raw_add(d,(R){c_mul(t.coef,integ_diff_poly(t.poly,a.var)),den});
+        d=raw_add(d,(R){c_mul(t.coef.num,integ_diff_poly(t.poly,a.var)),c_mul(t.coef.den,den)});
     }
     return r_make(d.num,d.den);
 }
-static void term(Integral *a,int kind,C coef,C poly) {
-    if(c_is_zero(coef)) return;
+static void term_r(Integral *a,int kind,R coef,C poly) {
+    if(r_is_zero(coef)) return;
     for(int i=0;i<a->n;i++) if(a->term[i].kind==kind && c_equal(a->term[i].poly,poly)) {
-        a->term[i].coef=c_add(a->term[i].coef,coef); return;
+        a->term[i].coef=r_add(a->term[i].coef,coef); return;
     }
     a->term[a->n++]=(AreaTerm){coef,poly,kind};
 }
+static void term(Integral *a,int kind,C coef,C poly) { term_r(a,kind,r_from_c(coef),poly); }
 Integral integ_rational(R f,int v) {
     int dd=degree(f.den,v);
     if(dd>64) nm_fail("rational integration degree limit is 64");
     Integral out={v,0,r_from_c(N(0)),arena_alloc((size_t)(2*dd+2)*sizeof(AreaTerm))};
-    C q,a; divide(f.num,f.den,v,&q,&a);
-    out.rational=r_from_c(fluent_poly(q,v));
-    if(!c_is_zero(a)) {
+    if(dd==0) {
+        out.rational=r_make(fluent_poly(f.num,v),f.den);
+        if(!r_equal(integ_derivative(out),f)) nm_fail("internal check failed: integral differentiated back (vitiose)");
+        return out;
+    }
+    if(dd==1) {
+        R q,a; divide_parameters(f.num,f.den,v,&q,&a);
+        out.rational=r_make(fluent_poly(q.num,v),q.den);
+        term_r(&out,AREA_LOG,r_div(a,r_from_c(coeff(f.den,v,1))),f.den);
+        if(!r_equal(integ_derivative(out),f)) nm_fail("internal check failed: integral differentiated back (vitiose)");
+        return out;
+    }
+    R q,a; divide_parameters(f.num,f.den,v,&q,&a);
+    out.rational=r_make(fluent_poly(q.num,v),q.den);
+    if(!r_is_zero(a)) {
         C g=poly_gcd(f.den,integ_diff_poly(f.den,v)),s=poly_exact_div(f.den,g);
         int dg=degree(g,v),ds=degree(s,v);
-        C residual=a;
+        R residual=r_div(a,r_from_c(g));
         if(dg>0) {
             /* A = S B' - (S G'/G) B + G C; integral(A/D)=B/G+integral(C/S). */
             C h=poly_exact_div(c_mul(s,integ_diff_poly(g,v)),g);
             C *cols=arena_alloc((size_t)dd*sizeof(C));
             for(int i=0;i<dg;i++) cols[i]=c_sub(c_mul(s,integ_diff_poly(mono(v,i),v)),c_mul(h,mono(v,i)));
             for(int i=0;i<ds;i++) cols[dg+i]=c_mul(g,mono(v,i));
-            C *solution=compare(cols,dd,a,v),b=c_zero(); residual=c_zero();
-            for(int i=0;i<dg;i++) b=c_add(b,c_mul(solution[i],mono(v,i)));
-            for(int i=0;i<ds;i++) residual=c_add(residual,c_mul(solution[dg+i],mono(v,i)));
-            out.rational=r_add(out.rational,r_make(b,g));
+            R *solution=compare(cols,dd,a,v),b=r_from_c(N(0)); residual=r_from_c(N(0));
+            for(int i=0;i<dg;i++) b=r_add(b,r_mul(solution[i],r_from_c(mono(v,i))));
+            for(int i=0;i<ds;i++) residual=r_add(residual,r_mul(solution[dg+i],r_from_c(mono(v,i))));
+            out.rational=r_add(out.rational,r_div(b,r_from_c(g)));
         }
-        if(!c_is_zero(residual)) {
-            Apart ap=integ_apart(r_make(residual,s),v);
+        if(!r_is_zero(residual)) {
+            Apart ap=integ_apart(r_div(residual,r_from_c(s)),v);
             for(int i=0;i<ap.n;i++) {
                 R r=ap.part[i]; int d=degree(r.den,v);
                 if(d==0) { out.rational=r_add(out.rational,r_from_c(fluent_poly(from_r(r),v)));continue; }
-                C lead=coeff(r.den,v,d),den=c_div(r.den,lead),num=c_div(r.num,lead);
-                if(d==1) { term(&out,AREA_LOG,num,den);continue; }
+                C lead=coeff(r.den,v,d);
+                if(d==1) { term_r(&out,AREA_LOG,r_make(r.num,lead),r.den);continue; }
                 if(d!=2) nm_fail("remaining degree-%d factor; later: Rothstein-Trager",d);
+                for(int l=0;l<letter_count();l++)
+                    if(l!=v && !letter_is_surd(l) && !letter_is_named(l) && (c_uses(r.num,l)||c_uses(r.den,l)))
+                        nm_fail("letters in a quadratic conic part: sign unknown; later");
+                C den=c_div(r.den,lead),num=c_div(r.num,lead);
                 Q b,c;
                 if(!c_const_value(coeff(den,v,1),&b) || !c_const_value(coeff(den,v,0),&c) || c_has_plain(coeff(num,v,0)) || c_has_plain(coeff(num,v,1)))
                     nm_fail("letters in a quadratic conic part: sign unknown; later");
@@ -184,13 +226,13 @@ C integ_value(Integral a,C x,C (*conic)(int,C)) {
     C y=c_div(num,den);
     for(int i=0;i<a.n;i++) {
         AreaTerm t=a.term[i];
-        y=c_add(y,c_mul(t.coef,conic(t.kind,integ_subst_poly(t.poly,a.var,x))));
+        y=c_add(y,c_mul(c_div(t.coef.num,t.coef.den),conic(t.kind,integ_subst_poly(t.poly,a.var,x))));
     }
     return y;
 }
 Integral integ_persist(Integral a) {
     a.rational=r_persist(a.rational); AreaTerm *t=perm_alloc((size_t)a.n*sizeof(AreaTerm));
-    for(int i=0;i<a.n;i++) { t[i]=a.term[i];t[i].coef=c_persist(t[i].coef);t[i].poly=c_persist(t[i].poly); }
+    for(int i=0;i<a.n;i++) { t[i]=a.term[i];t[i].coef=r_persist(t[i].coef);t[i].poly=c_persist(t[i].poly); }
     a.term=t;return a;
 }
 Apart apart_persist(Apart a) {
@@ -207,10 +249,10 @@ char *apart_to_str(Apart a) {
 char *integ_to_str(Integral a) {
     char *s=r_is_zero(a.rational)?"":r_to_str(a.rational);
     for(int i=0;i<a.n;i++) {
-        AreaTerm t=a.term[i];if(c_is_zero(t.coef)) continue;
-        char *k=c_to_str(t.coef),*p=c_to_str(t.poly);
+        AreaTerm t=a.term[i];if(r_is_zero(t.coef)) continue;
+        char *k=r_to_str(t.coef),*p=c_to_str(t.poly);
         size_t n=strlen(k)+strlen(p)+24;char *b=arena_alloc(n);
-        int one=c_equal(t.coef,N(1));
+        int one=r_equal(t.coef,r_from_c(N(1)));
         snprintf(b,n,"%s%s%s%s%s%s",one?"":"(",one?"":k,one?"":")*",t.kind==AREA_LOG?"log|":"atan(",p,t.kind==AREA_LOG?"|":")");
         s=join(s,b);
     }

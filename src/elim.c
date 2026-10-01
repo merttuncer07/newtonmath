@@ -173,6 +173,17 @@ static C real_root(RQ p, Q lo, Q hi, char *name_out) {
 }
 
 static RQ rq_rational_roots(RQ p, C *out, int *nout, int max) {
+    /* Always remove the three Kronecker sample roots, even when coefficients
+     * exceed the bounded rational-root search below. */
+    int samples[3]={0,-1,1};
+    for(int j=0;j<3;j++) while(p.deg>0 && !q_sign(rq_at(p,qi(samples[j])))) {
+        int k=samples[j];
+        if(*nout>=max) nm_fail("too many rational roots");
+        out[(*nout)++]=c_const(qi(k));
+        RQ f=rq_alloc(1),q,r;f.c[0]=qi(-k);f.c[1]=qi(1);
+        rq_divmod(p,f,&q,&r);p=q;
+    }
+    if(p.deg<=0) return p;
     /* rational roots, p/q with p | a0 and q | an, for coefficients of moderate size */
     Q l = qi(1);
     for (int i = 0; i <= p.deg; i++) if (q_sign(p.c[i])) { Z gg = z_gcd(l.num, p.c[i].den), qq, rr; z_divmod(z_mul(l.num, p.c[i].den), gg, &qq, &rr); l = q_from_z(qq); }

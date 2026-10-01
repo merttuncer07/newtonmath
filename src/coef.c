@@ -38,7 +38,9 @@ Ball named_ball(int i, int64_t prec) { return alg[i].value(alg[i].data, prec); }
 
 /* a number known by its value only, kept as a letter: exp(1), sin(1) ... ("pro singulis pono literas") */
 C c_named(const char *disp, Ball (*value)(void *, int64_t), void *data) {
-    for (int l = 0; l < nletters; l++) if (alg[l].value && !strcmp(letter_names[l], disp)) return c_letter(l);
+    /* The callback identifies the meaning as well as the display: a user rule
+     * called atan must not replace the circular area with the same spelling. */
+    for (int l = 0; l < nletters; l++) if (alg[l].value == value && !strcmp(letter_names[l], disp)) return c_letter(l);
     char key[32];
     snprintf(key, sizeof key, "#n%d", nletters);
     int l = letter_index(key, strlen(key));
