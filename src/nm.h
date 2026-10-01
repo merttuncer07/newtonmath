@@ -203,9 +203,9 @@ int elim_conic_factors(C p, int v, C *out, int max);
 int elim_has_root_closed(C p, int v, Q lo, Q hi);
 
 /* Rational integrals: a rational part and logarithmic/circular areas. */
-enum { AREA_LOG, AREA_ATAN };
+enum { AREA_LOG, AREA_ATAN, AREA_ASIN };
 typedef struct { R coef; C poly; int kind; } AreaTerm;
-typedef struct { int var, n; R rational; AreaTerm *term; } Integral;
+typedef struct { int var, n; R rational; AreaTerm *term; int root; } Integral;   /* root: 1 + the letter put for sqrt(q), or 0 */
 typedef struct { int n; R *part; C *base; int *pw; } Apart;   /* part[i] over base[i]^pw[i]; pw 0: the whole part */
 C integ_diff_poly(C p, int v);
 C integ_subst_poly(C p, int v, C x);
@@ -218,6 +218,13 @@ Apart integ_apart(R f, int v);
 Apart apart_persist(Apart a);
 R apart_sum(Apart a);
 char *apart_to_str(Apart a);
+int letter_shown(const char *disp);
+
+/* ---- areas under roots of the flowing letter (sqrtint.c) ---- */
+Integral sqrt_integral(R f, int x, int s, C q);    /* f in x and s, where s = sqrt(q), q of degree 1 or 2 in x */
+C sqrt_integral_value(Integral a, C q, C x, C (*conic)(int, C));
+C asin_constant(C u, C (*conic)(int, C));
+void sqrt_integral_split(R f, int s, C q, R *A, R *B);
 
 /* ---- matrices (linalg.c) ---- */
 typedef struct { int r, c; R *a; } Mat;       /* row by row */

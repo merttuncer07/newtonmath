@@ -178,6 +178,31 @@ for first in a d; do
   [ "$out" = '2  [exact, for general a, b, c, d; rank drops where ad - bc = 0]' ] || { echo "FAIL: rank order after $first: $out"; fail=$((fail+1)); }
 done
 
+# Slice 11: areas under roots, the whole file, and definite values against bc -l to 60 places
+n=$((n+1))
+if ! ./newtonmath tests/rootint.nm | diff -u tests/rootint.out - ; then echo "FAIL: tests/rootint.nm"; fail=$((fail+1)); fi
+if command -v bc >/dev/null 2>&1; then
+  while IFS='|' read -r mine_expr bc_expr; do
+    places=60
+    mine=$($NM -e "$mine_expr to $places places")
+    case "$mine" in *"$places places guaranteed"*) ;; *) echo "FAIL: $mine_expr: $mine"; fail=$((fail+1)); continue;; esac
+    mine=$(echo "$mine" | cut -d' ' -f1 | tr -d '.' | sed 's/^0*//')
+    theirs=$(printf 'scale=%d\nv=(%s)*10^%d+0.5\nscale=0\nv/1\n' $((places+15)) "$bc_expr" $places | BC_LINE_LENGTH=0 bc -l)
+    n=$((n+1))
+    [ "$mine" = "$theirs" ] || { echo "FAIL: $mine_expr differs from bc"; fail=$((fail+1)); }
+  done <<'CASES'
+integral(sqrt(1 - x^2), x, 0, 1)|a(1)
+integral(1/sqrt(1 - x^2), x, 0, 1/2)|4*a(1)/6
+integral(1/sqrt(x^2 + 1), x, 0, 1)|l(1+sqrt(2))
+integral(sqrt(x^2 - 1), x, 1, 2)|sqrt(3)-l(2+sqrt(3))/2
+integral(x^2 sqrt(x^2 - 1), x, 1, 2)|(16*sqrt(3)-2*sqrt(3)-l(2+sqrt(3)))/8
+integral(1/(x sqrt(x + 1)), x, 1, 3)|l((2-1)/(2+1))-l((sqrt(2)-1)/(sqrt(2)+1))
+integral((x + 1)/sqrt(x^2 + 2x + 5), x, 0, 1)|sqrt(8)-sqrt(5)
+integral(x^3/sqrt(1 - x^2), x, 0, 1/2)|2/3-(1/4+2)*sqrt(3/4)/3
+integral(1/sqrt(2x - x^2), x, 1/2, 1)|4*a(1)/6
+CASES
+fi
+
 # rules, sequences, sums and cases
 n=$((n+1))
 if ! ./newtonmath tests/rules.nm | diff -u tests/rules.out - ; then echo "FAIL: tests/rules.nm"; fail=$((fail+1)); fi

@@ -156,7 +156,7 @@ static void term(Integral *a,int kind,C coef,C poly) { term_r(a,kind,r_from_c(co
 Integral integ_rational(R f,int v) {
     int dd=degree(f.den,v);
     if(dd>64) nm_fail("rational integration degree limit is 64");
-    Integral out={v,0,r_from_c(N(0)),arena_alloc((size_t)(2*dd+2)*sizeof(AreaTerm))};
+    Integral out={v,0,r_from_c(N(0)),arena_alloc((size_t)(2*dd+2)*sizeof(AreaTerm)),0};
     if(dd==0) {
         out.rational=r_make(fluent_poly(f.num,v),f.den);
         if(!r_equal(integ_derivative(out),f)) nm_fail("internal check failed: integral differentiated back (vitiose)");
@@ -307,7 +307,7 @@ char *integ_to_str(Integral a) {
     for (int i = 0; i < a.n; i++) {
         AreaTerm t = a.term[i]; if (r_is_zero(t.coef)) continue;
         char *p = c_to_str(t.poly), *body = arena_alloc(strlen(p) + 8);
-        sprintf(body, t.kind == AREA_LOG ? "log|%s|" : "atan(%s)", p);
+        sprintf(body, t.kind == AREA_LOG ? "log|%s|" : t.kind == AREA_ASIN ? "asin(%s)" : "atan(%s)", p);
         int neg; char *b = scaled(t.coef, body, &neg);
         s = add_term(s, neg, b);
     }

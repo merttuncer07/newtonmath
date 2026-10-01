@@ -245,3 +245,17 @@ defined name. Terms follow the powers of the flowing letter: `x^2 + 2ax + a^2`, 
 
 `tests/roundtrip.sh` checks this for every exact result in the test files.
 
+## Areas under square roots (slice 11)
+
+A letter is put for the root, as Newton did; the root of a quadratic leaves the area of the hyperbola (a
+logarithm) or of the circle (an arc):
+
+    integral(sqrt(x^2 + 1), x)          x*sqrt(x^2 + 1)/2 + log|x + sqrt(x^2 + 1)|/2  [exact]
+    integral(1/sqrt(1 - x^2), x)        asin(x)  [exact]
+    integral(1/(x sqrt(x + 1)), x)      -log|sqrt(x + 1) + 1| + log|sqrt(x + 1) - 1|  [exact]
+    integral(sqrt(1 - x^2), x, 0, 1)    pi/4  [exact]
+    integral(1/sqrt(x^2 + 1), x, 0, 1)  log(sqrt(2) + 1)  [exact]
+
+Not yet: several different roots, a root of degree 3 or more (elliptic; the series still works), a root in a
+denominator with other factors.
+

@@ -591,7 +591,15 @@ static Val eval(Node *n);
 /* while reading an equation's coefficients, the unknown and its derivatives stand for given numbers */
 static struct { int active; const char *u; size_t ul; Q vals[8]; } ovr;
 
+/* inside integral(..): the root of the flowing quantity is the letter put for it (sqrtint.c) */
+static struct { int on; C q; int s; } sqo;
+
 static Val power_val(Val base, Val ex) {
+    if (sqo.on && ex.kind == V_Q && !z_is_one(ex.q.den) && z_cmp(ex.q.den, z_from_i64(2)) == 0
+        && (base.kind == V_Q || base.kind == V_POLY) && c_equal(as_c(base), sqo.q)) {
+        int64_t k; z_fits_i64(ex.q.num, &k);
+        return vr(r_pow_int(r_from_c(c_letter(sqo.s)), k));
+    }
     if (ex.kind != V_Q) nm_fail("the exponent must be an exact number");
     Q e = ex.q;
     int64_t num, den;
@@ -1020,6 +1028,100 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
     return 0;
 }
 
+static int mentions(Node *n, const char *v, size_t vl) {
+    if (!n) return 0;
+    if (n->kind == N_NAME && same(n->s, n->len, v, vl)) return 1;
+    if (mentions(n->a, v, vl) || mentions(n->b, v, vl) || mentions(n->c, v, vl)) return 1;
+    for (int i = 0; i < n->nargs; i++) if (mentions(n->args[i], v, vl)) return 1;
+    return 0;
+}
+
+/* the radicands under sqrt(..) or ^(k/2) that hold the flowing letter; 0 none, 1 one, 2 several */
+static int find_root(Node *n, const char *v, size_t vl, Node **rad) {
+    if (!n) return 0;
+    Node *cand = NULL;
+    if (n->kind == N_SQRT && mentions(n->a, v, vl)) cand = n->a;
+    if (n->kind == N_BIN && n->op == '^' && mentions(n->a, v, vl) && !mentions(n->b, v, vl)) {
+        Val e = eval(n->b);
+        if (e.kind == V_Q && z_cmp(e.q.den, z_from_i64(2)) == 0) cand = n->a;
+    }
+    int r = 0;
+    if (cand) {
+        if (*rad && !c_equal(as_c(eval(*rad)), as_c(eval(cand)))) return 2;
+        *rad = cand; r = 1;
+    }
+    Node *kids[3] = {n->a, n->b, n->c};
+    for (int i = 0; i < 3; i++) { int k = find_root(kids[i], v, vl, rad); if (k == 2) return 2; if (k) r = 1; }
+    for (int i = 0; i < n->nargs; i++) { int k = find_root(n->args[i], v, vl, rad); if (k == 2) return 2; if (k) r = 1; }
+    return r;
+}
+
+static C conic_constant(int kind, C arg);
+
+/* integral(f(x, sqrt(q)), x [, lo, hi]): Newton's letter for the root, then the conic areas */
+static int root_integral(Node *n, Val *out) {
+    const char *v = n->len ? n->s : "x"; size_t vl = n->len ? n->len : 1;
+    Node *rad = NULL;
+    int k = find_root(n->a, v, vl, &rad);
+    if (!k) return 0;
+    if (k == 2) nm_fail("several different roots in one integrand come later");
+    Val qv = eval(rad);
+    if (qv.kind != V_POLY && qv.kind != V_Q) nm_fail("the quantity under the root must be a polynomial in %.*s", (int)vl, v);
+    C q = as_c(qv);
+    if (q.nt == 1) return 0;                          /* x^(3/2): a power of a letter is already exact */
+    int x = letter_index(v, vl);
+    char *disp = arena_alloc(strlen(c_to_str(q)) + 8);
+    sprintf(disp, "sqrt(%s)", c_to_str(q));
+    int s = letter_shown(disp);
+    sqo.on = 1; sqo.q = q; sqo.s = s;
+    jmp_buf saved; memcpy(saved, need_series, sizeof saved);
+    if (setjmp(need_series)) { sqo.on = 0; memcpy(need_series, saved, sizeof saved); nm_fail("this integrand has no finite area here; ask for the series with 'to %.*s^N'", (int)vl, v); }
+    Val f = eval(n->a);
+    memcpy(need_series, saved, sizeof saved);
+    sqo.on = 0;
+    if (!is_exact(f)) nm_fail("the integrand must be exact");
+    R fr = as_r(f);
+    Integral I = sqrt_integral(fr, x, s, q);
+    if (n->b) {
+        Val lv = eval(n->b), hv = eval(n->c);
+        if (!is_exact(lv) || !is_exact(hv)) nm_fail("definite integration needs exact real endpoints");
+        C lo = as_c(lv), hi = as_c(hv);
+        R A, B;                                       /* poles: all of A's; B's except a simple root of q, */
+        sqrt_integral_split(fr, s, q, &A, &B);        /* where B s ~ 1/sqrt(q) keeps a finite area */
+        if (c_uses(A.den, x)) integral_no_poles(r_make(c_const(qi(1)), A.den), x, lo, hi);
+        R Bq = r_mul(B, r_from_c(q));
+        if (c_uses(Bq.den, x)) integral_no_poles(r_make(c_const(qi(1)), Bq.den), x, lo, hi);
+        Q al;
+        if (c_const_value(c_div(integ_diff_poly(integ_diff_poly(q, x), x), c_const(qi(2))), &al) && q_sign(al) > 0)
+        {                                             /* the hyperbola: q keeps its sign between the ends */
+            Q a, b;
+            if (!c_const_value(lo, &a) || !c_const_value(hi, &b)) nm_fail("ends of a hyperbola's area must be rational here");
+            if (q_cmp(a, b) > 0) { Q t = a; a = b; b = t; }
+            Q qa, qb;
+            c_const_value(integ_subst_poly(q, x, c_const(a)), &qa); c_const_value(integ_subst_poly(q, x, c_const(b)), &qb);
+            if (q_sign(qa) < 0 || q_sign(qb) < 0) nm_fail("the quantity under the root is negative at an end");
+            Q mid = q_div(q_add(a, b), qi(2)), qm;
+            c_const_value(integ_subst_poly(q, x, c_const(mid)), &qm);
+            int inside = 0;
+            if (q_sign(qa) == 0 || q_sign(qb) == 0) {  /* an end at a root: the other root, -be/al minus it */
+                Q al2, be2, r;
+                c_const_value(c_div(integ_diff_poly(integ_diff_poly(q, x), x), c_const(qi(2))), &al2);
+                c_const_value(integ_subst_poly(integ_diff_poly(q, x), x, c_const(qi(0))), &be2);
+                r = q_sub(q_neg(q_div(be2, al2)), q_sign(qa) == 0 ? a : b);
+                inside = q_cmp(r, a) > 0 && q_cmp(r, b) < 0;
+            } else inside = elim_has_root_closed(q, x, a, b);
+            if (q_cmp(a, b) && (q_sign(qm) <= 0 || inside))
+                nm_fail("the quantity under the root is negative inside the interval");
+        }
+        *out = vc(c_sub(sqrt_integral_value(I, q, hi, conic_constant), sqrt_integral_value(I, q, lo, conic_constant)));
+        return 1;
+    }
+    if (!I.n) { *out = vr(I.rational); return 1; }
+    Val r = vq(qi(0)); r.kind = V_AREA; r.area = I;
+    *out = r;
+    return 1;
+}
+
 static Val eval(Node *n) {
     switch (n->kind) {
     case N_MAT: {
@@ -1135,10 +1237,12 @@ static Val eval(Node *n) {
         return arith('*', left, right);
     }
     case N_DERIV: case N_INTEG: {
+        if (n->kind == N_INTEG && !sqo.on) { Val rv; if (root_integral(n, &rv)) return rv; }
         Val v = eval(n->a);
         if(v.kind==V_APART) v=vr(apart_sum(v.apart));
         if(v.kind==V_AREA) {
             if(n->kind!=N_DERIV) nm_fail("integrating a conic area again comes later");
+            if(v.area.root) nm_fail("the moment of an area under a root comes later; it is the integrand");
             if(n->len && letter_index(n->s,n->len)!=v.area.var) nm_fail("a conic area currently supports its own integration letter only");
             return vr(integ_derivative(v.area));
         }

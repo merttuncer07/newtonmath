@@ -606,3 +606,37 @@ Small choices:
 - multi-letter unbound names are no longer letters of their own; the old fixture `aa + az` now reads az + a^2.
 - a single unbound letter before a bracket multiplies, and a power binds to the bracket: x(x + 1)^2 = x·(x + 1)^2
   (before, it read as (x(x + 1))^2). Defined rules and parameters keep f(...) as application.
+
+# Slice 11: areas under square roots
+Question: the integral of a curve with the root of a quantity in the flowing letter, as sqrt(x^2 + 1) or
+1/sqrt(1 - x^2).
+Newton (verified in sources/):
+- De Analysi (NATP00204), lines 39-41: sqrt(aa + xx) is resolved into a series and its area is called the
+  area of the hyperbola; sqrt(aa - xx) gives the area of the circle. So the sign of xx under the root decides
+  which conic: a logarithm for the hyperbola, an arc (asin) for the circle.
+- De Analysi, line 201: the arc of a circle has the moment 1/(2 sqrt(x - xx)).
+- De Analysi, line 281: curves whose areas are known are found by supposing the area and taking its moment
+  ("supponas sqrt(aa + xx) = z, ex calculo invenies x/sqrt(aa + xx) = y"). The same comparison, run backwards,
+  finds the algebraic part: suppose the area Q(x) sqrt(q) + lambda * (conic area), take the moment, compare.
+- De Analysi, line 24: the hyperbolic term is considered apart from the rest.
+- Methodus, Problem 1 (Slice 6): a letter is put for each root ("pro singulis pono totidem literas").
+Built (src/sqrtint.c, wired in lang.c):
+- integral(f, x) where f holds one root sqrt(q) (or q^(k/2)) of a polynomial q of degree 1 or 2 in x with
+  rational coefficients; the root becomes a letter s with s^2 = q, f is split into A(x) + B(x) s;
+- A goes to the rational integrator (Slice 9);
+- q of degree 1: s is taken as the new flowing letter (x = (s^2 - b)/a), and the area is a rational one;
+- q of degree 2: B q must be a polynomial P; Q and lambda solve Q' q + Q q'/2 + lambda = P (a linear system);
+  then the hyperbola's area log|x + ... + sqrt(q)/sqrt(al)|/sqrt(al), or the circle's asin(u)/sqrt(-al);
+- definite values with exact ends, through pi, log and atan constants; a simple root of q at an end is allowed
+  (1/sqrt(1 - x^2) from 0 to 1 is pi/2); poles and a negative quantity under the root are refused.
+Checks:
+- inside the program: Q' q + Q q'/2 + lambda = P exactly; for the hyperbola p' s = sqrt(al) p; for the circle
+  1 - u^2 = k q and u'/sqrt(k) = sqrt(-al); the linear case through Slice 9's own put-back;
+- tests/unit/sqrtint.c differentiates every result again with its own rule (s' = q'/(2s)): 54 areas;
+- 9 definite values against bc -l to 60 places, and the indefinite answers against sympy by hand.
+Small choices:
+- a power of a single letter (x^(3/2)) keeps the exact monomial path;
+- constant factors inside the logarithm are dropped (they only shift the area): log|x + sqrt(x^2 + 1)|;
+- one old fixture changes: integral(sqrt(1 + x), x) gave a series and now gives 2sqrt(x + 1)^3/3 [exact];
+- refused, with the reason: degree 3 or more under the root (series with 'to x^N'), several different roots,
+  a root in a denominator with other factors (later: Euler's substitution), letters under the root besides x.

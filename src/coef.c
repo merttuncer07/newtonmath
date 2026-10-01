@@ -19,7 +19,7 @@ static int nletters;
  *   r^d = e[0] + e[1] r + ... + e[d-1] r^(d-1),
  * and a choice of root: a certified bracket, a radical of a positive quantity, or i. */
 typedef struct { int d; C *e; Root *root; C radA; int radn; int radneg; int imag;
-                 Ball (*value)(void *data, int64_t prec); void *data; } Alg;   /* value: a named number, no equation */
+                 Ball (*value)(void *data, int64_t prec); void *data; int shown; } Alg;   /* value: a named number, no equation */
 static Alg alg[NM_MAXL];
 
 int letter_index(const char *name, size_t len) {
@@ -34,6 +34,19 @@ int letter_index(const char *name, size_t len) {
 }
 
 const char *letter_name(int i) { return letter_names[i]; }
+
+/* a plain letter written otherwise: the letter Newton puts for a root of the flowing letter, s for sqrt(x^2 + 1) */
+int letter_shown(const char *disp) {
+    char *key = arena_alloc(strlen(disp) + 3);
+    sprintf(key, "#r%s", disp);
+    int l = letter_index(key, strlen(key));
+    if (!alg[l].shown) {
+        size_t n = strlen(disp);
+        letter_names[l] = perm_alloc(n + 1); memcpy(letter_names[l], disp, n + 1);
+        alg[l].shown = 1;
+    }
+    return l;
+}
 int letter_is_surd(int i) { return alg[i].d > 0; }
 int letter_is_named(int i) { return alg[i].value != NULL; }
 Ball named_ball(int i, int64_t prec) { return alg[i].value(alg[i].data, prec); }
@@ -553,7 +566,7 @@ char *ct_str(CT t, const char *extra_name, Q extra_e, int first) {
     for (int a = 1; a < nletters; a++)
         for (int b = a; b > 0; b--) {
 #define NUMLIKE(l) (alg[l].d > 0 || alg[l].value)
-#define RANKF(l) (alg[l].d > 0 && !alg[l].imag ? 3 : alg[l].value ? 2 : alg[l].imag ? 1 : 0)
+#define RANKF(l) (alg[l].d > 0 && !alg[l].imag ? 3 : alg[l].value ? 2 : alg[l].imag ? 1 : alg[l].shown ? -1 : 0)
             int sb = RANKF(order[b]), sa = RANKF(order[b - 1]);   /* 3: surds, 2: named values, 1: i, 0: letters */
             int before = sb > sa || (sb == sa && strcmp(letter_names[order[b - 1]], letter_names[order[b]]) > 0);
             if (!before) break;
