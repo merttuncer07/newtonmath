@@ -679,3 +679,12 @@ tests/run.sh runs Slices 11 and 12 as one session and a session of 240 surds and
 Speed: the fixtures run 1.5 to 4.7 times faster (euler.nm 178 ms -> 44 ms, integral.nm 115 ms -> 24 ms), since
 a term is about 400 bytes instead of 1100 and loops run over its own letters only.
 Small choices: more than 12 different letters in one term is refused with the reason.
+
+# Speed of values at many places
+exp(1/3) to 1000 places took 17 s (10 s after Slice 13); 98% of it went into reducing fractions: the upper bound
+of each term, kept as an exact fraction with a 1000-digit denominator, was put in lowest terms by Euclid at every
+term. A bound only has to be a bound, so it is now rounded up to 20 significant digits (cplx.c, ball_upper).
+The value itself is untouched: the bound can only grow by a part in 10^19, while it is compared with the wanted
+accuracy with a margin of 1000. Results: exp(1/3) to 1000 places 0.45 s, identical to the old 1000 digits;
+atan(1/5) and log1p(1/5) to 1000 places 1.4 s (the old code did not finish in 60 s), equal to bc; at 300 places
+identical to the old output. make test 18 s -> 9 s. run.sh checks exp(1/3) and atan(1/5) to 1000 places with bc.

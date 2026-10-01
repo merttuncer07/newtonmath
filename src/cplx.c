@@ -34,9 +34,18 @@ CBall cb_div(CBall a, CBall b, int64_t prec) {
     return z;
 }
 
-static Q ball_upper(Ball b) {                     /* an upper bound of |value|, as a rational */
+/* an upper bound of |value|, as a rational, rounded up to 20 significant digits: a bound only needs to be a
+ * bound, and a short one keeps the fraction from being reduced at every term (the gcd of 1000-digit numbers) */
+static Q ball_upper(Ball b) {
     Z top = z_add(z_abs(b.m), b.r);
-    return b.e >= 0 ? q_from_z(z_mul_pow10(top, b.e)) : q_make(top, z_pow10(-b.e));
+    int64_t e = b.e, d = z_digits(top);
+    if (d > 20) {
+        Z q, r;
+        z_divmod(top, z_pow10(d - 20), &q, &r);
+        top = z_add(q, z_from_i64(1));
+        e += d - 20;
+    }
+    return e >= 0 ? q_from_z(z_mul_pow10(top, e)) : q_make(top, z_pow10(-e));
 }
 
 Q cb_abs_upper(CBall a) {                         /* sqrt(re^2 + im^2), rounded up */

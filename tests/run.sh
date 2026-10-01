@@ -145,6 +145,18 @@ fi
 n=$((n+1))
 if ! ./newtonmath tests/integral.nm | diff -u tests/integral.out - ; then echo "FAIL: tests/integral.nm"; fail=$((fail+1)); fi
 
+# 1000 places from the term rule, against bc (this took 17 s before the bounds were kept short; now under 1 s)
+if command -v bc >/dev/null 2>&1; then
+  for c in 'exp(1/3)|e(1/3)' 'atan(1/5)|a(1/5)'; do
+    m=${c%%|*}; b=${c#*|}
+    mine=$(printf 'use prelude\n%s to 1000 places\n' "$m" | ./newtonmath | tail -1)
+    case "$mine" in *"1000 places guaranteed"*) ;; *) echo "FAIL: $m: $mine"; fail=$((fail+1)); continue;; esac
+    mine=$(echo "$mine" | cut -d' ' -f1 | tr -d '.' | sed 's/^0*//')
+    theirs=$(printf 'scale=1015\nv=(%s)*10^1000+0.5\nscale=0\nv/1\n' "$b" | BC_LINE_LENGTH=0 bc -l)
+    n=$((n+1)); [ "$mine" = "$theirs" ] || { echo "FAIL: $m to 1000 places differs from bc"; fail=$((fail+1)); }
+  done
+fi
+
 # series: the whole file against its reviewed output (every line was checked against Newton's texts or by hand)
 n=$((n+1))
 if ! ./newtonmath tests/series.nm | diff -u tests/series.out - ; then echo "FAIL: tests/series.nm"; fail=$((fail+1)); fi
