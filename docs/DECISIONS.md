@@ -688,3 +688,9 @@ The value itself is untouched: the bound can only grow by a part in 10^19, while
 accuracy with a margin of 1000. Results: exp(1/3) to 1000 places 0.45 s, identical to the old 1000 digits;
 atan(1/5) and log1p(1/5) to 1000 places 1.4 s (the old code did not finish in 60 s), equal to bc; at 300 places
 identical to the old output. make test 18 s -> 9 s. run.sh checks exp(1/3) and atan(1/5) to 1000 places with bc.
+Then the coefficients themselves: beyond the exact seed, the rule's coefficients are carried as balls with 30
+guard digits instead of exact fractions (cplx.c, rule_value). For asin the exact fractions grew to thousands of
+digits. An exact 0 (the even terms of an odd function) is kept exactly 0, so no radius grows from it. The
+ball's radius is carried into the sum, so every place given is still guaranteed. asin(1/2) to 1000 places:
+10.4 s -> 3.2 s; exp, sin, cos, atan, log1p, asin to 1000 places give the same digits as the exact version and
+as bc.

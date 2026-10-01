@@ -104,13 +104,15 @@ CBall rule_value(const TermRule *R, const Q *seed, int nseed, int64_t start, CBa
     Ball rb = b_from_q(r, prec);
     if (!rule_converges(R, r)) nm_fail("the terms shrink too slowly at this point to bound the rest; use a point nearer 0");
     int cap = nseed + 64;
-    Q *c = arena_alloc((size_t)cap * sizeof(Q));
-    for (int i = 0; i < nseed; i++) c[i] = seed[i];
+    /* the coefficients beyond the seed are balls, carried with guard digits: exact fractions of the rule grow to
+     * thousands of digits (asin at 1/2), while the ball's radius keeps every place it gives honest */
+    int64_t cprec = prec + 30;
+    Ball *c = arena_alloc((size_t)cap * sizeof(Ball));
+    for (int i = 0; i < nseed; i++) c[i] = b_from_q(seed[i], cprec);
     int ncoef = nseed;
     Q eps = q_make(z_from_i64(1), z_pow10(places + 10));
     CBall S = cb_from_q(q0(), q0(), prec), P = cb_from_q(qi(1), q0(), prec);
     CBall *term = arena_alloc((size_t)cap * sizeof(CBall));
-    Q *d = arena_alloc((size_t)cap * sizeof(Q));
     Q *T = arena_alloc((size_t)cap * sizeof(Q));       /* T[m]: an upper bound of |d_m| r^m */
     Ball Rpow = b_from_q(qi(1), prec);
     for (int m = 0;; m++) {
@@ -118,28 +120,32 @@ CBall rule_value(const TermRule *R, const Q *seed, int nseed, int64_t start, CBa
         while (k >= ncoef) {
             if (ncoef + 1 >= cap) {
                 int ncap = cap * 2;
-                Q *nc = arena_alloc((size_t)ncap * sizeof(Q)), *nd = arena_alloc((size_t)ncap * sizeof(Q));
+                Ball *nc = arena_alloc((size_t)ncap * sizeof(Ball));
                 Q *nT = arena_alloc((size_t)ncap * sizeof(Q));
                 CBall *nt = arena_alloc((size_t)ncap * sizeof(CBall));
-                memcpy(nc, c, (size_t)ncoef * sizeof(Q)); memcpy(nd, d, (size_t)m * sizeof(Q)); memcpy(nt, term, (size_t)m * sizeof(CBall));
+                memcpy(nc, c, (size_t)ncoef * sizeof(Ball)); memcpy(nt, term, (size_t)m * sizeof(CBall));
                 memcpy(nT, T, (size_t)m * sizeof(Q));
-                c = nc; d = nd; term = nt; T = nT; cap = ncap;
+                c = nc; term = nt; T = nT; cap = ncap;
             }
             int n = ncoef;
-            Q acc = q0();
-            for (int t = 1; t <= R->T; t++) acc = q_add(acc, q_mul(p_at_q(R->N[t], qi(n)), c[n - t]));
+            Ball acc = b_from_q(q0(), cprec);
+            for (int t = 1; t <= R->T; t++) {
+                Q Nt = p_at_q(R->N[t], qi(n));
+                if (q_sign(Nt) && (c[n - t].m.s || c[n - t].r.s))      /* an exact 0 stays exact: no radius to grow */
+                    acc = b_add(acc, b_mul(b_from_q(Nt, cprec), c[n - t], cprec), cprec);
+            }
             int mm = n - R->s;
-            if (mm >= 0 && mm <= R->h.deg) acc = q_sub(acc, R->h.c[mm]);
-            c[n] = q_div(acc, p_at_q(R->D, qi(n)));
+            if (mm >= 0 && mm <= R->h.deg) acc = b_sub(acc, b_from_q(R->h.c[mm], cprec), cprec);
+            c[n] = acc.m.s || acc.r.s ? b_div(acc, b_from_q(p_at_q(R->D, qi(n)), cprec), cprec) : acc;
             ncoef++;
         }
-        Q f = c[k];                                    /* c_k k!/(k-j)! */
-        for (int u = 1; u <= deriv; u++) f = q_mul(f, qi(m + u));
-        d[m] = f;
-        T[m] = ball_upper(b_mul(b_from_q(qabs(f), prec), Rpow, prec));
+        Ball f = c[k];                                 /* c_k k!/(k-j)! */
+        for (int u = 1; u <= deriv; u++) f = b_mul(f, b_from_q(qi(m + u), cprec), cprec);
+        Ball fa = f; fa.m = z_abs(fa.m);
+        T[m] = ball_upper(b_mul(fa, Rpow, prec));
         Rpow = b_mul(Rpow, rb, prec);
         CBall t;
-        if (q_sign(f)) { CBall fb = cb_from_q(f, q0(), prec); t = cb_mul(fb, P, prec); }
+        if (f.m.s || f.r.s) { CBall fb; fb.re = f; fb.im = b_from_q(q0(), prec); t = cb_mul(fb, P, prec); }
         else t = cb_from_q(q0(), q0(), prec);
         term[m] = t;
         S = cb_add(S, t, prec);
