@@ -205,7 +205,8 @@ int elim_has_root_closed(C p, int v, Q lo, Q hi);
 /* Rational integrals: a rational part and logarithmic/circular areas. */
 enum { AREA_LOG, AREA_ATAN, AREA_ASIN };
 typedef struct { R coef; C poly; int kind; } AreaTerm;
-typedef struct { int var, n; R rational; AreaTerm *term; int root; } Integral;   /* root: 1 + the letter put for sqrt(q), or 0 */
+typedef struct { int var, n; R rational; AreaTerm *term; int root; int euler; C ek, ec; } Integral;
+/* root: 1 + the letter put for sqrt(q), or 0; euler: 1 + the letter t = (sqrt(q) - ec)/(x - ek), or 0 */
 typedef struct { int n; R *part; C *base; int *pw; } Apart;   /* part[i] over base[i]^pw[i]; pw 0: the whole part */
 C integ_diff_poly(C p, int v);
 C integ_subst_poly(C p, int v, C x);

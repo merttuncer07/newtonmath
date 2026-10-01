@@ -47,6 +47,28 @@ static void area(R f, const char *name) {
     }
     back++; ck(same(r_mul(rest, rest), want), name);
 }
+static R subst(C p, int v, R T) {                   /* p with the letter v replaced by T */
+    R r = r_from_c(c_zero());
+    for (int i = 0; i < p.nt; i++) {
+        C m; m.nt = 1; m.t = arena_alloc(sizeof(CT)); m.t[0] = p.t[i];
+        int64_t e; z_fits_i64(p.t[i].e[v].num, &e); m.t[0].e[v] = qi(0);
+        r = r_add(r, r_mul(r_from_c(m), r_pow_int(T, e)));
+    }
+    return r;
+}
+static void euler_back(R f) {
+    Integral I = sqrt_integral(f, X, S, q);
+    ck(I.euler != 0, "Euler's substitution used");
+    int t = I.euler - 1;
+    R T = r_div(r_sub(r_from_c(c_letter(S)), r_from_c(I.ec)), r_from_c(c_sub(c_letter(X), I.ek)));
+    R g = d(I.rational);
+    for (int i = 0; i < I.n; i++) {
+        R P = subst(I.term[i].poly, t, T), dP = d(P);
+        if (I.term[i].kind == AREA_LOG) g = r_add(g, r_mul(I.term[i].coef, r_div(dP, P)));
+        else g = r_add(g, r_mul(I.term[i].coef, r_div(dP, r_add(r_from_c(N(1)), r_mul(P, P)))));
+    }
+    back++; ck(same(g, f), "Euler area put back");
+}
 static void refused(R f, const char *why) {
     jmp_buf saved; memcpy(saved, nm_on_error, sizeof saved);
     if (!setjmp(nm_on_error)) { (void)sqrt_integral(f, X, S, q); ck(0, why); }
@@ -84,7 +106,11 @@ int main(void) {
     }
     /* refusals */
     with(c_add(c_mul(x2, x), N(1))); refused(r_from_c(c_letter(S)), "degree 3");
-    with(c_add(x2, N(1))); refused(r_div(one, r_mul(r_from_c(x), r_from_c(c_letter(S)))), "Euler");
+    /* Euler's substitution: the result is brought back from t = (s - c)/(x - k) and differentiated */
+    C eq[] = {c_add(x2, N(1)), c_add(x2, N(1)), c_sub(N(1), x2), c_add(x2, N(3))};
+    C ed[] = {x, x2, x, c_add(x, N(1))};
+    for (int h = 0; h < 4; h++) { with(eq[h]); euler_back(r_div(one, r_mul(r_from_c(ed[h]), r_from_c(c_letter(S))))); }
+    with(c_sub(N(3), x2)); refused(r_div(one, r_mul(r_from_c(x), r_from_c(c_letter(S)))), "no rational point");
     with(c_add(c_add(x2, c_mul(N(2), x)), N(1))); refused(r_from_c(c_letter(S)), "perfect square");
     with(c_sub(N(-1), x2)); refused(r_from_c(c_letter(S)), "negative for every");
     with(c_add(x2, c_letter(letter_index("a", 1)))); refused(r_from_c(c_letter(S)), "letters under the root");

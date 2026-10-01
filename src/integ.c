@@ -156,7 +156,7 @@ static void term(Integral *a,int kind,C coef,C poly) { term_r(a,kind,r_from_c(co
 Integral integ_rational(R f,int v) {
     int dd=degree(f.den,v);
     if(dd>64) nm_fail("rational integration degree limit is 64");
-    Integral out={v,0,r_from_c(N(0)),arena_alloc((size_t)(2*dd+2)*sizeof(AreaTerm)),0};
+    Integral out={v,0,r_from_c(N(0)),arena_alloc((size_t)(2*dd+2)*sizeof(AreaTerm)),0,0,{0,0},{0,0}};
     if(dd==0) {
         out.rational=r_make(fluent_poly(f.num,v),f.den);
         if(!r_equal(integ_derivative(out),f)) nm_fail("internal check failed: integral differentiated back (vitiose)");
@@ -234,7 +234,8 @@ C integ_value(Integral a,C x,C (*conic)(int,C)) {
 Integral integ_persist(Integral a) {
     a.rational=r_persist(a.rational); AreaTerm *t=perm_alloc((size_t)a.n*sizeof(AreaTerm));
     for(int i=0;i<a.n;i++) { t[i]=a.term[i];t[i].coef=r_persist(t[i].coef);t[i].poly=c_persist(t[i].poly); }
-    a.term=t;return a;
+    a.term=t;if(a.euler) { a.ek=c_persist(a.ek); a.ec=c_persist(a.ec); }
+    return a;
 }
 Apart apart_persist(Apart a) {
     R *p=perm_alloc((size_t)a.n*sizeof(R));C *b=perm_alloc((size_t)a.n*sizeof(C)+1);int *w=perm_alloc((size_t)a.n*sizeof(int)+1);
@@ -307,6 +308,12 @@ char *integ_to_str(Integral a) {
     for (int i = 0; i < a.n; i++) {
         AreaTerm t = a.term[i]; if (r_is_zero(t.coef)) continue;
         char *p = c_to_str(t.poly), *body = arena_alloc(strlen(p) + 8);
+        size_t pl = strlen(p);                       /* log|((s - 1)/x)|: one pair of brackets is enough */
+        if (pl > 2 && p[0] == '(' && p[pl - 1] == ')') {
+            int dep = 0, outer = 1;
+            for (size_t i = 0; i < pl - 1 && outer; i++) { dep += p[i] == '(' ? 1 : p[i] == ')' ? -1 : 0; if (dep == 0) outer = 0; }
+            if (outer) { p = arena_alloc(pl); memcpy(p, c_to_str(t.poly) + 1, pl - 2); p[pl - 2] = 0; }
+        }
         sprintf(body, t.kind == AREA_LOG ? "log|%s|" : t.kind == AREA_ASIN ? "asin(%s)" : "atan(%s)", p);
         int neg; char *b = scaled(t.coef, body, &neg);
         s = add_term(s, neg, b);

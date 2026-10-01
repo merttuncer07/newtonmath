@@ -181,6 +181,8 @@ done
 # Slice 11: areas under roots, the whole file, and definite values against bc -l to 60 places
 n=$((n+1))
 if ! ./newtonmath tests/rootint.nm | diff -u tests/rootint.out - ; then echo "FAIL: tests/rootint.nm"; fail=$((fail+1)); fi
+n=$((n+1))
+if ! ./newtonmath tests/euler.nm | diff -u tests/euler.out - ; then echo "FAIL: tests/euler.nm"; fail=$((fail+1)); fi
 if command -v bc >/dev/null 2>&1; then
   while IFS='|' read -r mine_expr bc_expr; do
     places=60
@@ -200,6 +202,9 @@ integral(1/(x sqrt(x + 1)), x, 1, 3)|l((2-1)/(2+1))-l((sqrt(2)-1)/(sqrt(2)+1))
 integral((x + 1)/sqrt(x^2 + 2x + 5), x, 0, 1)|sqrt(8)-sqrt(5)
 integral(x^3/sqrt(1 - x^2), x, 0, 1/2)|2/3-(1/4+2)*sqrt(3/4)/3
 integral(1/sqrt(2x - x^2), x, 1/2, 1)|4*a(1)/6
+integral(1/(x sqrt(x^2 + 1)), x, 1, 2)|l(1+sqrt(2))-l((1+sqrt(5))/2)
+integral(1/(x^2 sqrt(x^2 + 1)), x, 1, 2)|sqrt(2)-sqrt(5)/2
+integral(1/(x sqrt(x^2 - 2)), x, 2, 3)|(a(sqrt(7)/sqrt(2))-a(1))/sqrt(2)
 CASES
 fi
 

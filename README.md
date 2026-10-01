@@ -256,6 +256,12 @@ logarithm) or of the circle (an arc):
     integral(sqrt(1 - x^2), x, 0, 1)    pi/4  [exact]
     integral(1/sqrt(x^2 + 1), x, 0, 1)  log(sqrt(2) + 1)  [exact]
 
-Not yet: several different roots, a root of degree 3 or more (elliptic; the series still works), a root in a
-denominator with other factors.
+A root in a denominator with other factors goes through Euler's substitution (slice 12): a rational point of the
+conic s^2 = q gives the new letter t = (sqrt(q) - c)/(x - k), and the area becomes a rational one:
+
+    integral(1/(x sqrt(x^2 + 1)), x)       log|(sqrt(x^2 + 1) - 1)/x|  [exact]
+    integral(1/(x^2 sqrt(x^2 + 1)), x)     -sqrt(x^2 + 1)/x  [exact]
+
+Not yet: several different roots, a root of degree 3 or more (elliptic; the series still works), conics with no
+rational point found, and at most 32 letters and named constants in one session.
 

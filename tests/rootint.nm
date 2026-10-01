@@ -33,7 +33,6 @@ x^(3/2) + integral(x^(1/2), x)
 # refusals, with the reason
 integral(1/sqrt(x^3 + 1), x)
 integral(sqrt(x + 1) + sqrt(x + 2), x)
-integral(1/(x sqrt(x^2 + 1)), x)
 integral(sqrt(x^2 - 1), x, 0, 2)
 integral(sqrt(x^2 - x), x, 0, 3)
 integral(1/(x sqrt(x + 1)), x, -1/2, 1)

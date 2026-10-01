@@ -640,3 +640,27 @@ Small choices:
 - one old fixture changes: integral(sqrt(1 + x), x) gave a series and now gives 2sqrt(x + 1)^3/3 [exact];
 - refused, with the reason: degree 3 or more under the root (series with 'to x^N'), several different roots,
   a root in a denominator with other factors (later: Euler's substitution), letters under the root besides x.
+
+# Slice 12: Euler's substitution
+Question: a root that stands in a denominator with other factors, as 1/(x sqrt(x^2 + 1)), which Slice 11 refused.
+Newton: his general move is to put a new letter and substitute, until the problem has a form already solved
+("pono a+p=y, et pro y ... substituo", De Analysi, NATP00204 line 66; a letter for each root, Methodus,
+Problem 1). The particular substitutions for a root of a quadratic are Euler's (1768), not Newton's; they are the
+practical method that fits that move, so they are used.
+Built (src/sqrtint.c):
+- one rule for Euler's three substitutions: take a rational point (k, c) of the conic s^2 = q and put
+  t = (s - c)/(x - k). Then s = c + t(x - k) and x = (2ct - k t^2 - al k - be)/(al - t^2), and the area is the
+  rational one of Slice 9 in t. The point is x = 0 when q(0) is a square, a rational root of q (c = 0), or a
+  small trial of rationals (numerators up to 24, denominators up to 12), as Newton tries small numbers;
+- the algebraic part is brought back to x and the root (1/(x^2 sqrt(x^2 + 1)) gives -sqrt(x^2 + 1)/x); logs and
+  arcs keep t, printed as its expression: log|(sqrt(x^2 + 1) - 1)/x|;
+- definite values put t at the ends; at x = k, t is its limit q'(k)/(2c); an end at k with c = 0 is refused.
+Checks: s(t)^2 = q(x(t)) exactly before use; Slice 9 puts the rational area back; tests/unit/sqrtint.c brings
+each result back to x and differentiates it with its own rule (4 Euler areas, 58 areas in all); 4 definite
+values against numeric quadrature (sympy, 25 places) and 3 against bc -l to 60 places.
+Refused, with the reason: no rational point found (s^2 = 3 - x^2 has none); a denominator in t that the rational
+integrator cannot split (later: Rothstein-Trager).
+Small choices:
+- the Euler fixtures live in tests/euler.nm: one session of Slice 11 and 12 together met the limit of 32 letters
+  (each root, each t and each named constant log(k) is a letter). Sparse letters are the next technical step;
+- the Makefile compiles each source once (src/*.o) and links the tests: a clean make test went from 58 s to 29 s.

@@ -9,6 +9,7 @@
  * the new flowing letter, and the area is that of a rational curve (Slice 9). Every result is put back. */
 #include "nm.h"
 
+#include <stdio.h>
 #include <string.h>
 
 static Q qi(int64_t v) { return q_from_z(z_from_i64(v)); }
@@ -75,6 +76,68 @@ static void merge(Integral *I, Integral J) {
     for (int i = 0; i < J.n; i++) add_term(I, J.term[i].coef, J.term[i].poly, J.term[i].kind);
 }
 
+/* p(x) at x = X, a quotient */
+static R at(C p, int x, R X) {
+    int d = deg_in(p, x);
+    R r = r_from_c(c_zero());
+    for (int k = d; k >= 0; k--) r = r_add(r_mul(r, X), r_from_c(coeff(p, x, k)));
+    return r;
+}
+
+static int rational_sqrt(Q v, Q *r) {             /* v a square of a rational? */
+    if (q_sign(v) < 0) return 0;
+    Z a = z_iroot(v.num, 2), b = z_iroot(v.den, 2);
+    if (z_cmp(z_mul(a, a), v.num) || z_cmp(z_mul(b, b), v.den)) return 0;
+    *r = q_make(a, b);
+    return 1;
+}
+
+/* A rational point (k, c) of the conic s^2 = q: x = 0 if q(0) is a square, a rational root of q, or a small
+ * trial, as Newton tries small numbers for a root ("tento numeros"). */
+static int conic_point(C q, int x, Q *k, Q *c) {
+    Q al, be, ga, d;
+    c_const_value(coeff(q, x, 2), &al); c_const_value(coeff(q, x, 1), &be); c_const_value(coeff(q, x, 0), &ga);
+    if (rational_sqrt(ga, c)) { *k = qi(0); return 1; }
+    Q disc = q_sub(q_mul(be, be), q_mul(q_mul(qi(4), al), ga));
+    if (rational_sqrt(disc, &d)) { *k = q_div(q_sub(q_neg(be), d), q_mul(qi(2), al)); *c = qi(0); return 1; }
+    for (int den = 1; den <= 12; den++)
+        for (int num = -24; num <= 24; num++) {
+            Q t = q_make(z_from_i64(num), z_from_i64(den)), v = q_add(q_mul(q_add(q_mul(al, t), be), t), ga);
+            if (rational_sqrt(v, c) && q_sign(*c) > 0) { *k = t; return 1; }
+        }
+    return 0;
+}
+
+static void merge(Integral *I, Integral J);
+
+/* Euler's substitution through a rational point of the conic: t = (s - c)/(x - k), so that s = c + t(x - k)
+ * and x = (2ct - k t^2 - al k - be)/(al - t^2): x and s are quotients in t, and the area a rational one. */
+static void euler(Integral *I, R B, int x, int s, C q) {
+    Q k, c;
+    if (!conic_point(q, x, &k, &c)) nm_fail("no rational point found on s^2 = %s; this area comes later", c_to_str(q));
+    C al = coeff(q, x, 2), be = coeff(q, x, 1), K = c_const(k), Cc = c_const(c);
+    char *sq = (char *)letter_name(s), *km = c_to_str(c_sub(c_letter(x), K)), *num, *name;
+    num = q_sign(c) ? arena_alloc(strlen(sq) + 32) : sq;
+    if (q_sign(c)) sprintf(num, "(%s - %s)", sq, q_to_str(c));
+    name = arena_alloc(strlen(num) + strlen(km) + 8);
+    if (q_sign(k)) sprintf(name, "(%s/(%s))", num, km); else sprintf(name, "(%s/%s)", num, km);
+    int t = letter_shown(name);
+    C T = c_letter(t), T2 = c_mul(T, T);
+    R X = r_make(c_sub(c_sub(c_sub(c_mul(c_mul(N(2), Cc), T), c_mul(K, T2)), c_mul(al, K)), be), c_sub(al, T2));
+    R Sv = r_add(r_from_c(Cc), r_mul(r_from_c(T), r_sub(X, r_from_c(K))));
+    if (!r_equal(r_mul(Sv, Sv), at(q, x, X))) nm_fail("internal check failed: Euler's substitution (vitiose)");
+    R dX = r_make(c_sub(c_mul(integ_diff_poly(X.num, t), X.den), c_mul(X.num, integ_diff_poly(X.den, t))), c_mul(X.den, X.den));
+    R g = r_mul(r_mul(r_div(at(B.num, x, X), at(B.den, x, X)), Sv), dX);
+    Integral G = integ_rational(g, t);               /* checked there: its moment is g */
+    R Tx = r_div(r_sub(r_from_c(c_letter(s)), r_from_c(Cc)), r_from_c(c_sub(c_letter(x), K)));
+    R alg = r_div(at(G.rational.num, t, Tx), at(G.rational.den, t, Tx)), A, Bs;
+    split(alg, x, s, q, &A, &Bs);                     /* the algebraic part back in x and the root: -sqrt(x^2 + 1)/x */
+    I->rational = r_add(I->rational, r_add(A, r_mul(Bs, r_from_c(c_letter(s)))));
+    G.rational = r_from_c(c_zero());
+    merge(I, G);
+    I->euler = t + 1; I->ek = K; I->ec = Cc;
+}
+
 Integral sqrt_integral(R f, int x, int s, C q) {
     int dq = deg_in(q, x);
     for (int l = 0; l < letter_count(); l++)
@@ -97,7 +160,7 @@ Integral sqrt_integral(R f, int x, int s, C q) {
     }
     /* quadratic: B q must be a polynomial P; area = Q(x) s + lambda * (area of dx/s) */
     R Pq = r_mul(B, r_from_c(q));
-    if (!is_number(Pq.den) || c_uses(Pq.den, x)) nm_fail("this root stands in a denominator with other factors: later (Euler's substitution)");
+    if (!is_number(Pq.den) || c_uses(Pq.den, x)) { euler(&I, B, x, s, q); return I; }
     C P = c_div(Pq.num, Pq.den);
     C al = coeff(q, x, 2), be = coeff(q, x, 1), ga = coeff(q, x, 0);
     C disc = c_sub(c_mul(be, be), c_mul(c_mul(N(4), al), ga));
@@ -171,6 +234,19 @@ C sqrt_integral_value(Integral a, C q, C x, C (*conic)(int, C)) {
     if (!c_const_value(qx, &qv)) nm_fail("the root at an endpoint must be of a rational number");
     if (q_sign(qv) < 0) nm_fail("the quantity under the root is negative at an endpoint");
     C sv = c_radical_q(qv, 2);
+    if (a.euler) {                                    /* t at x: (s - c)/(x - k), or its limit q'(k)/(2c) at x = k */
+        int t = a.euler - 1;
+        C tv;
+        if (c_equal(x, a.ek)) {
+            if (c_is_zero(a.ec)) nm_fail("an end at the point of Euler's substitution, on the conic's root: later");
+            tv = c_div(integ_subst_poly(integ_diff_poly(q, a.var), a.var, x), c_mul(N(2), a.ec));
+        } else tv = c_div(c_sub(sv, a.ec), c_sub(x, a.ek));
+        a.rational.num = integ_subst_poly(a.rational.num, t, tv);
+        a.rational.den = integ_subst_poly(a.rational.den, t, tv);
+        AreaTerm *tt = arena_alloc((size_t)(a.n + 1) * sizeof(AreaTerm));
+        for (int i = 0; i < a.n; i++) { tt[i] = a.term[i]; tt[i].poly = integ_subst_poly(a.term[i].poly, t, tv); }
+        a.term = tt;
+    }
     Integral b = a;
     b.rational.num = integ_subst_poly(a.rational.num, s, sv);
     b.rational.den = integ_subst_poly(a.rational.den, s, sv);

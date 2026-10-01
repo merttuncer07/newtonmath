@@ -25,7 +25,6 @@ log(sqrt(2) + 1)  [exact]
 5x^(3/2)/3  [exact]
 error: a root of degree 3 in x: its area is not a conic's; ask for the series with 'to x^N'
 error: several different roots in one integrand come later
-error: this root stands in a denominator with other factors: later (Euler's substitution)
 error: the quantity under the root is negative at an end
 error: the quantity under the root is negative inside the interval
 error: pole in the closed integration interval

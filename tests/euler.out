@@ -1,0 +1,11 @@
+log|(sqrt(x^2 + 1) - 1)/x|  [exact]
+log|(sqrt(-x^2 + 1) - 1)/x|  [exact]
+log|((sqrt(x^2 + 3) - 2)/(x + 1)) + 1/2|/2  [exact]
+sqrt(2)atan(3sqrt(2)((sqrt(x^2 - 2) - 1/2)/(x + 3/2))/4 + sqrt(2)/4)  [exact]
+-sqrt(x^2 + 1)/x  [exact]
+-log(sqrt(2) - 1) + log(sqrt(5)/2 - 1/2)  [exact]
+-sqrt(3)log(-sqrt(3)/2 + 3/2)/3 + sqrt(3)log(3sqrt(3)/2 - 3/2)/3  [exact]
+-sqrt(3)log(-2sqrt(3) + 4)/3 + sqrt(3)log(-sqrt(3) + 2)/3 + sqrt(3)log(4)/3 - sqrt(3)log(sqrt(3) + 2)/3 + 2atan(-sqrt(3) + 2)  [exact]
+sqrt(2) - sqrt(5)/2  [exact]
+error: no rational point found on s^2 = -x^2 + 3; this area comes later
+error: remaining degree-4 factor has no supported linear/quadratic split; later: Rothstein-Trager

@@ -1,0 +1,14 @@
+# Slice 12: Euler's substitution. A rational point (k, c) of the conic s^2 = q gives the new letter
+# t = (sqrt(q) - c)/(x - k); x and the root are then quotients in t, and the area is a rational one.
+integral(1/(x sqrt(x^2 + 1)), x)
+integral(1/(x sqrt(1 - x^2)), x)
+integral(1/((x + 1) sqrt(x^2 + 3)), x)
+integral(1/(x sqrt(x^2 - 2)), x)
+integral(1/(x^2 sqrt(x^2 + 1)), x)
+integral(1/(x sqrt(x^2 + 1)), x, 1, 2)
+integral(1/((x + 2) sqrt(x^2 + x + 1)), x, 0, 1)
+integral(x/((x + 1) sqrt(4 - x^2)), x, 0, 1)
+integral(1/(x^2 sqrt(x^2 + 1)), x, 1, 2)
+# refusals
+integral(1/(x sqrt(3 - x^2)), x)
+integral(sqrt(x^2 + 1)/(x^2 + 2), x)

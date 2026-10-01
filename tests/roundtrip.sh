@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.." || exit 2
 NM=./newtonmath
 S=7777777
 total=0; bad=0
-for f in tests/series.nm tests/newton.nm tests/irrational.nm tests/rules.nm tests/integration.nm tests/rational.nm tests/integral.nm tests/rootint.nm; do
+for f in tests/series.nm tests/newton.nm tests/irrational.nm tests/rules.nm tests/integration.nm tests/rational.nm tests/integral.nm tests/rootint.nm tests/euler.nm; do
   # pass 1: a sentinel after each statement splits the output by statement
   awk -v s=$S '!/^[ \t]*(#|$)/ { print; print s }' "$f" > /tmp/nm_rt1.$$
   $NM /tmp/nm_rt1.$$ > /tmp/nm_rt1o.$$ 2>&1
