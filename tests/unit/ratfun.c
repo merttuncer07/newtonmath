@@ -16,6 +16,7 @@ static void check(int ok, const char *label) {
     if (!ok) { fail++; printf("FAIL: %s\n", label); }
 }
 static void text_is(R r, const char *s) {
+    lowest++; check(c_equal(poly_gcd(r.num,r.den),N(1)), "operation result in lowest terms");
     char *got = r_to_str(r);
     check(!strcmp(got, s), s);
     if (strcmp(got, s)) printf("  got: %s\n", got);

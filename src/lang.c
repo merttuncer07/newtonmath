@@ -336,10 +336,11 @@ static Node *parse_text(const char *src) {
 
 /* ---------------- values ---------------- */
 
-enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC, V_FUNC, V_SEQ, V_MAT, V_CBALL, V_TEXT };
+enum { V_Q, V_POLY, V_ROOT, V_BALL, V_REC, V_NUMREC, V_FUNC, V_SEQ, V_MAT, V_CBALL, V_TEXT, V_RAT };
 struct Def;
 typedef struct {
     int kind; Q q; C c; Root *root; Ball ball; const char *src, *var; struct Def *def;
+    R rat; const char *verdict;
     Mat m; CBall z; const char *text;       /* a matrix; a complex approximate value; a verdict to print */
 } Val;   /* V_POLY holds c */
 
@@ -375,6 +376,11 @@ static Val vc(C c) {
     if (c_const_value(c, &k)) return vq(k);
     Val v; memset(&v, 0, sizeof v); v.kind = V_POLY; v.c = c; return v;
 }
+static Val vr(R r) {
+    Q k;
+    if (c_const_value(r.den, &k)) return vc(c_scale(r.num, q_div(q_from_z(z_from_i64(1)), k)));
+    Val v; memset(&v, 0, sizeof v); v.kind = V_RAT; v.rat = r; return v;
+}
 static Val vball(Ball b) { Val v; memset(&v, 0, sizeof v); v.kind = V_BALL; v.ball = b; return v; }
 
 static int64_t work_prec;                               /* significant digits for balls in this statement */
@@ -405,7 +411,13 @@ static Param *param_push(const char *s, size_t len) {
 }
 static jmp_buf need_series;                             /* the exact pass meets something only a series can hold */
 
-static C as_c(Val v) { return v.kind == V_POLY ? v.c : c_const(v.q); }
+static C as_c(Val v) {
+    if (v.kind == V_POLY) return v.c;
+    if (v.kind == V_Q) return c_const(v.q);
+    if (v.kind == V_RAT && c_is_monomial(v.rat.den)) return c_div(v.rat.num, v.rat.den);
+    nm_fail("a polynomial quantity is required here; a rational function has a denominator");
+}
+static R as_r(Val v) { return v.kind == V_RAT ? v.rat : r_from_c(as_c(v)); }
 
 static Ball ball_of_c(C a, int64_t prec);
 
@@ -420,7 +432,7 @@ static Ball as_ball(Val v) {
     return v.ball;
 }
 
-static int is_exact(Val v) { return v.kind == V_Q || v.kind == V_POLY; }
+static int is_exact(Val v) { return v.kind == V_Q || v.kind == V_POLY || v.kind == V_RAT; }
 
 /* the n-th root of every number between lo > 0 and hi, as one ball: roots of both ends by Newton's resolution */
 static Ball ball_root_between(Q lo, Q hi, int64_t n, int64_t prec) {
@@ -552,14 +564,45 @@ static Val power_val(Val base, Val ex) {
         if (den == 1) return vq(q_pow(base.q, num));
         return nth_root(q_pow(base.q, num), den);
     }
+    if (base.kind == V_RAT) {
+        if (den != 1) nm_fail("fractional powers of rational functions are not supported");
+        return vr(r_pow_int(base.rat, num));
+    }
     if (base.kind == V_POLY) {
-        if (den == 1 && (num >= 0 || c_is_monomial(base.c))) return vc(c_pow_int(base.c, num));
+        if (den == 1 && num >= 0) return vc(c_pow_int(base.c, num));
+        if (den == 1 && num < 0) return vr(r_pow_int(r_from_c(base.c), num));
         C out;
         if (den != 1 && c_pow_q(base.c, e, &out)) return vc(out);
         longjmp(need_series, 1);
     }
     if (den != 1) nm_fail("fractional powers of approximate numbers are not in this version");
     return vball(b_pow(as_ball(base), num, work_prec));
+}
+
+static int rational_letter(R r) {
+    int v = -1;
+    for (int l = 0; l < letter_count(); l++) if (c_uses(r.num,l) || c_uses(r.den,l)) {
+        if (letter_is_surd(l) || letter_is_named(l)) continue;
+        if (v >= 0) return -1;
+        v = l;
+    }
+    return v;
+}
+static R substitute_r(C p, int v, R x) {
+    UP a = up_from(p,v);
+    R out = r_from_c(c_zero());
+    for (int i = a.deg; i >= 0; i--) out = r_add(r_mul(out,x),r_from_c(a.c[i]));
+    return out;
+}
+static C derivative_c(C p, int l) {
+    C out = c_zero();
+    for (int t = 0; t < p.nt; t++) {
+        CT term = p.t[t];
+        if (!q_sign(term.e[l])) continue;
+        term.k = q_mul(term.k,term.e[l]); term.e[l] = q_sub(term.e[l],qi(1));
+        C m = {1,&term}; out = c_add(out,m);
+    }
+    return out;
 }
 
 static int max_primes(Node *n, const char *u, size_t ul);
@@ -581,19 +624,21 @@ static CBall as_cball(Val v) {
     return z;
 }
 
-static C entry_of(Val v) {                              /* a matrix entry, or a scalar for a matrix */
-    if (v.kind == V_Q) return c_const(v.q);
-    if (v.kind == V_POLY) return v.c;
+static R entry_of(Val v) {                              /* a matrix entry, or a scalar for a matrix */
+    if (is_exact(v)) return as_r(v);
     nm_fail("matrix entries must be exact (numbers, surds or letters)");
 }
 
-static Val arith(char op, Val a, Val b) {
+static Val arith_value(char op, Val a, Val b) {
     if (a.kind == V_TEXT || b.kind == V_TEXT) nm_fail("a verdict cannot enter a calculation");
     if (a.kind == V_MAT || b.kind == V_MAT) {
         if (op == '^') {
             if (a.kind != V_MAT || b.kind != V_Q || !q_is_int(b.q)) nm_fail("a matrix power needs a whole exponent");
             int64_t e; z_fits_i64(b.q.num, &e);
-            return vmat(mat_pow(a.m, e));
+            Mat m = mat_pow(a.m,e);
+            Val v = vmat(m);
+            if (e < 0) v.verdict = mat_verdict(a.m,m,-1);
+            return v;
         }
         if (a.kind == V_MAT && b.kind == V_MAT) {
             if (op == '+') return vmat(mat_add(a.m, b.m, 1));
@@ -602,7 +647,7 @@ static Val arith(char op, Val a, Val b) {
             nm_fail("dividing by a matrix: multiply by its inverse, M^-1");
         }
         if (op == '*') return a.kind == V_MAT ? vmat(mat_scale(a.m, entry_of(b))) : vmat(mat_scale(b.m, entry_of(a)));
-        if (op == '/' && a.kind == V_MAT) return vmat(mat_scale(a.m, c_inv(entry_of(b))));
+        if (op == '/' && a.kind == V_MAT) return vmat(mat_scale(a.m, r_div(r_from_c(c_const(qi(1))), entry_of(b))));
         nm_fail("a matrix and a number can only be multiplied, or the matrix divided by the number");
     }
     if (a.kind == V_CBALL || b.kind == V_CBALL) {
@@ -631,15 +676,21 @@ static Val arith(char op, Val a, Val b) {
         case '/': return vq(q_div(a.q, b.q));
         }
     }
+    if (is_exact(a) && is_exact(b) && (a.kind == V_RAT || b.kind == V_RAT || op == '/')) {
+        R x = as_r(a), y = as_r(b);
+        switch (op) {
+        case '+': return vr(r_add(x, y));
+        case '-': return vr(r_sub(x, y));
+        case '*': return vr(r_mul(x, y));
+        case '/': return vr(r_div(x, y));
+        }
+    }
     if (is_exact(a) && is_exact(b)) {
         C x = as_c(a), y = as_c(b);
         switch (op) {
         case '+': return vc(c_add(x, y));
         case '-': return vc(c_sub(x, y));
         case '*': return vc(c_mul(x, y));
-        case '/':
-            if (!c_is_monomial(y) && c_has_plain(y)) longjmp(need_series, 1);
-            return vc(c_div(x, y));                      /* by a single term, exactly: a a / x = a^2 x^-1 */
         }
     }
     Ball x = as_ball(a), y = as_ball(b);
@@ -651,6 +702,21 @@ static Val arith(char op, Val a, Val b) {
     }
     nm_fail("internal: unknown operation");
     return a;
+}
+
+static const char *combine_verdicts(const char *a, const char *b) {
+    if (a && !strcmp(a,"[exact]")) a = NULL;
+    if (b && !strcmp(b,"[exact]")) b = NULL;
+    if (!a) return b;
+    if (!b || !strcmp(a,b)) return a;
+    char *out = arena_alloc(strlen(a) + strlen(b) + 48);
+    sprintf(out,"[exact; subject to %s and %s]",a,b);
+    return out;
+}
+static Val arith(char op, Val a, Val b) {
+    Val v = arith_value(op,a,b);
+    v.verdict = combine_verdicts(v.verdict,combine_verdicts(a.verdict,b.verdict));
+    return v;
 }
 
 static Val name_val(const char *s, size_t len, int primes) {
@@ -718,6 +784,16 @@ static Mat as_mat(Val v, const char *what) {
 
 static char *verdict_of_prime(int s) { return s == 1 ? "[proved]" : s == 2 ? "[probable: BPSW test, no proof found]" : "[exact]"; }
 
+static int inherit_builtin(Val *out, Val *args, int n) {
+    const char *conditions = NULL;
+    for (int i = 0; i < n; i++) conditions = combine_verdicts(conditions,args[i].verdict);
+    if (conditions && out->kind == V_TEXT) {
+        char *s = arena_alloc(strlen(out->text) + strlen(conditions) + 24);
+        sprintf(s,"%s [subject to %s]",out->text,conditions); out->text = s;
+    } else out->verdict = combine_verdicts(out->verdict,conditions);
+    return 1;
+}
+
 /* the functions every mathematician expects, when the name is not defined otherwise */
 static int builtin(const char *s, size_t len, Node *n, Val *out) {
 #define IS(name) same(s, len, name, strlen(name))
@@ -729,11 +805,20 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
           || IS("factor") || IS("divisors") || IS("sigma") || IS("phi") || IS("nextprime"))) return 0;
     for (int i = 0; i < na; i++) a[i] = eval(n->args[i]);
 #define NEED(k) do { if (na != (k)) nm_fail("%.*s takes %d argument%s", (int)len, s, (k), (k) == 1 ? "" : "s"); } while (0)
-    if (IS("det")) { NEED(1); *out = vc(mat_det(as_mat(a[0], "the argument of det"))); return 1; }
-    if (IS("inverse")) { NEED(1); *out = vmat(mat_inverse(as_mat(a[0], "the argument of inverse"))); return 1; }
-    if (IS("transpose")) { NEED(1); *out = vmat(mat_transpose(as_mat(a[0], "the argument of transpose"))); return 1; }
-    if (IS("rank")) { NEED(1); *out = vq(qi(mat_rank(as_mat(a[0], "the argument of rank")))); return 1; }
-    if (IS("nullspace")) { NEED(1); *out = vmat(mat_nullspace(as_mat(a[0], "the argument of nullspace"))); return 1; }
+    if (IS("det")) { NEED(1); *out = vr(mat_det(as_mat(a[0], "the argument of det"))); return inherit_builtin(out,a,na); }
+    if (IS("inverse")) {
+        NEED(1); Mat m = as_mat(a[0], "the argument of inverse"), inv = mat_inverse(m);
+        *out = vmat(inv); out->verdict = mat_verdict(m, inv, -1); return inherit_builtin(out,a,na);
+    }
+    if (IS("transpose")) { NEED(1); *out = vmat(mat_transpose(as_mat(a[0], "the argument of transpose"))); return inherit_builtin(out,a,na); }
+    if (IS("rank")) {
+        NEED(1); Mat m = as_mat(a[0], "the argument of rank"); int rank = mat_rank(m);
+        *out = vq(qi(rank)); out->verdict = mat_verdict(m, mat_new(0,0), rank); return inherit_builtin(out,a,na);
+    }
+    if (IS("nullspace")) {
+        NEED(1); Mat m = as_mat(a[0], "the argument of nullspace"), ns = mat_nullspace(m);
+        *out = vmat(ns); out->verdict = mat_verdict(m, ns, m.c - ns.c); return inherit_builtin(out,a,na);
+    }
     if (IS("charpoly") || IS("eigenvalues")) {
         if (na != 1 && !(IS("charpoly") && na == 2)) nm_fail("%.*s takes a matrix", (int)len, s);
         Mat m = as_mat(a[0], "the argument");
@@ -742,28 +827,45 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
             if (n->args[1]->kind != N_NAME) nm_fail("the second argument of charpoly is a letter");
             t = letter_index(n->args[1]->s, n->args[1]->len);
         } else t = letter_index("t", 1);
-        C *cp = mat_charpoly(m), p = c_zero();
-        for (int i = 0; i <= m.r; i++) p = c_add(p, c_mul(cp[i], c_pow_int(c_letter(t), i)));
-        if (IS("charpoly")) { *out = vc(p); return 1; }
+        R *cp = mat_charpoly(m), p = r_from_c(c_zero());
+        for (int i = 0; i <= m.r; i++) p = r_add(p, r_mul(cp[i], r_from_c(c_pow_int(c_letter(t), i))));
+        if (IS("charpoly")) { *out = vr(p); return inherit_builtin(out,a,na); }
         C roots[256]; int unres;
-        int k = elim_roots(p, t, roots, 256, &unres);
+        if (c_uses(p.den, t)) nm_fail("the characteristic letter occurs in an entry denominator");
+        int k = elim_roots(p.num, t, roots, 256, &unres);
         Mat r = mat_new(1, k);
-        for (int i = 0; i < k; i++) r.a[i] = roots[i];
-        if (!unres) { *out = vmat(r); return 1; }
+        for (int i = 0; i < k; i++) r.a[i] = r_from_c(roots[i]);
+        if (!unres) { *out = vmat(r); return inherit_builtin(out,a,na); }
         char *txt = arena_alloc(strlen(mat_to_str(r)) + 128);
         sprintf(txt, "%s  [and %d complex roots of a factor above degree two, not shown]", mat_to_str(r), unres);
         *out = vtext(txt);
-        return 1;
+        return inherit_builtin(out,a,na);
     }
     if (IS("linsolve")) {
         NEED(2);
         Mat ns, x = mat_solve(as_mat(a[0], "the matrix"), as_mat(a[1], "the right side"), &ns);
-        if (ns.c == 0) { *out = vmat(x); return 1; }
+        Mat m = as_mat(a[0], "the matrix");
+        Mat formulas = mat_new(x.r, x.c + ns.c);
+        for (int i = 0; i < x.r; i++) {
+            for (int j = 0; j < x.c; j++) formulas.a[i * formulas.c + j] = x.a[i * x.c + j];
+            for (int j = 0; j < ns.c; j++) formulas.a[i * formulas.c + x.c + j] = ns.a[i * ns.c + j];
+        }
+        const char *verdict = mat_verdict(m, formulas, m.c - ns.c);
+        if (ns.c == 0) { *out = vmat(x); out->verdict = verdict; return inherit_builtin(out,a,na); }
         char *t1 = mat_to_str(x), *t2 = mat_to_str(ns);
-        char *txt = arena_alloc(strlen(t1) + strlen(t2) + 128);
-        sprintf(txt, "%s + any combination of the columns of %s  [exact]", t1, t2);
+        char *txt = arena_alloc(strlen(t1) + strlen(t2) + strlen(verdict) + 96);
+        sprintf(txt, "%s + any combination of the columns of %s  %s", t1, t2, verdict);
         *out = vtext(txt);
-        return 1;
+        return inherit_builtin(out,a,na);
+    }
+    if (IS("gcd")) {
+        int polynomials = 0;
+        for (int i = 0; i < na; i++) if (a[i].kind == V_POLY) polynomials = 1;
+        if (polynomials) {
+            C g = c_zero();
+            for (int i = 0; i < na; i++) g = poly_gcd(g, as_c(a[i]));
+            *out = vc(g); return inherit_builtin(out,a,na);
+        }
     }
     if (IS("gcd") || IS("lcm")) {
         if (na < 1) nm_fail("%.*s needs numbers", (int)len, s);
@@ -775,22 +877,22 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
             else { Z q, r, d = z_gcd(g, b); if (d.s) { z_divmod(z_mul(g, b), d, &q, &r); g = q; } else g = z_zero(); }
         }
         *out = vq(q_from_z(g));
-        return 1;
+        return inherit_builtin(out,a,na);
     }
-    if (IS("mod")) { NEED(2); *out = vq(q_from_z(z_mod(whole_z(a[0], "a"), whole_z(a[1], "m")))); return 1; }
+    if (IS("mod")) { NEED(2); *out = vq(q_from_z(z_mod(whole_z(a[0], "a"), whole_z(a[1], "m")))); return inherit_builtin(out,a,na); }
     if (IS("powmod")) {
         NEED(3);
         Z b = whole_z(a[0], "the base"), e = whole_z(a[1], "the exponent"), m = whole_z(a[2], "the modulus");
         if (e.s < 0) { Z iv; if (!z_invmod(b, m, &iv)) nm_fail("%s has no inverse modulo %s", z_to_str(b), z_to_str(m)); b = iv; e = z_neg(e); }
         *out = vq(q_from_z(z_powmod(b, e, m)));
-        return 1;
+        return inherit_builtin(out,a,na);
     }
     if (IS("invmod")) {
         NEED(2);
         Z iv, b = whole_z(a[0], "a"), m = whole_z(a[1], "m");
         if (!z_invmod(b, m, &iv)) nm_fail("%s has no inverse modulo %s (they share a factor)", z_to_str(b), z_to_str(m));
         *out = vq(q_from_z(iv));
-        return 1;
+        return inherit_builtin(out,a,na);
     }
     if (IS("isprime")) {
         NEED(1);
@@ -798,7 +900,7 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
         char *txt = arena_alloc(96);
         sprintf(txt, "%s  %s", v ? "true" : "false", verdict_of_prime(v));
         *out = vtext(txt);
-        return 1;
+        return inherit_builtin(out,a,na);
     }
     if (IS("factor")) {
         NEED(1);
@@ -818,20 +920,20 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
         else if (probable) sprintf(o, "  [multiplied back; %d factor%s only probable prime%s (BPSW)]", probable, probable > 1 ? "s" : "", probable > 1 ? "s" : "");
         else sprintf(o, "  [multiplied back; every factor proved prime]");
         *out = vtext(txt);
-        return 1;
+        return inherit_builtin(out,a,na);
     }
     if (IS("divisors")) {
         NEED(1);
         Z *dv = arena_alloc(100000 * sizeof(Z));
         int k = z_divisors(z_abs(whole_z(a[0], "the argument")), dv, 100000);
         Mat r = mat_new(1, k);
-        for (int i = 0; i < k; i++) r.a[i] = c_const(q_from_z(dv[i]));
+        for (int i = 0; i < k; i++) r.a[i] = r_from_c(c_const(q_from_z(dv[i])));
         *out = vmat(r);
-        return 1;
+        return inherit_builtin(out,a,na);
     }
-    if (IS("sigma")) { NEED(1); *out = vq(q_from_z(z_sigma(z_abs(whole_z(a[0], "the argument"))))); return 1; }
-    if (IS("phi")) { NEED(1); *out = vq(q_from_z(z_phi(z_abs(whole_z(a[0], "the argument"))))); return 1; }
-    if (IS("nextprime")) { NEED(1); *out = vq(q_from_z(z_nextprime(whole_z(a[0], "the argument")))); return 1; }
+    if (IS("sigma")) { NEED(1); *out = vq(q_from_z(z_sigma(z_abs(whole_z(a[0], "the argument"))))); return inherit_builtin(out,a,na); }
+    if (IS("phi")) { NEED(1); *out = vq(q_from_z(z_phi(z_abs(whole_z(a[0], "the argument"))))); return inherit_builtin(out,a,na); }
+    if (IS("nextprime")) { NEED(1); *out = vq(q_from_z(z_nextprime(whole_z(a[0], "the argument")))); return inherit_builtin(out,a,na); }
 #undef IS
 #undef NEED
     return 0;
@@ -841,18 +943,25 @@ static Val eval(Node *n) {
     switch (n->kind) {
     case N_MAT: {
         Mat m;
+        const char *conditions = NULL;
         if (n->op == 'v') {                              /* a column */
             m = mat_new(n->nargs, 1);
-            for (int i = 0; i < n->nargs; i++) m.a[i] = entry_of(eval(n->args[i]));
+            for (int i = 0; i < n->nargs; i++) {
+                Val cell = eval(n->args[i]); m.a[i] = entry_of(cell);
+                conditions = combine_verdicts(conditions,cell.verdict);
+            }
         } else {
             int cols = n->args[0]->nargs;
             m = mat_new(n->nargs, cols);
             for (int i = 0; i < n->nargs; i++) {
                 if (n->args[i]->nargs != cols) nm_fail("every row of a matrix must have %d entries", cols);
-                for (int j = 0; j < cols; j++) m.a[i * cols + j] = entry_of(eval(n->args[i]->args[j]));
+                for (int j = 0; j < cols; j++) {
+                    Val cell = eval(n->args[i]->args[j]); m.a[i * cols + j] = entry_of(cell);
+                    conditions = combine_verdicts(conditions,cell.verdict);
+                }
             }
         }
-        return vmat(m);
+        Val v = vmat(m); v.verdict = conditions; return v;
     }
     case N_INDEX: {
         Binding *b = lookup(n->s, n->len);
@@ -893,7 +1002,7 @@ static Val eval(Node *n) {
         if (n->nargs > 1) nm_fail("%.*s is not a rule of several arguments", (int)n->len, n->s);
         if (b && b->v.kind == V_REC) {
             Val arg = eval(n->a);
-            if (arg.kind == V_POLY && c_has_plain(arg.c)) longjmp(need_series, 1);
+            if (arg.kind == V_RAT || (arg.kind == V_POLY && c_has_plain(arg.c))) longjmp(need_series, 1);
             if (!recipe_is_equation(b)) {                    /* a definition by an expression: put the number in */
                 if (n->primes) nm_fail("the fluxion of %s at a number: take d/d%s first, then put the number in", b->name, b->v.var);
                 int saved_base = frame_base, saved_depth = pdepth;
@@ -904,8 +1013,19 @@ static Val eval(Node *n) {
                 pdepth = saved_depth; frame_base = saved_base;
                 return r;
             }
-            if (arg.kind == V_POLY && c_has_plain(arg.c)) longjmp(need_series, 1);
+            if (arg.kind == V_RAT || (arg.kind == V_POLY && c_has_plain(arg.c))) longjmp(need_series, 1);
             return series_value_d(b, arg, n->primes);
+        }
+        if (b && b->v.kind == V_RAT) {
+            int li = rational_letter(b->v.rat);
+            if (li >= 0) {
+                Val arg = eval(n->a);
+                if (!is_exact(arg)) nm_fail("a rational function currently takes an exact argument");
+                if (n->primes) nm_fail("take d/d%s first, then substitute into the rational function",letter_name(li));
+                R x = as_r(arg);
+                R num = substitute_r(b->v.rat.num,li,x), den = substitute_r(b->v.rat.den,li,x);
+                return vr(r_div(num,den));
+            }
         }
         if (b && b->v.kind == V_POLY) {                     /* a polynomial in one letter, at a number */
             Val arg = eval(n->a);
@@ -928,6 +1048,13 @@ static Val eval(Node *n) {
     }
     case N_DERIV: case N_INTEG: {
         Val v = eval(n->a);
+        if (v.kind == V_RAT && n->kind == N_DERIV) {
+            int li = n->len ? letter_index(n->s,n->len) : rational_letter(v.rat);
+            if (li < 0) longjmp(need_series,1);
+            C dn = derivative_c(v.rat.num,li), dd = derivative_c(v.rat.den,li);
+            return vr(r_make(c_sub(c_mul(dn,v.rat.den),c_mul(v.rat.num,dd)),c_pow_int(v.rat.den,2)));
+        }
+        if (v.kind == V_RAT && !c_is_monomial(v.rat.den)) longjmp(need_series, 1);
         if (!is_exact(v)) { if (n->kind == N_DERIV) return vq(qi(0)); longjmp(need_series, 1); }
         C p = as_c(v);
         int li = -1;
@@ -1138,6 +1265,7 @@ static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
         if (pp->hasd) return pp->d;
         if (pp->v.kind == V_Q) return dconst(s_const(c_const(pp->v.q), cx->n));
         if (pp->v.kind == V_POLY) return dconst(s_from_c(pp->v.c, cx->var, cx->n));
+        if (pp->v.kind == V_RAT) return dconst(s_div(s_from_c(pp->v.rat.num, cx->var, cx->n), s_from_c(pp->v.rat.den, cx->var, cx->n)));
         nm_fail("%.*s is an approximate number; it cannot enter a series", (int)len, s);
     }
     if (same(s, len, cx->var, strlen(cx->var))) {
@@ -1156,6 +1284,7 @@ static Dual sname(const char *s, size_t len, int primes, SCtx *cx) {
     switch (b->v.kind) {
     case V_Q: return dconst(s_const(c_const(b->v.q), cx->n));
     case V_POLY: return dconst(s_from_c(b->v.c, cx->var, cx->n));
+    case V_RAT: return dconst(s_div(s_from_c(b->v.rat.num, cx->var, cx->n), s_from_c(b->v.rat.den, cx->var, cx->n)));
     case V_REC: return dconst(recipe_series(b, cx->var, cx->n));
     default: nm_fail("%s is an irrational number; irrational coefficients come later", b->name);
     }
@@ -1167,6 +1296,7 @@ static Dual sev(Node *n, SCtx *cx) {
     case N_INDEX: {
         Val v = eval(n);
         if (v.kind == V_Q) return dconst(s_const(c_const(v.q), cx->n));
+        if (v.kind == V_RAT) return dconst(s_div(s_from_c(v.rat.num, cx->var, cx->n), s_from_c(v.rat.den, cx->var, cx->n)));
         return dconst(s_from_c(v.c, cx->var, cx->n));
     }
     case N_SUM: {
@@ -1223,7 +1353,23 @@ static Dual sev(Node *n, SCtx *cx) {
             if (try_builtin(n, &bv)) {
                 if (bv.kind == V_Q) return dconst(s_const(c_const(bv.q), cx->n));
                 if (bv.kind == V_POLY) return dconst(s_from_c(bv.c, cx->var, cx->n));
+                if (bv.kind == V_RAT) return dconst(s_div(s_from_c(bv.rat.num, cx->var, cx->n), s_from_c(bv.rat.den, cx->var, cx->n)));
                 nm_fail("%.*s gives no series", (int)n->len, n->s);
+            }
+        }
+        if (b && b->v.kind == V_RAT) {
+            int li = rational_letter(b->v.rat);
+            if (li >= 0) {
+                if (n->primes) nm_fail("take d/d%s first, then substitute into the rational function",letter_name(li));
+                Dual arg = sev(n->a,cx), values[2];
+                C parts[2] = {b->v.rat.num,b->v.rat.den};
+                for (int j = 0; j < 2; j++) {
+                    UP p = up_from(parts[j],li);
+                    values[j] = dconst(s_const(c_zero(),cx->n));
+                    for (int i = p.deg; i >= 0; i--)
+                        values[j] = dadd(dmul(values[j],arg),dconst(s_from_c(p.c[i],cx->var,cx->n)),1);
+                }
+                return ddiv(values[0],values[1]);
             }
         }
         if (!b || b->v.kind != V_REC) {
@@ -1403,7 +1549,10 @@ static void letters(Node *n, Letters *L, const char *skip, size_t skiplen) {
         Binding *b = lookup(n->s, n->len);
         if (b && (b->v.kind == V_FUNC || b->v.kind == V_SEQ)) { letters(n->a, L, skip, skiplen); return; }
         if (b && b->v.kind == V_REC && n->kind == N_NAME) add_letter(L, b->v.var, strlen(b->v.var));
-        else if (b && b->v.kind == V_POLY) {
+        else if (b && b->v.kind == V_RAT) {
+            for (int l = 0; l < letter_count(); l++) if (c_uses(b->v.rat.num, l) || c_uses(b->v.rat.den, l))
+                add_letter(L, letter_name(l), strlen(letter_name(l)));
+        } else if (b && b->v.kind == V_POLY) {
             for (int l = 0; l < letter_count(); l++) if (c_uses(b->v.c, l)) add_letter(L, letter_name(l), strlen(letter_name(l)));
         } else if (!b && !(skip && same(n->s, n->len, skip, skiplen)) && !(n->len == 1 && n->s[0] == 'i'))
             add_letter(L, n->s, n->len);
@@ -1593,7 +1742,7 @@ static int holds(Node *c) {
         case 'g': return k >= 0;
         }
     }
-    if (c->op == '=' && is_exact(a) && is_exact(b)) return c_equal(as_c(a), as_c(b));
+    if (c->op == '=' && is_exact(a) && is_exact(b)) return r_equal(as_r(a), as_r(b));
     nm_fail("a condition compares exact numbers (a letter or an approximate number cannot be ordered here)");
     return 0;
 }
@@ -1656,6 +1805,7 @@ static char *show(Val v, int64_t places, int asked) {
             else snprintf(out, 4096, "[exact value %s, rounded to %lld places]", q_to_str(v.q), (long long)places);
         }
         break;
+    case V_RAT: body = r_to_str(v.rat); snprintf(out, 4096, "[exact]"); break;
     case V_POLY: {
         C re, im;
         int lone = v.c.nt == 1 && q_is_int(v.c.t[0].k) && z_is_one(v.c.t[0].k.num);
@@ -1702,7 +1852,7 @@ static char *show(Val v, int64_t places, int asked) {
         }
         break;
     }
-    case V_MAT: body = mat_to_str(v.m); snprintf(out, 4096, "[exact]"); break;
+    case V_MAT: body = mat_to_str(v.m); if (!v.verdict) v.verdict = mat_verdict(v.m, mat_new(0,0), -1); snprintf(out, 4096, "[exact]"); break;
     case V_TEXT: return (char *)v.text;
     case V_CBALL: {
         int64_t kr = b_guaranteed_places(v.z.re, places), ki = b_guaranteed_places(v.z.im, places);
@@ -1717,15 +1867,23 @@ static char *show(Val v, int64_t places, int asked) {
     }
     default: body = "?";
     }
-    char *line = arena_alloc(strlen(body) + strlen(out) + 4);
-    sprintf(line, "%s  %s", body, out);
+    const char *verdict = v.verdict ? v.verdict : out;
+    if (v.verdict && strcmp(out,"[exact]")) {
+        char *qualified = arena_alloc(strlen(out) + strlen(v.verdict) + 24);
+        sprintf(qualified,"%s [subject to %s]",out,v.verdict);
+        verdict = qualified;
+    }
+    char *line = arena_alloc(strlen(body) + strlen(verdict) + 4);
+    sprintf(line, "%s  %s", body, verdict);
     return line;
 }
 
 static Val persist_val(Val v) {
+    if (v.verdict) v.verdict = dup_perm(v.verdict, strlen(v.verdict));
     switch (v.kind) {
     case V_Q: v.q = q_persist(v.q); break;
     case V_POLY: v.c = c_persist(v.c); break;
+    case V_RAT: v.rat = r_persist(v.rat); break;
     case V_BALL: v.ball.m = z_persist(v.ball.m); v.ball.r = z_persist(v.ball.r); break;
     case V_CBALL:
         v.z.re.m = z_persist(v.z.re.m); v.z.re.r = z_persist(v.z.re.r);
@@ -1733,8 +1891,8 @@ static Val persist_val(Val v) {
         break;
     case V_MAT: {
         Mat m; m.r = v.m.r; m.c = v.m.c;
-        m.a = perm_alloc((size_t)(m.r * m.c > 0 ? m.r * m.c : 1) * sizeof(C));
-        for (int i = 0; i < m.r * m.c; i++) m.a[i] = c_persist(v.m.a[i]);
+        m.a = perm_alloc((size_t)(m.r * m.c > 0 ? m.r * m.c : 1) * sizeof(R));
+        for (int i = 0; i < m.r * m.c; i++) m.a[i] = r_persist(v.m.a[i]);
         v.m = m;
         break;
     }
@@ -1924,6 +2082,39 @@ static void root_legend(C *vals, int nv, char **o) {
     }
 }
 
+static char *solve_linear_letters(C *eqs, int ne, int *vars, int nv) {
+    Mat a = mat_new(ne,nv), rhs = mat_new(ne,1);
+    int parameters = 0;
+    for (int i = 0; i < ne; i++) for (int t = 0; t < eqs[i].nt; t++) {
+        CT term = eqs[i].t[t];
+        int unknown = -1;
+        for (int j = 0; j < nv; j++) if (q_sign(term.e[vars[j]])) {
+            if (unknown >= 0 || q_cmp_one(term.e[vars[j]]) != 0) return NULL;
+            unknown = j; term.e[vars[j]] = qi(0);
+        }
+        C coefficient = {1,&term};
+        if (c_has_plain(coefficient)) parameters = 1;
+        R r = r_from_c(coefficient);
+        if (unknown < 0) rhs.a[i] = r_sub(rhs.a[i],r);
+        else a.a[i * nv + unknown] = r_add(a.a[i * nv + unknown],r);
+    }
+    if (!parameters) return NULL;
+    Mat ns, x = mat_solve(a,rhs,&ns);
+    Mat formulas = mat_new(nv,1 + ns.c);
+    for (int i = 0; i < nv; i++) {
+        formulas.a[i * formulas.c] = x.a[i];
+        for (int j = 0; j < ns.c; j++) formulas.a[i * formulas.c + j + 1] = ns.a[i * ns.c + j];
+    }
+    char *verdict = mat_verdict(a,formulas,nv - ns.c), *basis = mat_to_str(ns);
+    size_t cap = strlen(verdict) + strlen(basis) + 128;
+    for (int i = 0; i < nv; i++) cap += strlen(letter_name(vars[i])) + strlen(r_to_str(x.a[i])) + 8;
+    char *out = arena_alloc(cap), *o = out;
+    for (int i = 0; i < nv; i++) o += sprintf(o,"%s%s = %s",i ? ", " : "",letter_name(vars[i]),r_to_str(x.a[i]));
+    if (ns.c) o += sprintf(o,"; add any combination of the columns of %s",basis);
+    sprintf(o,"  %s",verdict);
+    return out;
+}
+
 static char *solve_stmt(void) {
     C eqs[16];
     int ne = equations(eqs, 16);
@@ -1939,6 +2130,8 @@ static char *solve_stmt(void) {
     }
     if (peek()->kind != T_END) nm_fail("unexpected '%.*s'", (int)peek()->len, peek()->s);
     work_prec = DEFAULT_PLACES + GUARD_DIGITS;
+    char *linear = solve_linear_letters(eqs,ne,vars,nv);
+    if (linear) return linear;
     Solutions S = elim_solve(eqs, ne, vars, nv);
     size_t cap = 512;
     for (int k = 0; k < S.n; k++) for (int j = 0; j < nv; j++) cap += strlen(c_to_str(S.val[k][j])) + 400;
@@ -2043,6 +2236,7 @@ char *nm_run(const char *line, int *failed) {
         return para_root(e, to_var, to_len, order);
     }
     if (!setjmp(need_series)) {
+        if (to_var) longjmp(need_series, 1);
         v = eval(e);
         text = show(v, places, asked);
         if (v.kind == V_BALL) {                        /* keep the recipe, so a later request can carry it further */

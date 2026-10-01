@@ -67,6 +67,6 @@ false  [exact]
 error: at this point the terms of atan shrink too slowly to bound the rest; use smaller arguments and exact relations, as Newton did with 0.1 and 0.2
 exp(1) + exp(1)x + exp(1)x^2/2 + exp(1)x^3/6 + exp(1)x^4/24 + O(x^5)
 sin(1/2) + sin'(1/2)x - sin(1/2)x^2/2 - sin'(1/2)x^3/6 + O(x^4)
-g = 1 + x + x^2 + x^3 + x^4 + x^5 + x^6 + x^7 + x^8 + O(x^9)
+g = -1/(x - 1)  [exact]
 3/2  [exact]
 -1 + x - x^2 + x^3 + O(x^4)

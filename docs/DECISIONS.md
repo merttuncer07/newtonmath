@@ -483,3 +483,32 @@ Small choices:
 - Tests use explicit multiplication in input expressions: `a*x` is a product; `ax` remains a whole name.
 - Numerical checks are fixed-seed regression evidence, not proofs: 64 nonsingular rational assignments compare
   11 original expressions evaluated with Q alone against the reduced results (704 comparisons).
+
+Integration built:
+- V_RAT participates in exact arithmetic, whole powers, equality, rules, sequences, printing and permanent
+  storage. A constant denominator collapses to V_Q/V_POLY. Integer-only gcd keeps its old behavior; a
+  polynomial argument selects polynomial gcd. The rest of number theory is unchanged.
+- Explicit `to x^N` enters the existing series pass immediately. This preserves the old surd-series example
+  `1/(sqrt(2)+x) to x^3` while the corresponding finite quotient is refused by v1's scope.
+- A bound rational quantity in one ordinary letter supports exact substitution and series substitution. Its
+  numerator and denominator use UP Horner evaluation. Exact derivatives use the quotient rule; integration
+  still uses the existing series path. Prime syntax on a bound rational quantity is refused with instructions
+  to differentiate first; it is not silently ignored.
+- Mat entries and their operations use R. Berkowitz's recurrence and the existing elimination procedure are
+  retained; inverse, solutions and null vectors are multiplied back. Whole matrix powers avoid signed overflow
+  when taking the magnitude of a negative exponent.
+- Parametric affine `solve` statements use mat_solve. Numeric and nonlinear systems retain the elimination
+  solver. Inconsistent parametric systems report inconsistency for general values; exceptional solutions are
+  not classified.
+- Rank-drop conditions are the simultaneous zeros of all nonzero minors of generic-rank size, on the input
+  domain. A nonzero constant minor prevents a drop. This is exact and deterministic, though listing all such
+  minors can be expensive for large rectangular matrices. A failed chosen pivot is not a rank-drop condition.
+- Input-denominator poles and poles of a displayed solution/nullspace basis are printed separately. For [a,b],
+  rank drops at a=b=0, while the chosen basis [-b/a,1] has a pole at a=0 even if b is nonzero.
+- Generic qualifications persist with bound values and flow through arithmetic, builtins and matrix entries.
+  A rounded or bounded output keeps its own verdict alongside these qualifications.
+- Equality of rational functions is equality in Q(letters); cancellation does not retain the removed holes
+  of an original expression (p/p=1 as required). No classification of all exceptional parameter cases is added.
+- One old fixture changes: tests/integration.out line 70, the binding g=1/(1-x), now prints -1/(x-1) [exact]
+  instead of its default geometric series through x^8. Multiplying by 1-x gives 1; its explicit expansions
+  and its value g(1/3)=3/2 are unchanged. No other pre-existing .out line changes.

@@ -109,6 +109,23 @@ if ! ./newtonmath tests/irrational.nm | diff -u tests/irrational.out - ; then ec
 n=$((n+1))
 if ! ./newtonmath tests/integration.nm | diff -u tests/integration.out - ; then echo "FAIL: tests/integration.nm"; fail=$((fail+1)); fi
 
+# Rational functions and matrices: reviewed answer key, persistence, domains and refusals.
+n=$((n+1))
+if ! ./newtonmath tests/rational.nm | diff -u tests/rational.out - ; then echo "FAIL: tests/rational.nm"; fail=$((fail+1)); fi
+# Fresh processes see the letters in opposite orders; both expressions have one normal form.
+for first in a x; do
+  for expr in '(x-a)/(a^2-x^2)' '-1/(x+a)'; do
+    out=$(printf '%s\n%s\n' "$first" "$expr" | $NM | tail -1)
+    n=$((n+1))
+    [ "$out" = '-1/(a + x)  [exact]' ] || { echo "FAIL: quotient order after $first: $out"; fail=$((fail+1)); }
+  done
+done
+for first in a d; do
+  out=$(printf '%s\nrank([[a,b],[c,d]])\n' "$first" | $NM | tail -1)
+  n=$((n+1))
+  [ "$out" = '2  [exact, for general a, b, c, d; rank drops where ad - bc = 0]' ] || { echo "FAIL: rank order after $first: $out"; fail=$((fail+1)); }
+done
+
 # rules, sequences, sums and cases
 n=$((n+1))
 if ! ./newtonmath tests/rules.nm | diff -u tests/rules.out - ; then echo "FAIL: tests/rules.nm"; fail=$((fail+1)); fi
