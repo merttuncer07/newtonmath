@@ -694,3 +694,28 @@ digits. An exact 0 (the even terms of an odd function) is kept exactly 0, so no 
 ball's radius is carried into the sum, so every place given is still guaranteed. asin(1/2) to 1000 places:
 10.4 s -> 3.2 s; exp, sin, cos, atan, log1p, asin to 1000 places give the same digits as the exact version and
 as bc.
+
+# Slice 14: factors with no split over the rationals (instead of Rothstein-Trager)
+Question: the log part of a rational integral whose denominator has a factor of degree 3 or more that does not
+split over Q, as 1/(x^3 + x + 1) or 1/(x^4 + 1), refused since Slice 9 ("later: Rothstein-Trager").
+Generic answer: Rothstein-Trager (and Lazard-Rioboo-Trager) give the log part as a sum over the roots of a
+resultant, written as a RootSum.
+Newton: he resolves an affected equation, takes its root, and divides it out of the equation ("resolutio
+aequationum affectarum"; De Analysi, NATP00204, lines 66 ff: "pono a+p=y ... substituo"), and the areas that
+remain are those of conic sections (Slice 9). So: find the real roots, divide them out, and leave each complex
+pair as a real quadratic, whose area is a hyperbola's (log) and a circle's (atan). The integral is the same as
+Rothstein-Trager's, written over the real roots instead of a RootSum.
+Built (integ.c, real_split; elim.c, elim_real_roots):
+- small_factors no longer refuses: a factor with no rational split is returned whole;
+- degree 3: one real root r_k, certified by Sturm and halving, divided out; the quadratic left splits by the
+  formula over Q(r_k) if its roots are real, else stays;
+- degree 4: Ferrari: (x^2 + a x/2 + y/2)^2 - (alpha x + beta)^2 with y a real root of the resolvent cubic that
+  makes alpha^2 > 0 (or the case alpha = beta = 0, as x^4 - 2); each quadratic then as for degree 3;
+- the numerators over each factor by Cramer's rule modulo the factor; then log and atan of each piece.
+Checks: the partial fractions over the real factors are added back and must give the numerator exactly; the two
+Ferrari quadratics must multiply back to the quartic; for every arc, w^2 = 4q - p^2 and K w/2 + lambda p = c.
+(The general derivative check of Slice 9 cannot divide by surds, so the put-back above replaces it.)
+9 definite values agree with independent quadrature (sympy) to 25 places, now in run.sh.
+Also: Euler's substitution now reaches integrals that led to such factors (sqrt(x^2 + 1)/(x^2 + 2)).
+Refused, with the reason: an irreducible factor of degree 5 or more (later), letters in such a factor.
+The printed forms are long (nested surds over r_k): correct and checked, not yet short.

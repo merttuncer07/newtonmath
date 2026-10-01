@@ -93,8 +93,9 @@ error: take d/dx first, then substitute into the conic area
 error: a conic area currently supports its own integration letter only
 error: integrating a conic area again comes later
 error: definite integrals take places, not a formal series order
-error: remaining degree-3 factor has no supported linear/quadratic split; later: Rothstein-Trager
-error: remaining degree-3 factor has no supported linear/quadratic split; later: Rothstein-Trager
+(6r_1^2 - 9r_1 + 4)log|x - r_1|/31 - (6r_1^2 - 9r_1 + 4)log|x^2 + r_1*x + r_1^2 + 1|/62 + (6r_1*sqrt(3r_1^2 + 4) + 9sqrt(3r_1^2 + 4))atan(-6r_1^2sqrt(3r_1^2 + 4)x/31 - 18r_1*sqrt(3r_1^2 + 4)x/31 + 2sqrt(3r_1^2 + 4)x/31 - 9r_1^2sqrt(3r_1^2 + 4)/31 + 4r_1*sqrt(3r_1^2 + 4)/31 + 3sqrt(3r_1^2 + 4)/31)/31  [exact]
+  where r_1 = -0.68232780382801932737  [certified: sign change of y^3 + y + 1, 20 places]
+1/(x^3 + x + 1)  [exact]
 error: letters in a nonlinear conic factor: sign unknown; later
 error: pole in the closed integration interval
 error: pole in the closed integration interval

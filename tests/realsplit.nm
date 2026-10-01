@@ -1,0 +1,17 @@
+# Slice 14: factors with no split over the rationals. As Newton resolves an equation and divides out its root,
+# the real roots are found (certified surds r_k, by Sturm) and divided out; complex pairs stay as real quadratics;
+# a quartic is split into two real quadratics by Ferrari. Each piece is a hyperbola's or a circle's area.
+integral(1/(x^3 + x + 1), x)
+integral(1/(x^3 - 3x + 1), x)
+integral(1/(x^4 + 1), x)
+integral(1/(x^4 - 2), x)
+integral(1/(x^4 - 10x^2 + 1), x)
+integral(1/(x^4 + 1), x, 0, 1)
+integral(1/(x^4 + 1), x, 0, 1) to 30 places
+integral(1/(x^3 + x + 1), x, 0, 1) to 30 places
+integral(x^2/(x^4 + x + 1), x, 0, 1) to 30 places
+integral(1/(x^3 + 2x + 5), x, 0, 3) to 30 places
+apart(1/(x^3 + x + 1), x)
+# refused, with the reason
+integral(1/(x^5 + x + 3), x)
+integral(1/(x^3 + a x + 1), x)

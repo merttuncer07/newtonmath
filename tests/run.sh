@@ -220,6 +220,23 @@ integral(1/(x sqrt(x^2 - 2)), x, 2, 3)|(a(sqrt(7)/sqrt(2))-a(1))/sqrt(2)
 CASES
 fi
 
+# Slice 14: factors with no split over Q; definite values against independent quadrature (sympy, 25 places)
+n=$((n+1))
+if ! ./newtonmath tests/realsplit.nm | diff -u tests/realsplit.out - ; then echo "FAIL: tests/realsplit.nm"; fail=$((fail+1)); fi
+while IFS='|' read -r f a b want; do
+  got=$($NM -e "integral($f, x, $a, $b) to 25 places" | cut -d' ' -f1)
+  n=$((n+1)); [ "$got" = "$want" ] || { echo "FAIL: integral($f, x, $a, $b): $got, quadrature $want"; fail=$((fail+1)); }
+done <<'CASES'
+1/(x^3 + x + 1)|0|1|0.6303193224124080140667863
+1/(x^3 - 3x + 1)|-1|0|0.4895517625859923877210842
+x/(x^3 - 2)|0|1|-0.3251555784294800194916487
+1/(x^4 + 1)|0|1|0.8669729873399110375739952
+1/(x^4 + 2)|0|2|0.6208412393004786044234699
+x^2/(x^4 + x + 1)|0|1|0.1616404362034916102203722
+(x^2 + 1)/(x^4 - 10x^2 + 1)|1|2|-0.2088101520505993212096815
+1/(x^3 + 2x + 5)|0|3|0.2923682218213270459150485
+CASES
+
 # sparse letters: one long session (Slices 11 and 12 together, and 240 surds and named constants) stays exact
 n=$((n+1))
 if ! cat tests/rootint.nm tests/euler.nm | ./newtonmath | diff -q - tests/rootint.out tests/euler.out >/dev/null 2>&1; then

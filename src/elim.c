@@ -485,8 +485,20 @@ static void small_factors(RQ p, int v, C *out, int *n, int max) {
                 if(r.deg<0) { out[(*n)++]=rq_to_c(f,v); small_factors(q,v,out,n,max); return; }
             }
     }
-    nm_fail("remaining degree-%d factor has no supported linear/quadratic split; later: Rothstein-Trager",p.deg);
+    out[(*n)++]=rq_to_c(p,v);                     /* no split over Q found: the real-root split takes it (integ.c) */
 }
+/* the real roots of p (rational coefficients), rational ones exactly and the others as certified surds r_k */
+int elim_real_roots(C p, int v, C *out, int max) {
+    C all[256]; int n = 0, k = 0;
+    rq_roots(rq_from_c(p, v), all, &n, 256);
+    for (int i = 0; i < n && k < max; i++) {
+        int complex = 0;
+        for (int l = 0; l < letter_count(); l++) if (letter_is_imag(l) && c_uses(all[i], l)) complex = 1;
+        if (!complex) out[k++] = all[i];
+    }
+    return k;
+}
+
 int elim_conic_factors(C p, int v, C *out, int max) {
     int n=0; small_factors(rq_from_c(p,v),v,out,&n,max); return n;
 }

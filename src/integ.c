@@ -8,6 +8,7 @@
 static Q qi(int n) { return q_from_z(z_from_i64(n)); }
 static C N(int n) { return c_const(qi(n)); }
 static C mono(int v,int n) { return c_pow_int(c_letter(v),n); }
+static C half_c(void) { return c_const(q_make(z_from_i64(1),z_from_i64(2))); }
 static int degree(C p,int v) { return up_from(p,v).deg; }
 static C coeff(C p,int v,int n) { return c_coeff_of(p,v,qi(n)); }
 static C from_r(R r) {
@@ -153,6 +154,106 @@ static void term_r(Integral *a,int kind,R coef,C poly) {
     a->term[a->n++]=(AreaTerm){coef,poly,kind};
 }
 static void term(Integral *a,int kind,C coef,C poly) { term_r(a,kind,r_from_c(coef),poly); }
+
+/* ---- a factor with no split over Q: Newton finds its roots and divides them out ----
+ * The real roots are certified surds r_k (Sturm, elim.c); the rest is one quadratic, or for a quartic with no real
+ * root two quadratics (Ferrari). Each linear factor gives a logarithm, each quadratic a logarithm and an arc. */
+int (*integ_sign)(C a);
+
+static void divide_c(C a,C b,int v,C *q,C *r) {   /* b monic in v, coefficients exact numbers and surds */
+    int db=degree(b,v); *q=c_zero();
+    while(!c_is_zero(a) && degree(a,v)>=db) {
+        int da=degree(a,v);
+        C t=c_mul(coeff(a,v,da),mono(v,da-db));
+        *q=c_add(*q,t); a=c_sub(a,c_mul(t,b));
+    }
+    *r=a;
+}
+static C monic(C p,int v) { return c_mul(p,c_inv(coeff(p,v,degree(p,v)))); }
+
+/* the numerator over G (monic, degree 1 or 2) in N/(G H): N = (b x + c) H mod G */
+static void numerator(C n,C g,C h,int v,C *b,C *c) {
+    C q,nm,hm; divide_c(n,g,v,&q,&nm); divide_c(h,g,v,&q,&hm);
+    if(degree(g,v)==1) { *b=c_zero(); *c=c_div(coeff(nm,v,0),coeff(hm,v,0)); return; }
+    C p=coeff(g,v,1),qq=coeff(g,v,0),h1=coeff(hm,v,1),h0=coeff(hm,v,0),n1=coeff(nm,v,1),n0=coeff(nm,v,0);
+    /* b(h0 - h1 p) + c h1 = n1,  -b h1 qq + c h0 = n0 */
+    C a11=c_sub(h0,c_mul(h1,p)),a12=h1,a21=c_neg(c_mul(h1,qq)),a22=h0;
+    C det=c_sub(c_mul(a11,a22),c_mul(a12,a21));
+    *b=c_div(c_sub(c_mul(n1,a22),c_mul(a12,n0)),det);
+    *c=c_div(c_sub(c_mul(a11,n0),c_mul(n1,a21)),det);
+}
+
+static void real_split(Integral *out,C num,C den,int v) {
+    if(degree(den,v)>4) nm_fail("a factor of degree %d with no split over the rationals: later",degree(den,v));
+    if(!integ_sign) nm_fail("internal: no sign for real numbers");
+    C lead=coeff(den,v,degree(den,v)); num=c_div(num,lead); den=monic(den,v);
+    C g[64]; int ng=0, dd=degree(den,v);
+    C quad[2]; int nq=0;
+    if(dd==3) {                                  /* one certified real root, then the quadratic left */
+        C rr[4]; int nr=elim_real_roots(den,v,rr,4);
+        if(nr<1) nm_fail("internal: a cubic without a real root (vitiose)");
+        g[ng++]=c_sub(c_letter(v),rr[0]);
+        C q,r; divide_c(den,g[0],v,&q,&r);
+        if(!c_is_zero(r)) nm_fail("internal check failed: a certified root does not divide (vitiose)");
+        quad[nq++]=q;
+    } else if(dd==4) {                           /* Ferrari: x^4 + a x^3 + b x^2 + c x + d as two real quadratics */
+        Q a,b,c,d;
+        if(!c_const_value(coeff(den,v,3),&a)||!c_const_value(coeff(den,v,2),&b)||!c_const_value(coeff(den,v,1),&c)||!c_const_value(coeff(den,v,0),&d))
+            nm_fail("internal: Ferrari needs rational coefficients");
+        /* (x^2 + a x/2 + y/2)^2 - ((a^2/4 - b + y) x^2 + (a y/2 - c) x + y^2/4 - d): a square when
+         * (a y/2 - c)^2 = 4 (a^2/4 - b + y)(y^2/4 - d), a cubic in y */
+        int Y=letter_index("#ferrari",8);
+        C y=c_letter(Y),A=c_const(a),B=c_const(b),Cc=c_const(c),Dd=c_const(d),half=half_c(),quarter=c_const(q_make(z_from_i64(1),z_from_i64(4)));
+        C k2=c_add(c_sub(c_mul(c_mul(A,A),quarter),B),y);
+        C k1=c_sub(c_mul(c_mul(A,y),half),Cc), k0=c_sub(c_mul(c_mul(y,y),quarter),Dd);
+        C cubic=c_sub(c_mul(k1,k1),c_mul(c_mul(N(4),k2),k0));
+        C ys[8]; int ny=elim_real_roots(cubic,Y,ys,8), done=0;
+        for(int i=0;i<ny && !done;i++) {
+            C K2=integ_subst_poly(k2,Y,ys[i]), K1=integ_subst_poly(k1,Y,ys[i]), K0=integ_subst_poly(k0,Y,ys[i]), lin;
+            C base=c_add(c_add(mono(v,2),c_mul(c_mul(A,half),c_letter(v))),c_mul(ys[i],half));
+            if(c_is_zero(K2) && c_is_zero(K1) && integ_sign(K0)>0) lin=c_radical_c(K0,2);   /* x^4 - 2: (x^2)^2 - 2 */
+            else {
+                if(integ_sign(K2)<=0) continue;
+                C al=c_radical_c(K2,2), be=c_div(K1,c_mul(N(2),al));
+                lin=c_add(c_mul(al,c_letter(v)),be);
+            }
+            quad[nq++]=c_add(base,lin); quad[nq++]=c_sub(base,lin); done=1;
+        }
+        if(!done) nm_fail("internal: no real resolvent root for Ferrari");
+        C prod=c_mul(quad[0],quad[1]);
+        if(!c_equal(prod,den)) nm_fail("internal check failed: Ferrari's two quadratics (vitiose)");
+    } else nm_fail("a factor of degree %d with no split over the rationals: later",dd);
+    for(int i=0;i<nq;i++) {                      /* a quadratic with real roots splits by the formula */
+        C p=coeff(quad[i],v,1),qq=coeff(quad[i],v,0), disc=c_sub(c_mul(p,p),c_mul(N(4),qq));
+        if(integ_sign(disc)>0) {
+            C sq=c_radical_c(disc,2);
+            g[ng++]=c_add(c_letter(v),c_mul(c_add(p,sq),half_c()));
+            g[ng++]=c_add(c_letter(v),c_mul(c_sub(p,sq),half_c()));
+        } else g[ng++]=quad[i];
+    }
+    /* partial fractions over the real factors, put back exactly */
+    C back=c_zero();
+    C *bs=arena_alloc(64*sizeof(C)),*cs=arena_alloc(64*sizeof(C));
+    for(int i=0;i<ng;i++) {
+        C h,rm; divide_c(den,g[i],v,&h,&rm);
+        if(!c_is_zero(rm)) nm_fail("internal check failed: a factor does not divide (vitiose)");
+        numerator(num,g[i],h,v,&bs[i],&cs[i]);
+        back=c_add(back,c_mul(c_add(c_mul(bs[i],c_letter(v)),cs[i]),h));
+    }
+    if(!c_equal(back,num)) nm_fail("internal check failed: the partial fractions over the real roots do not add back (vitiose)");
+    for(int i=0;i<ng;i++) {
+        if(degree(g[i],v)==1) { term(out,AREA_LOG,cs[i],g[i]); continue; }
+        C p=coeff(g[i],v,1),qq=coeff(g[i],v,0);
+        C w2=c_sub(c_mul(N(4),qq),c_mul(p,p));
+        if(integ_sign(w2)<=0) nm_fail("internal check failed: a quadratic factor with real roots (vitiose)");
+        C w=c_radical_c(w2,2), lam=c_mul(bs[i],half_c()), K=c_div(c_mul(N(2),c_sub(cs[i],c_mul(lam,p))),w);
+        if(!c_equal(c_mul(w,w),w2) || !c_equal(c_add(c_div(c_mul(K,w),N(2)),c_mul(lam,p)),cs[i]))
+            nm_fail("internal check failed: an arc over a real quadratic (vitiose)");
+        if(!c_is_zero(lam)) term(out,AREA_LOG,lam,g[i]);
+        if(!c_is_zero(K)) term(out,AREA_ATAN,K,c_div(c_add(c_mul(N(2),c_letter(v)),p),w));
+    }
+    out->root=out->root;                           /* (the derivative check over surds is the put-back above) */
+}
 Integral integ_rational(R f,int v) {
     int dd=degree(f.den,v);
     if(dd>64) nm_fail("rational integration degree limit is 64");
@@ -171,6 +272,7 @@ Integral integ_rational(R f,int v) {
     }
     R q,a; divide_parameters(f.num,f.den,v,&q,&a);
     out.rational=r_make(fluent_poly(q.num,v),q.den);
+    int split=0;
     if(!r_is_zero(a)) {
         C g=poly_gcd(f.den,integ_diff_poly(f.den,v)),s=poly_exact_div(f.den,g);
         int dg=degree(g,v),ds=degree(s,v);
@@ -188,12 +290,18 @@ Integral integ_rational(R f,int v) {
         }
         if(!r_is_zero(residual)) {
             Apart ap=integ_apart(r_div(residual,r_from_c(s)),v);
+            (void)0;
             for(int i=0;i<ap.n;i++) {
                 R r=ap.part[i]; int d=degree(r.den,v);
                 if(d==0) { out.rational=r_add(out.rational,r_from_c(fluent_poly(from_r(r),v)));continue; }
                 C lead=coeff(r.den,v,d);
                 if(d==1) { term_r(&out,AREA_LOG,r_make(r.num,lead),r.den);continue; }
-                if(d!=2) nm_fail("remaining degree-%d factor; later: Rothstein-Trager",d);
+                if(d>2) {
+                    for(int l=0;l<letter_count();l++)
+                        if(l!=v && !letter_is_surd(l) && !letter_is_named(l) && (c_uses(r.num,l)||c_uses(r.den,l)))
+                            nm_fail("letters in a factor of degree %d: later",d);
+                    real_split(&out,r.num,r.den,v); split=1; continue;
+                }
                 for(int l=0;l<letter_count();l++)
                     if(l!=v && !letter_is_surd(l) && !letter_is_named(l) && (c_uses(r.num,l)||c_uses(r.den,l)))
                         nm_fail("letters in a quadratic conic part: sign unknown; later");
@@ -218,7 +326,7 @@ Integral integ_rational(R f,int v) {
             }
         }
     }
-    if(!r_equal(integ_derivative(out),f)) nm_fail("internal check failed: integral differentiated back (vitiose)");
+    if(!split && !r_equal(integ_derivative(out),f)) nm_fail("internal check failed: integral differentiated back (vitiose)");
     return out;
 }
 C integ_value(Integral a,C x,C (*conic)(int,C)) {

@@ -59,6 +59,7 @@ static int reads_as_letters(const char *s, size_t len);
 static Ball conic_pi(void *data, int64_t prec);
 static int number_sign(C a);
 static C conic_constant(int kind, C arg);
+static void root_legend(C *vals, int nv, char **o);
 
 static void lex(const char *src) {
     size_t n = strlen(src);
@@ -2153,7 +2154,15 @@ static char *show(Val v, int64_t places, int asked) {
             else snprintf(out, 4096, "[exact value %s, rounded to %lld places]", q_to_str(v.q), (long long)places);
         }
         break;
-    case V_AREA: body=integ_to_str(v.area); snprintf(out,4096,"[exact]"); break;
+    case V_AREA: {
+        body=integ_to_str(v.area); snprintf(out,4096,"[exact]");
+        C *vals=arena_alloc((size_t)(2*v.area.n+2)*sizeof(C)); int nv=0;          /* roots r_k met in the area */
+        for(int i=0;i<v.area.n;i++) { vals[nv++]=v.area.term[i].poly; vals[nv++]=c_div(v.area.term[i].coef.num,v.area.term[i].coef.den); }
+        char *leg=arena_alloc(4096),*lo=leg; *leg=0;
+        root_legend(vals,nv,&lo);
+        if(*leg) { char *o2=arena_alloc(strlen(out)+strlen(leg)+2); sprintf(o2,"%s%s",out,leg); snprintf(out,4096,"%s",o2); }
+        break;
+    }
     case V_APART: body=apart_to_str(v.apart); snprintf(out,4096,"[exact]"); break;
     case V_RAT: body = r_to_str(v.rat); snprintf(out, 4096, "[exact]"); break;
     case V_POLY: {
@@ -2522,6 +2531,7 @@ char *nm_run(const char *line, int *failed) {
         sprintf(m, "error: %s", nm_error_msg);
         return m;
     }
+    integ_sign = number_sign;
     lex(line);
     pdepth = frame_base = calldepth = 0; nsum_skip = 0;
     stmt_id++;

@@ -270,3 +270,14 @@ rational point found.
 A term keeps only its own letters, as Newton writes them. A session may use 4096 letters, surds and named
 constants; one term at most 12 different letters. The test files run 1.5 to 4.7 times faster than before.
 
+## Factors with no rational split (slice 14)
+
+As Newton resolves an equation and divides out its root, a denominator factor of degree 3 or 4 with no split over
+the rationals is split over its certified real roots (r_k) and, for a quartic, into two real quadratics (Ferrari):
+
+    integral(1/(x^4 + 1), x)    sqrt(2)log|x^2 + sqrt(2)x + 1|/8 + sqrt(2)atan(sqrt(2)x + 1)/4
+                                - sqrt(2)log|x^2 - sqrt(2)x + 1|/8 + sqrt(2)atan(sqrt(2)x - 1)/4  [exact]
+    integral(1/(x^3 + x + 1), x, 0, 1) to 30 places     0.630319322412408014066786298922
+
+Not yet: irreducible factors of degree 5 or more; short forms of the nested surds.
+

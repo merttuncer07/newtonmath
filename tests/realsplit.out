@@ -1,0 +1,15 @@
+(6r_1^2 - 9r_1 + 4)log|x - r_1|/31 - (6r_1^2 - 9r_1 + 4)log|x^2 + r_1*x + r_1^2 + 1|/62 + (6r_1*sqrt(3r_1^2 + 4) + 9sqrt(3r_1^2 + 4))atan(-6r_1^2sqrt(3r_1^2 + 4)x/31 - 18r_1*sqrt(3r_1^2 + 4)x/31 + 2sqrt(3r_1^2 + 4)x/31 - 9r_1^2sqrt(3r_1^2 + 4)/31 + 4r_1*sqrt(3r_1^2 + 4)/31 + 3sqrt(3r_1^2 + 4)/31)/31  [exact]
+  where r_1 = -0.68232780382801932737  [certified: sign change of y^3 + y + 1, 20 places]
+(2r_2^2 + r_2 - 4)log|x - r_2|/9 - (2r_2^2 - 2r_2*sqrt(-3r_2^2 + 12) + r_2 + sqrt(-3r_2^2 + 12) - 4)log|x + r_2/2 + sqrt(-3r_2^2 + 12)/2|/18 - (2r_2^2 + 2r_2*sqrt(-3r_2^2 + 12) + r_2 - sqrt(-3r_2^2 + 12) - 4)log|x + r_2/2 - sqrt(-3r_2^2 + 12)/2|/18  [exact]
+  where r_2 = 1.53208888623795607040  [certified: sign change of y^3 - 3y + 1, 20 places]
+sqrt(2)log|x^2 + sqrt(2)x + 1|/8 + sqrt(2)atan(sqrt(2)x + 1)/4 - sqrt(2)log|x^2 - sqrt(2)x + 1|/8 + sqrt(2)atan(sqrt(2)x - 1)/4  [exact]
+-sqrt(4sqrt(2))atan(sqrt(2)sqrt(4sqrt(2))x/4)/8 - sqrt(4sqrt(2))log|x + sqrt(4sqrt(2))/2|/16 + sqrt(4sqrt(2))log|x - sqrt(4sqrt(2))/2|/16  [exact]
+-(3sqrt(2) - 2sqrt(3))log|x + sqrt(2) + sqrt(3)|/48 - (3sqrt(2) + 2sqrt(3))log|x + sqrt(2) - sqrt(3)|/48 + (3sqrt(2) + 2sqrt(3))log|x - sqrt(2) + sqrt(3)|/48 + (3sqrt(2) - 2sqrt(3))log|x - sqrt(2) - sqrt(3)|/48  [exact]
+sqrt(2)atan(sqrt(2) + 1)/4 + sqrt(2)atan(sqrt(2) - 1)/4 - sqrt(2)log(-sqrt(2) + 2)/8 + sqrt(2)log(sqrt(2) + 2)/8  [exact]
+0.866972987339911037573995163883  [bounded: 30 places guaranteed]
+0.630319322412408014066786298922  [bounded: 30 places guaranteed]
+0.161640436203491610220372184275  [bounded: 30 places guaranteed]
+0.292368221821327045915048452278  [bounded: 30 places guaranteed]
+1/(x^3 + x + 1)  [exact]
+error: a factor of degree 5 with no split over the rationals: later
+error: letters in a nonlinear conic factor: sign unknown; later

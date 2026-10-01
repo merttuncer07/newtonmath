@@ -204,6 +204,8 @@ int elim_roots(C p, int v, C *out, int max, int *unresolved);
 /* Exact conic factorization and closed-interval pole checks (elim.c). */
 int elim_conic_factors(C p, int v, C *out, int max);
 int elim_has_root_closed(C p, int v, Q lo, Q hi);
+int elim_real_roots(C p, int v, C *out, int max);
+extern int (*integ_sign)(C a);                 /* the sign of an exact real number (lang.c gives it) */
 
 /* Rational integrals: a rational part and logarithmic/circular areas. */
 enum { AREA_LOG, AREA_ATAN, AREA_ASIN };

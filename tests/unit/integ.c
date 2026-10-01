@@ -40,10 +40,12 @@ int main(void) {
     /* A repeated irreducible cubic may integrate rationally before factoring. */
     C cubic=c_add(c_add(c_pow_int(x,3),x),N(1));
     R rat=r_make(N(1),cubic);
-    Integral primitive={v,0,rat,NULL}; R df=integ_derivative(primitive);
+    Integral primitive={v,0,rat,NULL,0,0,{0,0},{0,0}}; R df=integ_derivative(primitive);
     Integral found=integ_rational(df,v);back++;
     ck(found.n==0 && r_equal(found.rational,rat),"Hermite precedes unsupported factorization");
-    refusal(r_make(N(1),cubic),v,"Rothstein-Trager");
+    /* a factor of degree 5 with no split over Q is refused (degrees 3 and 4 are split over their real roots in the
+     * language, where the sign of a surd is known: tests/realsplit.nm) */
+    refusal(r_make(N(1),c_add(c_add(c_pow_int(x,5),x),N(3))),v,"degree 5");
     refusal(r_make(N(1),c_add(xx,a)),v,"sign unknown");
     ck(elim_has_root_closed(x,v,qi(-1),qi(1)),"interior pole");
     ck(elim_has_root_closed(c_pow_int(xm,2),v,qi(0),qi(2)),"even multiplicity interior pole");
