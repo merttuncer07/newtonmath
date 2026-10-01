@@ -193,7 +193,7 @@ Important internals:
   3. Add it to `SRC` in the Makefile.
   4. Wire it into `lang.c` in one pass.
 - **Limits.**
-  - `NM_MAXL 32` letters. Each CT term holds 32 rationals, so raising it costs speed.
+  - `NM_MAXL 4096` letters, surds and named values per session; `CT_MAXV 12` letters in one term (sparse terms, Slice 13).
   - `NM_MAXSOL 256`.
   - `NM_MAXFAC 128`.
   - Rules recurse to a depth of 4000.
