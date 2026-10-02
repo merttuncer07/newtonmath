@@ -35,7 +35,7 @@ extern char nm_error_msg[512];
 enum { T_END, T_NUM, T_NAME, T_OP, T_KEY };
 typedef struct { int kind; const char *s; size_t len; char op; int primes; const char *at; } Tok;   /* at: where in the line */
 
-static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", "for", "starting", "sum", "if", "otherwise", "solve", "eliminate", "from", NULL};
+static const char *KEYWORDS[] = {"let", "to", "places", "root", "of", "near", "sqrt", "integral", "use", "for", "starting", "sum", "if", "otherwise", "solve", "eliminate", "from", "show", NULL};
 
 static Tok *toks;
 static int ntok, pos;
@@ -2525,7 +2525,18 @@ static C eliminate_expr(void) {
     return elim_resultant(eqs[0], eqs[1], v);
 }
 
+static char *run_statement(const char *line, int *failed);
+
+/* show STATEMENT: the same statement, with each step of the work written as it is done */
 char *nm_run(const char *line, int *failed) {
+    nm_show_work = 0; nm_work_lines = 0;
+    char *out = run_statement(line, failed);
+    if (nm_show_work && !nm_work_lines && !*failed) nm_work("(no steps are written for this kind of statement yet)");
+    nm_show_work = 0;
+    return out;
+}
+
+static char *run_statement(const char *line, int *failed) {
     *failed = 0;
     if (setjmp(nm_on_error)) {
         *failed = 1;
@@ -2537,6 +2548,7 @@ char *nm_run(const char *line, int *failed) {
     lex(line);
     pdepth = frame_base = calldepth = 0; nsum_skip = 0;
     stmt_id++;
+    if (at_key("show")) { pos++; nm_show_work = 1; }
     if (peek()->kind == T_END) return NULL;
     if (at_key("use")) {
         pos++;

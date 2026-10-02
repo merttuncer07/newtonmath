@@ -261,6 +261,18 @@ if command -v bc >/dev/null 2>&1; then
   n=$((n+1)); [ "$mine" = "$theirs" ] || { echo "FAIL: F[2000] differs from bc"; fail=$((fail+1)); }
 fi
 
+# show: Newton's own table for y^3 - 2y - 5 (De Analysi, NATP00204), and the same answer as without show.
+out=$($NM -e 'show root of y^3 - 2y - 5 = 0 near 2 to 30 places')
+n=$((n+1))
+echo "$out" | grep -qx '    y = 2 + p:   p^3 + 6p^2 + 10p - 1 = 0,   p = 0.1' || { echo "FAIL: show, first row"; fail=$((fail+1)); }
+n=$((n+1))
+echo "$out" | grep -qx '    y = 2.1 + p:   p^3 + 6.3p^2 + 11.23p + 0.061 = 0,   p = -0.0054' || { echo "FAIL: show, second row"; fail=$((fail+1)); }
+n=$((n+1))
+[ "$(echo "$out" | tail -1)" = "$($NM -e 'root of y^3 - 2y - 5 = 0 near 2 to 30 places')" ] || { echo "FAIL: show changes the answer"; fail=$((fail+1)); }
+out=$($NM -e 'show 2 + 3' | head -1)
+n=$((n+1))
+[ "$out" = '  (no steps are written for this kind of statement yet)' ] || { echo "FAIL: show without steps: $out"; fail=$((fail+1)); }
+
 # The libraries are compiled into the program: it runs alone, from any directory.
 tmp=$(mktemp -d); cp $NM "$tmp/"
 out=$(cd "$tmp" && printf 'use prelude\nexp(1) to 30 places\n' | ./newtonmath | tail -1)

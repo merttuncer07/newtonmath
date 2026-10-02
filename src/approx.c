@@ -6,7 +6,80 @@
  * operation: substitute both ends into the equation exactly and see the sign change. */
 #include "nm.h"
 
+#include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
+
+/* ---------------- showing the work ---------------- */
+
+int nm_show_work, nm_work_lines;
+
+void nm_work(const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    fputs("  ", stdout);
+    vprintf(fmt, ap);
+    putchar('\n');
+    va_end(ap);
+    nm_work_lines++;
+}
+
+static char *trim_zeros(char *s) {           /* 2.1000 -> 2.1, 3.000 -> 3 */
+    if (!strchr(s, '.')) return s;
+    char *e = s + strlen(s);
+    while (e[-1] == '0') *--e = 0;
+    if (e[-1] == '.') e[-1] = 0;
+    return s;
+}
+
+static char *cut(char *s, size_t keep) {     /* long decimals are shown with their first digits only */
+    if (strlen(s) <= keep) return s;
+    strcpy(s + keep, "...");
+    return s;
+}
+
+static char *dec_short(Q a, int sig) {       /* `sig` significant digits; "..." marks a rounded value */
+    int64_t k = sig - ((int64_t)z_digits(a.num) - (int64_t)z_digits(a.den));
+    if (k < 0) k = 0;
+    Z q, rem;
+    z_divmod(z_mul_pow10(z_abs(a.num), k), a.den, &q, &rem);
+    if (a.num.s < 0) q = z_neg(q);
+    char *s = trim_zeros(fixed_str(q, k));
+    if (rem.s == 0) return s;
+    char *o = arena_alloc(strlen(s) + 4);
+    sprintf(o, "%s...", s);
+    return o;
+}
+
+/* the equation in p after putting y = x0 + p (a Taylor shift), as Newton writes it in his table */
+static char *shifted_str(Root *r, Q x0, const char *p) {
+    int n = r->deg;
+    Q *b = arena_alloc((size_t)(n + 1) * sizeof(Q));
+    for (int i = 0; i <= n; i++) b[i] = q_from_z(r->c[i]);
+    for (int i = 0; i < n; i++)
+        for (int j = n - 1; j >= i; j--) b[j] = q_add(b[j], q_mul(x0, b[j + 1]));
+    size_t cap = 64;
+    for (int i = 0; i <= n; i++) cap += 40;
+    char *out = arena_alloc(cap), *o = out;
+    int first = 1;
+    for (int k = n; k >= 0; k--) {
+        int sg = q_sign(b[k]);
+        if (!sg) continue;
+        Q m = sg < 0 ? q_neg(b[k]) : b[k];
+        char *num = dec_short(m, 8);
+        if (k > 0 && !strcmp(num, "1")) num = "";
+        char pw[24] = "";
+        if (k == 1) snprintf(pw, sizeof pw, "%s", p);
+        else if (k > 1) snprintf(pw, sizeof pw, "%s^%d", p, k);
+        size_t need = (size_t)(o - out) + strlen(num) + strlen(pw) + 8;
+        if (need > cap) { char *g = arena_alloc(2 * need); memcpy(g, out, (size_t)(o - out)); o = g + (o - out); out = g; cap = 2 * need; }
+        o += sprintf(o, "%s%s%s", first ? (sg < 0 ? "-" : "") : (sg < 0 ? " - " : " + "), num, pw);
+        first = 0;
+    }
+    if (first) o += sprintf(o, "0");
+    sprintf(o, " = 0");
+    return out;
+}
 
 /* ---------------- roots ---------------- */
 
@@ -17,15 +90,22 @@ static Z eval_scaled(const Z *c, int deg, Z X, int64_t D) {
     return h;
 }
 
-static void newton_at(Root *r, Z *dc, int64_t D) {
+static int newton_at(Root *r, Z *dc, int64_t D) {    /* 1 if the approximation is a root exactly */
+    if (nm_show_work) nm_work("to %lld places:", (long long)D);
+    const char *p = strcmp(r->var, "p") ? "p" : "q";
     for (int it = 0; it < 200; it++) {
         Z h = eval_scaled(r->c, r->deg, r->X, D);
-        if (h.s == 0) return;
+        if (h.s == 0) { if (nm_show_work) nm_work("  %s = %s is a root exactly", r->var, trim_zeros(fixed_str(r->X, D))); return 1; }
         Z hp = eval_scaled(dc, r->deg - 1, r->X, D);
         if (hp.s == 0) nm_fail("the derivative vanishes at the approximation; choose another starting value");
         Z delta = z_div_round(h, hp);      /* the correction p(x)/p'(x), in units of 10^-D */
+        if (nm_show_work && delta.s) {     /* one row of Newton's table: the substitution, the equation in p, and p */
+            Q x0 = q_make(r->X, z_pow10(D));
+            nm_work("  %s = %s + %s:   %s,   %s = %s", r->var, cut(trim_zeros(fixed_str(r->X, D)), 60), p,
+                    shifted_str(r, x0, p), p, cut(trim_zeros(fixed_str(z_neg(delta), D)), 60));
+        }
         r->X = z_sub(r->X, delta);
-        if (z_cmpabs(delta, z_from_i64(1)) <= 0) return;
+        if (z_cmpabs(delta, z_from_i64(1)) <= 0) return 0;
     }
     nm_fail("Newton's resolution does not settle near the given value");
 }
@@ -61,16 +141,19 @@ static int sign_at(Root *r, Z X, int64_t D) { return eval_scaled(r->c, r->deg, X
 
 void root_refine(Root *r, int64_t places) {
     int64_t target = places + 3;
-    if (r->certified && r->D >= target) return;
+    if (r->certified && r->D >= target) {
+        if (nm_show_work) nm_work("already resolved to %lld places by an earlier request: nothing new to do", (long long)r->D);
+        return;
+    }
     Z *dc = arena_alloc((size_t)r->deg * sizeof(Z));
     for (int i = 0; i < r->deg; i++) dc[i] = z_mul_small(r->c[i + 1], (uint32_t)(i + 1));
     int64_t D = r->D;
-    newton_at(r, dc, D);
+    int exact = newton_at(r, dc, D);
     while (D < target) {                      /* double the places each pass, as far as needed */
-        int64_t D2 = 2 * D < target ? 2 * D : target;
+        int64_t D2 = exact || 2 * D >= target ? target : 2 * D;   /* an exact root needs no more passes */
         r->X = z_mul_pow10(r->X, D2 - D);
         D = D2;
-        newton_at(r, dc, D);
+        if (!exact) exact = newton_at(r, dc, D);
     }
     r->D = D;
     /* the direct operation: the equation must change sign across the bracket */
@@ -84,6 +167,12 @@ void root_refine(Root *r, int64_t places) {
                 break;
             }
         }
+    }
+    if (nm_show_work) {
+        if (r->certified && r->w)
+            nm_work("check: the equation changes sign across %s +- %lld*10^-%lld, so a root lies inside",
+                    cut(trim_zeros(fixed_str(r->X, D)), 60), (long long)r->w, (long long)D);
+        else if (!r->certified) nm_work("check: no sign change found near the approximation");
     }
     r->X = z_persist(r->X);
 }

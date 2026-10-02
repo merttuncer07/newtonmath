@@ -254,6 +254,8 @@ char *mat_verdict(Mat input, Mat result, int rank); /* rank >= 0 includes the ra
 Root *root_new(Poly p, Q guess, int64_t start_places);
 void root_refine(Root *r, int64_t places);    /* continue Newton's resolution to at least `places` decimals */
 char *root_equation_str(Root *r);
+extern int nm_show_work, nm_work_lines;       /* "show": write each step of the work as it is done */
+void nm_work(const char *fmt, ...);
 
 /* ---- balls: midpoint m * 10^e, radius r * 10^e ---- */
 typedef struct { Z m; int64_t e; Z r; } Ball;

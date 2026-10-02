@@ -732,3 +732,18 @@ that variable is set (for working on a library), else the built-in text (fmemope
 current directory. lib/*.nm stays the source; the C kernel does not grow.
 Checks: run.sh copies the program to an empty directory and evaluates exp(1) to 30 places there (agrees with
 bc), and loads a library from that directory.
+
+# show: the work written out
+Question: how does the user see how an answer was found, not only the answer?
+Generic answer: a debug or verbose flag that logs the internal iterations.
+Newton: in De Analysi (NATP00204, "resolutio aequationum affectarum") he gives the work as a table: y = 2 + p,
+the equation in p, p = 0.1; then p = 0.1 + q, and so on; the table is the demonstration (T: show the route, not
+only the result). Justine Tunney's tools also show the reduction they perform (the -r trace of her lambda VM).
+So the trace is the table of the computation actually done, not a separate re-derivation: `show STATEMENT`
+writes, for each Newton step, the substitution y = x0 + p, the equation in p (an exact Taylor shift, shown to 8
+significant digits, "..." where rounded) and the correction p the engine takes; then the sign-change check.
+The rows reproduce Newton's own: p = 0.1, then -0.0054, then 2.09455148.
+Small choices: one letter p (q if the unknown is p) with the cumulative value, rather than Newton's p, q, r...;
+long decimals cut at 60 characters; a statement with no written steps says so. A side fix: an exact root ends
+the passes at once instead of repeating them (the value is the same).
+Not yet: steps for series (term by term), integrals and the parallelogram.

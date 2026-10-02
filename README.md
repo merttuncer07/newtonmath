@@ -36,6 +36,25 @@ are defined by their equations, in the language itself. The files in lib/ are co
 the one file `newtonmath` runs alone from any directory; `use NAME` takes NAME from $NEWTONMATH_LIB if set,
 else the built-in one, else NAME.nm in the current directory. A defined series can be substituted: `exp(x^2)`.
 
+## Showing the work
+
+`show` before a statement writes each step as it is done, in the form of Newton's table in De Analysi: the
+substitution, the equation in the new unknown, and the correction taken from its last two terms. Each pass
+doubles the places; the last line is the check that certifies the root. The answer is the same as without `show`.
+
+    show root of y^3 - 2y - 5 = 0 near 2 to 30 places
+      to 4 places:
+        y = 2 + p:   p^3 + 6p^2 + 10p - 1 = 0,   p = 0.1
+        y = 2.1 + p:   p^3 + 6.3p^2 + 11.23p + 0.061 = 0,   p = -0.0054
+      to 8 places:
+        y = 2.0946 + p:   p^3 + 6.2838p^2 + 11.1620474...p + 0.000541550536 = 0,   p = -0.00004852
+      ...
+      check: the equation changes sign across 2.094551481542326591482386540579303 +- 1*10^-33, so a root lies inside
+    2.094551481542326591482386540579  [certified: sign change of y^3 - 2y - 5, 30 places]
+
+Numbers ending in "..." are rounded for display only. For now the steps are written for roots of equations;
+other statements say so.
+
 ## Values (slice 3)
 
 A function defined by a linear fluxional equation with polynomial coefficients has a term rule: each coefficient
