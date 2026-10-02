@@ -25,9 +25,6 @@
 extern jmp_buf nm_on_error;
 extern char nm_error_msg[512];
 
-#ifndef NM_LIBDIR
-#define NM_LIBDIR "lib"
-#endif
 
 #define DEFAULT_PLACES 20
 #define DEFAULT_ORDER 8
@@ -2306,18 +2303,23 @@ static char *para_root(Node *e, const char *to_var, size_t to_len, int64_t order
     return parallelogram(F, xi, yi, &S, have, order);
 }
 
-#ifndef NM_LIBDIR
-#define NM_LIBDIR "lib"
-#endif
-
 char *nm_run(const char *line, int *failed);
 
+extern const char *nm_lib_names[], *nm_lib_texts[];
+
+/* use NAME: the library from NEWTONMATH_LIB if set, else the one compiled in, else NAME.nm in this directory */
 static char *use_library(const char *name, size_t len) {
     const char *dir = getenv("NEWTONMATH_LIB");
     char path[1024];
-    snprintf(path, sizeof path, "%s/%.*s.nm", dir ? dir : NM_LIBDIR, (int)len, name);
-    FILE *f = fopen(path, "r");
-    if (!f) nm_fail("cannot open %s", path);
+    FILE *f = NULL;
+    if (dir) { snprintf(path, sizeof path, "%s/%.*s.nm", dir, (int)len, name); f = fopen(path, "r"); }
+    for (int i = 0; !f && nm_lib_names[i]; i++)
+        if (strlen(nm_lib_names[i]) == len && !strncmp(nm_lib_names[i], name, len)) {
+            snprintf(path, sizeof path, "%.*s (built in)", (int)len, name);
+            f = fmemopen((void *)nm_lib_texts[i], strlen(nm_lib_texts[i]), "r");
+        }
+    if (!f) { snprintf(path, sizeof path, "%.*s.nm", (int)len, name); f = fopen(path, "r"); }
+    if (!f) nm_fail("no library %.*s (built in or %s)", (int)len, name, path);
     jmp_buf saved;
     memcpy(saved, nm_on_error, sizeof saved);
     char *buf = NULL; size_t cap = 0;

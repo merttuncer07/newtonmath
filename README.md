@@ -31,8 +31,10 @@ equation or a fluxional (differential) one from its start.
     d/dx (x^3 - 2x)                                   3x^2 - 2  [exact]
 
 Every series is substituted back into its equation, or raised back to its power, before it is shown.
-Named functions are not built in. `use prelude` loads lib/prelude.nm, where exp, sin, cos, log1p, atan and asin
-are defined by their equations, in the language itself. A defined series can be substituted: `exp(x^2)`.
+Named functions are not built in. `use prelude` loads the prelude, where exp, sin, cos, log1p, atan and asin
+are defined by their equations, in the language itself. The files in lib/ are compiled into the program, so
+the one file `newtonmath` runs alone from any directory; `use NAME` takes NAME from $NEWTONMATH_LIB if set,
+else the built-in one, else NAME.nm in the current directory. A defined series can be substituted: `exp(x^2)`.
 
 ## Values (slice 3)
 

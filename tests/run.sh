@@ -261,5 +261,16 @@ if command -v bc >/dev/null 2>&1; then
   n=$((n+1)); [ "$mine" = "$theirs" ] || { echo "FAIL: F[2000] differs from bc"; fail=$((fail+1)); }
 fi
 
+# The libraries are compiled into the program: it runs alone, from any directory.
+tmp=$(mktemp -d); cp $NM "$tmp/"
+out=$(cd "$tmp" && printf 'use prelude\nexp(1) to 30 places\n' | ./newtonmath | tail -1)
+n=$((n+1))
+[ "$out" = '2.718281828459045235360287471353  [bounded: 30 places guaranteed]' ] || { echo "FAIL: built-in prelude: $out"; fail=$((fail+1)); }
+echo 'let w = 7' > "$tmp/mine.nm"
+out=$(cd "$tmp" && printf 'use mine\nw\n' | ./newtonmath | tail -1)
+n=$((n+1))
+[ "$out" = '7  [exact]' ] || { echo "FAIL: library from this directory: $out"; fail=$((fail+1)); }
+rm -rf "$tmp"
+
 echo "run.sh: $n checks, $fail failed"
 [ $fail -eq 0 ]

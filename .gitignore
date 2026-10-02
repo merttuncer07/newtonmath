@@ -2,3 +2,4 @@ newtonmath
 tests/check_z
 tests/unit/*_test
 *.o
+src/libs.c

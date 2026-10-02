@@ -719,3 +719,16 @@ Ferrari quadratics must multiply back to the quartic; for every arc, w^2 = 4q - 
 Also: Euler's substitution now reaches integrals that led to such factors (sqrt(x^2 + 1)/(x^2 + 2)).
 Refused, with the reason: an irreducible factor of degree 5 or more (later), letters in such a factor.
 The printed forms are long (nested surds over r_k): correct and checked, not yet short.
+
+# Libraries compiled into the program
+Question: the program read lib/prelude.nm from the absolute path of the build directory, so a copied binary
+failed at `use prelude`.
+Generic answer: install the library files to a fixed prefix (/usr/share/...) and search a path.
+Policy (CONSTITUTION C4, prefer the representation in which the problem disappears; F5, no extra machinery):
+the libraries are short texts in the language; put the texts in the program and there is no path to find. This
+is also the single-file principle of Justine Tunney's tools (one portable binary, nothing to install).
+Built: the Makefile writes src/libs.c (names and texts of lib/*.nm); `use NAME` reads $NEWTONMATH_LIB/NAME.nm if
+that variable is set (for working on a library), else the built-in text (fmemopen), else NAME.nm in the
+current directory. lib/*.nm stays the source; the C kernel does not grow.
+Checks: run.sh copies the program to an empty directory and evaluates exp(1) to 30 places there (agrees with
+bc), and loads a library from that directory.
