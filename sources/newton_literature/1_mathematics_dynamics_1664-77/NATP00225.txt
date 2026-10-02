@@ -1,0 +1,37 @@
+<2r>
+
+Trinity College Feb 6 1669.
+Cambridge.
+
+Sir
+
+Mr Barrow shewed mee some of your papers in which I was much pleased at Monsieur Cassinis invention for finding the Apogœa & excentricitys of the Planets
+
+For your Annuity Problem I have sent you the following solution to
+consider of what use it may bee. To know at what rate (N per cent) an Annuity of B is purchased for 31 yeares at the price A. The rule is (6 Log : of ((31B)/(A)))/(100−50 Log of ((31B)/(A)))=Log : of ((100+N)/(100)) .
+
+As for example if 1200^((li)) bee payd at present for 100^((li)) yearely for 31 yeares then is the Logarithm of ((31B)/(A))=0,41218 . And consequently by the rule (2,47308)/(79,39100) or 0,03111 is the Logarithme of (100+N)/(100) ; whence (100+N)/(100)=1,0743 . And N=7,43 or 7^((li)) , 8^s , 7^d . Soe that the Annuity was bought at the rate of 7^((lib)) . 8^s , 7^d per cent.
+
+This rule is not exact but yet soe exact as never to faile above 2^d or 3^d at the most when the rate is not above 16^lib per cent. And if the rate bee above 16 or 18^((lib)) per cent, or which is all one if A (‾(‾|)) 6B , then this rule (A+B)/(A)=(100+N)/(100) will not err above 2^s . You may try the truth of these rules by the equation x^32=(A+B)/(A)x^31−(B)/(A) ; putting (100+N)/(100)=x , & working in logarithms.
+
+You seeme to apprehend as if I was about writing elaborate Notes upon Kinck-huyson: I understood from Mr Barrow that your desire was only to have the booke reveived: that if any thing were defective or amisse it might be amended, & to that purpose about two Months since I reveived it & made some such observations upon it . But though the booke bee a good introduction I think it not worth the paines of a formall comment, There being nothing new or notable in it which is not to bee found in other Authors of better esteeme.
+
+You make mention of another book of the same Author translated badly into latten by a German Gunner; which you would have mee correct. I understand not Dutch & would not willingly doe the Author soe much wrong as to undertake to correct a translation where I understand not the originall: I suppose there want not Mathematitians in London that understand Dutch.
+
+In finding the Aggregate of the termes of a Musicall Progression there is one way by Logarithms very obvious (viz by subducting the logarithms of each denominator from that of the Numerator &c) which I supposed to bee the ordinary way in Practise & therefore mentioned it not in my Letter. If you meane another way I would bee glad to have it communicated. Thus Sr I am
+
+Your troublesome Freind & Servant
+
+Isaac Newton.
+
+<2av>
+Mr Newtons Solutio of the Interest Probleme
+
+These
+
+To Mr John Collins
+at his house in Bloomsbury
+next doore to the three
+Crownes in
+
+London

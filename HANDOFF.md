@@ -268,3 +268,15 @@ cited by NATP id, and serve as **reference only**.
 
 Arithmetica Universalis, the source for extermination and the rule for equations, is quoted in DECISIONS.md but
 is not among these files.
+
+---
+
+## 8. Decision policy and reading (added 2026-10-02)
+
+- Mert asked that every design decision follow the Newton decision policy in
+  `sources/newton_mathlang/agent/CONSTITUTION.md` with the protocol in `RUNTIME.md` (see AGENTS.md).
+- On 2026-10-02 main was reset to Slice 14 (549839c): Slice 15 (Zassenhaus factorization) and an unfinished
+  multivariate attempt were judged modern machinery justified after the fact, and the attempt stalled under patches
+  (failure mode F5). Factorization is to be redesigned from Newton's own method of finding divisors.
+- `sources/newton_literature/` adds 20 texts (letters to Collins and Oldenburg, optics, De motu); the others in that
+  upload were already in sources/. `sources/SOURCES_MAP.md` maps all 56 texts by topic and line for targeted reading.

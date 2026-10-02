@@ -1,0 +1,31 @@
+<6r>
+Jul 11th 1670.
+Trinity College
+
+Sir
+
+I have here sent your Kink-Huysons Algebra with those notes which I have intermixed with the Authors discourse. I know not whither I have hit your meaning or noe but I have added & altered those things which I thought convenient to bee added or altered, & I guesse that was your desire I should doe. All & every part of what I have written I leave wholly to your choyse whither it shall bee printed together with your translation or not. If you think fit to print any of it the directions I have writ in english will shew you where it is to bee inserted. But if you have a mind not to change the Author soe much, I would not have you recede from your intentions upon the accompt of what I have done. For I assure you I writ what I send you not so much with a designe that they should bee printed as that your desires should bee satisfied to have me revise the booke. And so soone as you have read the papers I have my end of writing them. In a letter you hinted somthing to bee supplyed out of Ferguson's Labyrinthus about the extraction of cubick roots; if you meant pure rootes, I have done that in as breif plaine & full a manner as I can. But if you meant affected roots, tis already done by Kinck-Huyson pag 91 as well as by Ferguson. Indeed Ferguson seemes to have done more in so much as to comprehend all cases of cubick equations within the same rules; but that [more] is inartificiall because it supposes the extraction of cubick roots out of imaginary binomiums, which how to doe hee hath not taught us, his rule taught in pag 4 not extending to it. Thus his second example, 1^æ=6⁢χ+4 supposeth the cubick roote of 2+sqrt()−4 to bee extracted which indeed is −1+sqrt()−1 , but I would know by what direct method hee teacheth to find it. Not but that it may bee done, & I know how to doe it, but I think it not worth the inserting into Kinck huyson, yet if you think it convenient (& indeed it may bee congruently enough inserted into him at pag 91) I will send you it done in my next letter. There remains but one thing more & thats about the Title page if you print these alterations which I have made in the Author: For it may bee esteemed unhandsom & injurious to Kinck huysen to father a booke wholly upon him which is soe much alter'd from what hee had made it. But I think all will bee safe if after the words [nunc e Belgico Latinè versa,] bee added [et ab alio Authore locupletata.] or some other such note.
+
+Somthing I have yet to say & that's about your paper concerning the aggregate of the termes of a musicall progression: Namely your way deduced from Mercators squareing of the Hyperbola is the same with the last of those two I had sent you together before. Onely I had taken a greate deale of paines to bring it to such a forme might bee most convenient for practise & soe had made it soe intricate as to other respects that is noe wonder if you did not discerne its fountaine or by what method I had composed it. I begg you pardon therefore for that obscurity: but I have since committed a greater fault then that; & that's a neglect of writing to you, Yet I doubt not but that you have goodnesse enough to pardon all. In confidence of which I rest
+
+Your most humble Servant
+
+Is: Newton.
+
+< insertion from the left margin > I had sent your booke immediately upon the receipt of your letter but that I staid two or three days expecting to see Mr Pitts. As for the coppys of Kinck-huysen you mentioned to send to me, I know tis usually not without some unwillingnesse that Mathematical books are printed. And I would not soe far discourage the printing of it as to have any coppys reserved for mee. I had rather purchase your freinship then bookes. Yet if you please to send mee one coppy I shall acknowledg my selfe your debter for that together with Dr Wallis his Mechanicks & the rest, I. N.
+
+< text from f 6r resumes >
+
+<6av>
+Mr Newton about Fergusons Rules
+
+These
+
+To Mr John Collins
+at his house neare the three Crowns
+in Bloomsbury in
+
+London.
+with a parcell.
+
+by Tho Powell at the Greendragon in bishopgat

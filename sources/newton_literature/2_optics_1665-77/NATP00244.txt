@@ -1,0 +1,30 @@
+<22r>
+Stoake: July 8th 1672.
+
+Sir
+
+I am glad to find by the abstract of Monsieur Hugenis Letter which you transmitted to me, that he who hath done so much in Dioptricks hath been pleased to undertake the improvement of Telescopes by reflexions also, though without the desired success. For I hope the event of his next essay, if he shall think fit to attempt any thing further, will prove more happy by a little altering the manner of his proceeding. I should be glad to heare whether Mr Cock hath finished the four foot Telescope, & what its effects are, as also what are the best effects of those of 6 or 8 inches in length which he hath made at any time. But I know not whether I shall make any further tryalls my selfe, being desirous to prosecute some other subjects.
+
+Touching the Theory of Colours I am apt to beleive that some of the experiments may seem obscure by reason of the brevity wherewith I writ them which should have been described more largely & explained with schemes if they had been then intended for the publick. But I see not why the aberration of the rays from the transvers of the object-glass of a Telescope should be more then about (1)/(50) of the Glasses aperture. For suppose DF be the Lens; [figure] CD & EF two lines parallel to its axis in or indefinitely neare to which all variety of difform rays are successively incident on two opposite parts of its Perimeter. And of those rays let <22v> DH & FG be the most refracted & DG & FH the least refracted intersecting the former in G & H. Draw GH & produce it both ways till at M & N it occur with CD & EF also produced. Now since by my Principles the difference of refraction of the most difform rays is about the 24th or 25t part of their whole refraction, the angle GDH will be about a 25t part of the angle MDH & consequently the subtense GH (which is the diameter of the least space into which the refracted rays converge) will be about a 25t part of the subtens MH & therefore about a 49th part of the whole line MN the diameter of the lens; or in round numbers about a fiftith part as I asserted.
+
+This in hast Sir from
+
+Your Servant
+
+I. Newton.
+
+<22ar>
+[figure]
+
+<22av>
+These
+
+To Henry Oldenburg Esquire
+at his house about the middle
+of the old Pall-mail in
+
+Westminster
+
+London
+
+An Extract of a letter from the same, concerning the improvement of Telescopes by Reflexions, and his Theory of Colours.
