@@ -60,3 +60,19 @@ Read the lines named here, not whole files. Paths are relative to sources/.
 | NATP00394 | 11 July [June] 1672 | Letter from Newton to Henry Oldenburg, dated 11 [June] 1672 | 45 | newton_analysis_instruments/experiments_instruments/NATP00394.txt | series / infinite equations (1: 70); area / quadrature (4: 59,61,70,80); roots, resolution of equations (2: 68,82); divisors, factors (1: 9); interpolation, differences (8: 5,7,59,66); parallelogram, ruler (9: 7,78,80,82); conic sections (3: 53,106,114); method, rules (11: 7,78,80,82); numbers, tables (4: 9,61,70,78) |
 | NATP00399 | 19 February 1676 | Letter from Newton to Henry Oldenburg, dated 19 February 167 | 3 | newton_literature/2_optics_1665-77/NATP00399.txt | area / quadrature (3: 9,11,13); interpolation, differences (1: 11) |
 | NATP00400 | 28 November 1676 | Letter from Newton to Henry Oldenburg, dated 28 November 167 | 6 | newton_analysis_instruments/experiments_instruments/NATP00400.txt | tangents, fluxions, moments (1: 5); interpolation, differences (2: 5,9); method, rules (1: 15); numbers, tables (1: 7) |
+
+## Outside literature read (notes only; the papers are not copied here)
+
+- Mignotte & Ştefănescu, "Méthode générale de factorisation des polynômes" (de Newton à Bernoulli-Schubert),
+  Revue d'histoire des mathématiques 7 (2001), 67-89. Read: pages 3-9.
+  - Newton, Arithmetica Universalis (course 1673-83, printed 1707), "De inventione divisorum": substitute three or
+    more terms of 3, 2, 1, 0, -1, -2 for a letter; list the divisors of each value with both signs; look for an
+    arithmetic progression among them (from the largest down); the term at 0 divided by the common difference,
+    joined to the letter, is a divisor to try (x^3 - x^2 - 10x + 6: values -4, 6, 14 at 1, 0, -1, progression 4, 3,
+    2, divisor x + 3, quotient x^2 - 4x + 2). Rational roots: multiply by a divisor of the leading coefficient
+    (3y + 4). Quadratic divisors: four or more values, squares of the progression times a divisor A of the leading
+    coefficient, sums and differences with the divisors, progressions give A l^2 +- B l +- C to try.
+  - Hermann (1708) proved it with difference tables; Leibniz (1708) used one value at a large h; N. Bernoulli (1708,
+    printed 1745) extended Newton's tables to divisors of any degree (cubic and quartic factors of a degree-7
+    example); Schubert completed it; this is the method later named after Kronecker (interpolation of divisor values).
+- Kaltofen, "Factorization of polynomials given by straight-line programs" (1989): modern, not yet read.
