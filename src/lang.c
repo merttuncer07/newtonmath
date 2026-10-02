@@ -989,6 +989,27 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
         *out = vtext(txt);
         return inherit_builtin(out,a,na);
     }
+    if (IS("factor") && na == 1 && a[0].kind == V_POLY) {     /* a polynomial: Newton's divisors */
+        int nl = 0;
+        for (int l = 0; l < letter_count(); l++) if (c_uses(a[0].c, l)) nl++;
+        if (nl != 1) nm_fail("factor: a polynomial in one letter (several letters: later)");
+        PolyFactors P = poly_factor(c_to_poly(a[0].c, NULL));
+        size_t cap = 128;
+        for (int i = 0; i < P.n; i++) cap += strlen(p_to_str(P.f[i])) + 32;
+        cap += strlen(q_to_str(P.unit));
+        char *txt = arena_alloc(cap), *o = txt;
+        if (q_cmp(P.unit, qi(-1)) == 0) o += sprintf(o, "-");
+        else if (q_cmp(P.unit, qi(1))) o += sprintf(o, q_is_int(P.unit) ? "%s" : "(%s)", q_to_str(P.unit));
+        for (int i = 0; i < P.n; i++) {
+            int terms = 0;
+            for (int j = 0; j <= P.f[i].deg; j++) terms += q_sign(P.f[i].c[j]) != 0;
+            o += sprintf(o, terms == 1 || (P.n == 1 && P.e[i] == 1 && !q_cmp_one(P.unit)) ? "%s" : "(%s)", p_to_str(P.f[i]));
+            if (P.e[i] > 1) o += sprintf(o, "^%d", P.e[i]);
+        }
+        sprintf(o, "  [multiplied back; every factor proved irreducible over Q (all recombinations tried)]");
+        *out = vtext(txt);
+        return inherit_builtin(out,a,na);
+    }
     if (IS("factor")) {
         NEED(1);
         Factors F = z_factor(whole_z(a[0], "the argument"));

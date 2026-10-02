@@ -271,6 +271,11 @@ int64_t b_guaranteed_places(Ball a, int64_t want);  /* largest k <= want with ra
 char *fixed_str(Z scaled, int64_t places);          /* scaled / 10^places written in decimal */
 Z b_round_to_places(Ball a, int64_t places);
 
+/* ---- factors of a polynomial over Q, by Newton's divisors (factor.c) ---- */
+#define NM_MAXPF 64
+typedef struct { Q unit; int n; Poly f[NM_MAXPF]; int e[NM_MAXPF]; long steps; } PolyFactors;  /* unit * prod f^e */
+PolyFactors poly_factor(Poly p);   /* every f whole, primitive, first coefficient > 0, proved irreducible */
+
 /* ---- whole numbers (arith.c) ---- */
 #define NM_MAXFAC 128
 typedef struct { int sign, n; Z p[NM_MAXFAC]; int e[NM_MAXFAC]; int status[NM_MAXFAC]; } Factors;   /* status: 1 proved, 2 probable */

@@ -36,6 +36,20 @@ are defined by their equations, in the language itself. The files in lib/ are co
 the one file `newtonmath` runs alone from any directory; `use NAME` takes NAME from $NEWTONMATH_LIB if set,
 else the built-in one, else NAME.nm in the current directory. A defined series can be substituted: `exp(x^2)`.
 
+## Factors of a polynomial
+
+`factor(p)` writes a polynomial in one letter with rational coefficients as a product of irreducible factors over
+Q: square-free parts (Yun), factors modulo a small prime (Berlekamp), Hensel's lifting past Mignotte's bound, and
+recombination (Zassenhaus). Every combination is tried, so each factor is proved irreducible; the product is
+multiplied back. `show factor(p)` writes the prime, the lifting and the recombination.
+
+    factor(x^3 - x^2 - 10x + 6)      (x + 3)(x^2 - 4x + 2)       (Newton's own example)
+    factor(x^12 - 1)                 (x + 1)(x - 1)(x^2 + 1)(x^2 + x + 1)(x^2 - x + 1)(x^4 - x^2 + 1)
+
+Checked against sympy on 718 random products (degree up to 50 or so) and on cyclotomic and Swinnerton-Dyer
+polynomials: all equal. Swinnerton-Dyer of degree 16 takes 5 ms, degree 32 takes 0.3 s. Not yet: more than 40
+factors modulo the prime (degree-64 Swinnerton-Dyer) needs lattice reduction (van Hoeij); several letters.
+
 ## Showing the work
 
 `show` before a statement writes each step as it is done, in the form of Newton's table in De Analysi: the

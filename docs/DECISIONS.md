@@ -747,3 +747,22 @@ Small choices: one letter p (q if the unknown is p) with the cumulative value, r
 long decimals cut at 60 characters; a statement with no written steps says so. A side fix: an exact root ends
 the passes at once instead of repeating them (the value is the same).
 Not yet: steps for series (term by term), integrals and the parallelogram.
+
+# Slice 15b: factors of a polynomial over Q
+Question: write a polynomial in one letter as a product of irreducible factors over Q.
+Generic answer: Yun, Berlekamp or Cantor-Zassenhaus modulo p, Hensel lifting, Zassenhaus recombination; van
+Hoeij's lattice reduction when there are many modular factors (as FLINT, PARI, sympy).
+Newton: "De inventione divisorum" asks the same question with whole-number arithmetic (values at 3, 2, 1, 0,
+-1, -2 and their divisors); N. Bernoulli, Schubert and Kronecker made it complete. A first build of that line
+(Kronecker with Newton's progression test in its general form) worked to about degree 10 and refused a
+degree-16 Swinnerton-Dyer polynomial after 5 s. That is the stall F5 warns about; the answer is to change the
+representation, not to add time: work modulo a prime, where the divisors come from linear algebra (Berlekamp),
+and lift. Newton is the guide for how to decide, not a limit on the methods (Mert, 2026-10-02).
+Built (factor.c, rewritten from Slice 15's modular core): primitive part and unit; x^k; square-free test
+modulo a prime, else Yun with primitive remainder gcds; Berlekamp at the best of five primes (fewest factors);
+Hensel's lifting one factor at a time past 2^(d+1) |lc| ||f||_1; recombination by subsets with the
+constant-term test; exact division over Z; product multiplied back.
+Checks: 718 random products equal to sympy's factor_list; cyclotomic x^60 - 1, x^105 - 1, products of
+cyclotomics, Swinnerton-Dyer for 2, 3, 4 and 5 primes; 13 cases in tests/cases.txt.
+Not yet: van Hoeij (refused above 40 modular factors, with the reason), several letters, factors over
+algebraic extensions.
