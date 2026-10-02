@@ -18,7 +18,8 @@ static int run_stream(FILE *in, int interactive) {
         if (getline(&line, &cap, in) < 0) break;
         int failed;
         char *out = nm_run(line, &failed);
-        if (out) puts(out);
+        if (nm_json) { if (out) puts(nm_account_json(line, out, failed)); }
+        else if (out) puts(out);
         errors += failed;
         arena_reset();
     }
@@ -34,10 +35,12 @@ int main(int argc, char **argv) {
         rl.rlim_cur = (rl.rlim_max == RLIM_INFINITY || rl.rlim_max >= (256u << 20)) ? (256u << 20) : rl.rlim_max;
         setrlimit(RLIMIT_STACK, &rl);
     }
+    if (argc >= 2 && !strcmp(argv[1], "-j")) { nm_json = 1; argv++; argc--; }   /* one JSON line per statement */
     if (argc == 3 && !strcmp(argv[1], "-e")) {
         int failed;
         char *out = nm_run(argv[2], &failed);
-        if (out) puts(out);
+        if (nm_json) { if (out) puts(nm_account_json(argv[2], out, failed)); }
+        else if (out) puts(out);
         return failed;
     }
     if (argc == 2) {
@@ -48,6 +51,6 @@ int main(int argc, char **argv) {
         return errors ? 1 : 0;
     }
     if (argc == 1) return run_stream(stdin, isatty(0)) ? 1 : 0;
-    fprintf(stderr, "usage: newtonmath [file.nm | -e \"statement\"]\n");
+    fprintf(stderr, "usage: newtonmath [-j] [file.nm | -e \"statement\"]   (-j: one JSON line per statement)\n");
     return 2;
 }

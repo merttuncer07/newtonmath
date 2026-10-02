@@ -36,6 +36,24 @@ are defined by their equations, in the language itself. The files in lib/ are co
 the one file `newtonmath` runs alone from any directory; `use NAME` takes NAME from $NEWTONMATH_LIB if set,
 else the built-in one, else NAME.nm in the current directory. A defined series can be substituted: `exp(x^2)`.
 
+## For programs and AI agents: `-j`
+
+`newtonmath -j` writes one JSON line per statement. The answer gives an account of itself: how sure it is
+(`status`: proved, certified, bounded, exact, exact_to_order, probable, rule, needs_choice), the verdict in words,
+a few `facts` the computation produced anyway (nothing extra is computed to explain), and with `show` the steps
+actually taken. A failure says why in `error`. Nothing is written to disk.
+
+    $ newtonmath -j -e 'factor(x^4 - 1)'
+    {"input":"factor(x^4 - 1)","answer":"(x + 1)(x - 1)(x^2 + 1)","status":"proved","verdict":"multiplied back; ...",
+     "facts":{"degree":4,"irreducible":false,"squarefree":true,"factor_degrees":[1,1,2],"multiplicities":[1,1,1],
+     "rational_roots":["-1","1"]}}
+    $ newtonmath -j -e 'root of y^3 - 2y - 5 = 0 near 2 to 10 places'
+    {..., "status":"certified", "facts":{"equation":"y^3 - 2y - 5","interval":["2.0945514815422","2.0945514815424"]}}
+
+Facts so far: factor of a polynomial (degree, irreducible, squarefree, factor degrees, multiplicities, rational
+roots), factor of a whole number (prime, distinct prime factors), a root (its equation, the interval across
+which the sign change was seen, or exact_root). In the terminal, `show` prints the same facts after the steps.
+
 ## Factors of a polynomial
 
 `factor(p)` writes a polynomial in one letter with rational coefficients as a product of irreducible factors over

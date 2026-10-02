@@ -766,3 +766,20 @@ Checks: 718 random products equal to sympy's factor_list; cyclotomic x^60 - 1, x
 cyclotomics, Swinnerton-Dyer for 2, 3, 4 and 5 primes; 13 cases in tests/cases.txt.
 Not yet: van Hoeij (refused above 40 modular factors, with the reason), several letters, factors over
 algebraic extensions.
+
+# The account of an answer, and -j
+Question: the primary user is an AI agent (Mert, 2026-10-02); people should still find it pleasant. What does an
+answer carry?
+Generic answer: return the value, perhaps with a log.
+Newton (mathematics): the table in De Analysi is the demonstration; a result is given with how it was found and
+how sure it is, no more than is shown. Justine Tunney (engineering): show what the machine actually did; one
+file, nothing installed, nothing written to disk; small core.
+Built (account.c): one record per statement with the answer, a status read from the verdict, the verdict, facts
+and work. Rules: facts are only what the computation produced anyway (F5: no computation to explain); work is
+the steps actually taken; each fact key once per statement; failures carry the reason. A person sees it in the
+terminal (show prints steps and facts); a program gets one JSON line (-j). The record lives in memory and is
+dropped after the statement.
+Checks: every statement of tests/*.nm and tests/cases.txt (448) gives valid JSON; the root interval is checked
+with bc (the equation is negative at one end and positive at the other).
+Next: facts for more kinds of answer (series: radius of convergence when the term rule gives it; integrals: the
+form found; systems: number of solutions), and a benchmark of an agent using newtonmath against one using sympy.

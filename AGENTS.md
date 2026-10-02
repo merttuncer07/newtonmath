@@ -19,6 +19,18 @@ Read HANDOFF.md first (purpose, code map, next steps), then README.md and docs/D
   the representation), claim more than is demonstrated, or skip the second route.
 - His texts are read for how he thinks (sources/), not as a catalogue of methods to copy.
 
+## Two guides, and who the language is for (Mert, 2026-10-02)
+- Newton guides the mathematics: which question to ask, which representation, when a method is done, how a result
+  is demonstrated. He is a guide, not a 17th-century limit: when an old method cannot do what is needed, use the
+  modern one (e.g. factor.c: Berlekamp, Hensel and Zassenhaus replaced the divisor search).
+- Justine Tunney guides the engineering: a small core, everything else in the language itself; one portable file
+  that writes nothing to disk and needs nothing installed; measure on real sizes and beat the best tools there;
+  show what the machine actually did (her -r trace, Blinkenlights); open work, open credit.
+- The primary user is an AI agent doing mathematics; people must still find it pleasant. So every answer gives an
+  account of itself: the answer, how sure it is, a small fixed set of facts the computation already produced, and
+  on request the steps actually taken. Never narrate work that was not done; never compute extra just to explain
+  (F5). Failures say why and what would be needed. All output and docs are in English.
+
 ## Reading Newton with few tokens
 - `sources/SOURCES_MAP.md` lists every text (id, date, title, size) with topic hits and their first line numbers.
   Read only the lines it points to, with grep/sed, never whole files. Cite what was read (id and line).

@@ -273,6 +273,23 @@ out=$($NM -e 'show 2 + 3' | head -1)
 n=$((n+1))
 [ "$out" = '  (no steps are written for this kind of statement yet)' ] || { echo "FAIL: show without steps: $out"; fail=$((fail+1)); }
 
+# -j: one JSON line per statement (answer, status, verdict, facts, work)
+out=$($NM -j -e 'factor((x^2+x+1)^3*(x^3-2)*(3x-1)/7)')
+n=$((n+1))
+[ "$out" = '{"input":"factor((x^2+x+1)^3*(x^3-2)*(3x-1)/7)","answer":"(1/7)(3x - 1)(x^2 + x + 1)^3(x^3 - 2)","status":"proved","verdict":"multiplied back; every factor proved irreducible over Q (all recombinations tried)","facts":{"degree":10,"irreducible":false,"squarefree":false,"factor_degrees":[1,2,3],"multiplicities":[1,3,1],"rational_roots":["1/3"]}}' ] || { echo "FAIL: -j factor: $out"; fail=$((fail+1)); }
+out=$($NM -j -e 'root of y^3-2y-5=0 near 2 to 10 places')
+n=$((n+1))
+[ "$out" = '{"input":"root of y^3-2y-5=0 near 2 to 10 places","answer":"2.0945514815","status":"certified","verdict":"certified: sign change of y^3 - 2y - 5, 10 places","facts":{"equation":"y^3 - 2y - 5","interval":["2.0945514815422","2.0945514815424"]}}' ] || { echo "FAIL: -j root: $out"; fail=$((fail+1)); }
+out=$($NM -j -e '1/0')
+n=$((n+1))
+[ "$out" = '{"input":"1/0","error":"division by zero"}' ] || { echo "FAIL: -j error: $out"; fail=$((fail+1)); }
+out=$($NM -j -e 'show root of y^2 - 4 = 0 near 1')
+n=$((n+1))
+case "$out" in *'"work":["to 4 places:","  y = 1 + p:   p^2 + 2p - 3 = 0,   p = 1.5"'*) ;; *) echo "FAIL: -j work: $out"; fail=$((fail+1));; esac
+out=$($NM -j -e 'integral(1/(1 + x^2), x) to x^7')
+n=$((n+1))
+[ "$out" = '{"input":"integral(1/(1 + x^2), x) to x^7","answer":"x - x^3/3 + x^5/5 - x^7/7 + O(x^8)","status":"exact_to_order"}' ] || { echo "FAIL: -j series: $out"; fail=$((fail+1)); }
+
 # The libraries are compiled into the program: it runs alone, from any directory.
 tmp=$(mktemp -d); cp $NM "$tmp/"
 out=$(cd "$tmp" && printf 'use prelude\nexp(1) to 30 places\n' | ./newtonmath | tail -1)

@@ -6,23 +6,8 @@
  * operation: substitute both ends into the equation exactly and see the sign change. */
 #include "nm.h"
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-
-/* ---------------- showing the work ---------------- */
-
-int nm_show_work, nm_work_lines;
-
-void nm_work(const char *fmt, ...) {
-    va_list ap;
-    va_start(ap, fmt);
-    fputs("  ", stdout);
-    vprintf(fmt, ap);
-    putchar('\n');
-    va_end(ap);
-    nm_work_lines++;
-}
 
 static char *trim_zeros(char *s) {           /* 2.1000 -> 2.1, 3.000 -> 3 */
     if (!strchr(s, '.')) return s;

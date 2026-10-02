@@ -1007,6 +1007,27 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
             if (P.e[i] > 1) o += sprintf(o, "^%d", P.e[i]);
         }
         sprintf(o, "  [multiplied back; every factor proved irreducible over Q (all recombinations tried)]");
+        {   /* facts read off the factors: nothing more is computed */
+            size_t fc = 64;
+            for (int i = 0; i < P.n; i++) fc += 48 + (P.f[i].deg == 1 ? strlen(q_to_str(P.f[i].c[0])) + strlen(q_to_str(P.f[i].c[1])) + 8 : 0);
+            char *deg = arena_alloc(fc), *mul = arena_alloc(fc), *roots = arena_alloc(fc), *d = deg, *m = mul, *r = roots;
+            int total = 0, sqfree = 1;
+            d += sprintf(d, "["); m += sprintf(m, "["); r += sprintf(r, "[");
+            for (int i = 0; i < P.n; i++) {
+                d += sprintf(d, "%s%d", i ? "," : "", P.f[i].deg);
+                m += sprintf(m, "%s%d", i ? "," : "", P.e[i]);
+                total += P.f[i].deg * P.e[i];
+                if (P.e[i] > 1) sqfree = 0;
+                if (P.f[i].deg == 1) r += sprintf(r, "%s%s", r[-1] == '[' ? "" : ",", nm_json_str(q_to_str(q_neg(q_div(P.f[i].c[0], P.f[i].c[1])))));
+            }
+            sprintf(d, "]"); sprintf(m, "]"); sprintf(r, "]");
+            nm_fact("degree", "%d", total);
+            nm_fact("irreducible", P.n == 1 && P.e[0] == 1 ? "true" : "false");
+            nm_fact("squarefree", sqfree ? "true" : "false");
+            nm_fact("factor_degrees", "%s", deg);
+            nm_fact("multiplicities", "%s", mul);
+            nm_fact("rational_roots", "%s", roots);
+        }
         *out = vtext(txt);
         return inherit_builtin(out,a,na);
     }
@@ -1027,6 +1048,8 @@ static int builtin(const char *s, size_t len, Node *n, Val *out) {
         if (F.n == 0) sprintf(o, "  [exact]");
         else if (probable) sprintf(o, "  [multiplied back; %d factor%s only probable prime%s (BPSW)]", probable, probable > 1 ? "s" : "", probable > 1 ? "s" : "");
         else sprintf(o, "  [multiplied back; every factor proved prime]");
+        nm_fact("prime", F.n == 1 && F.e[0] == 1 && F.sign > 0 ? (F.status[0] == 1 ? "true" : "\"probable\"") : "false");
+        nm_fact("distinct_prime_factors", "%d", F.n);
         *out = vtext(txt);
         return inherit_builtin(out,a,na);
     }
@@ -2215,6 +2238,11 @@ static char *show(Val v, int64_t places, int asked) {
             snprintf(out, 4096, "[not certified: %s shows no sign change here; a double root?]", root_equation_str(r));
         else
             snprintf(out, 4096, "[certified: sign change of %s, %lld places]", root_equation_str(r), (long long)places);
+        nm_fact("equation", "%s", nm_json_str(root_equation_str(r)));
+        if (r->certified && r->w)                    /* the sign change was seen across this interval */
+            nm_fact("interval", "[%s,%s]", nm_json_str(fixed_str(z_sub(r->X, z_from_i64(r->w)), r->D)),
+                    nm_json_str(fixed_str(z_add(r->X, z_from_i64(r->w)), r->D)));
+        else if (r->certified) nm_fact("exact_root", "true");
         break;
     }
     case V_BALL: {
@@ -2550,9 +2578,11 @@ static char *run_statement(const char *line, int *failed);
 
 /* show STATEMENT: the same statement, with each step of the work written as it is done */
 char *nm_run(const char *line, int *failed) {
-    nm_show_work = 0; nm_work_lines = 0;
+    nm_show_work = 0;
+    nm_account_reset();
     char *out = run_statement(line, failed);
     if (nm_show_work && !nm_work_lines && !*failed) nm_work("(no steps are written for this kind of statement yet)");
+    if (nm_show_work) nm_account_print_facts();
     nm_show_work = 0;
     return out;
 }
